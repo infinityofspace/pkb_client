@@ -24,10 +24,7 @@ class DNSTestWithCleanup(unittest.TestCase):
     def tearDown(self):
         if hasattr(self, "record_id") and self.record_id is not None:
             pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
-            try:
-                pkb_client.dns_delete(TEST_DOMAIN, self.record_id)
-            except:
-                pass
+            pkb_client.dns_delete(TEST_DOMAIN, self.record_id)
 
 
 class TestClientAuth(unittest.TestCase):
@@ -67,17 +64,18 @@ class TestDNSCreateMethod(DNSTestWithCleanup):
         pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
 
         txt_content = "interesting-content"
-        ttl = "342"
+        ttl = 342
         name = "test_pkb_client"
 
         self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name=name, ttl=ttl)
         records = pkb_client.dns_retrieve(TEST_DOMAIN)
+
         for record in records:
-            if record["id"] == str(self.record_id):
+            if record["id"] == self.record_id:
                 with self.subTest():
                     self.assertEqual(txt_content, record["content"])
                 with self.subTest():
-                    self.assertEqual(ttl, record["ttl"])
+                    self.assertEqual(ttl, int(record["ttl"]))
                 with self.subTest():
                     self.assertEqual("{}.{}".format(name, TEST_DOMAIN), record["name"])
                 return
@@ -95,15 +93,21 @@ class TestDNSCreateMethod(DNSTestWithCleanup):
             self.record_id = pkb_client.dns_create(TEST_DOMAIN, "ABC", "interesting-content", name="test_pkb_client")
 
     def test_larger_than_allowed_content_length(self):
+        # the api call should not fail because the api creates multiple TXT entries which will be concatenated
         pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
         txt_content = "interesting-content-interesting-content-interesting-content-interesting-content-" \
                       "interesting-content-interesting-content-interesting-content-interesting-content-" \
                       "interesting-content-interesting-content-interesting-content-interesting-content-" \
-                      "interesting-cont"
-        assert len(txt_content) == 256
+                      "interesting-content"
+        assert len(txt_content) == 259
 
-        with self.assertRaises(Exception):
-            self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name="test_pkb_client")
+        self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name="test_pkb_client")
+        records = pkb_client.dns_retrieve(TEST_DOMAIN)
+        for record in records:
+            if record["id"] == self.record_id:
+                self.assertEqual(txt_content, record["content"])
+                return
+        self.assertTrue(False)
 
     def test_largest_allowed_content_length(self):
         pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
@@ -116,26 +120,18 @@ class TestDNSCreateMethod(DNSTestWithCleanup):
         self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name="test_pkb_client")
         records = pkb_client.dns_retrieve(TEST_DOMAIN)
         for record in records:
-            if record["id"] == str(self.record_id):
+            if record["id"] == self.record_id:
                 self.assertEqual(txt_content, record["content"])
                 return
         self.assertTrue(False)
 
     def test_empty_content_str(self):
         pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
-        txt_content = "interesting-content-interesting-content-interesting-content-interesting-content-" \
-                      "interesting-content-interesting-content-interesting-content-interesting-content-" \
-                      "interesting-content-interesting-content-interesting-content-interesting-content-" \
-                      "interesting-con"
-        assert len(txt_content) == 255
+        txt_content = ""
+        assert len(txt_content) == 0
 
-        self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name="test_pkb_client")
-        records = pkb_client.dns_retrieve(TEST_DOMAIN)
-        for record in records:
-            if record["id"] == str(self.record_id):
-                self.assertEqual(txt_content, record["content"])
-                return
-        self.assertTrue(False)
+        with self.assertRaises(AssertionError):
+            self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name="test_pkb_client")
 
     def test_none_content(self):
         pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
@@ -168,17 +164,20 @@ class TestDNSCreateMethod(DNSTestWithCleanup):
         pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
 
         txt_content = "interesting-content"
+        ttl = 2147483647
 
-        self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name="test_pkb_client", ttl=2147483647)
+        self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name="test_pkb_client", ttl=ttl)
         records = pkb_client.dns_retrieve(TEST_DOMAIN)
         for record in records:
-            if record["id"] == str(self.record_id):
-                self.assertEqual(txt_content, record["content"])
+            if record["id"] == self.record_id:
+                with self.subTest():
+                    self.assertEqual(txt_content, record["content"])
+                with self.subTest():
+                    self.assertEqual(ttl, int(record["ttl"]))
                 return
         self.assertTrue(False)
 
-    def test_smaller_than_allowed_prio_with_txt(self):
-        # if we sent the prio with an unsupported dns record type, the prio should be ignored
+    def test_valid_prio_with_txt(self):
         pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
 
         txt_content = "interesting-content"
@@ -187,16 +186,15 @@ class TestDNSCreateMethod(DNSTestWithCleanup):
         self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name="test_pkb_client", prio=prio)
         records = pkb_client.dns_retrieve(TEST_DOMAIN)
         for record in records:
-            if record["id"] == str(self.record_id):
+            if record["id"] == self.record_id:
                 with self.subTest():
                     self.assertEqual(txt_content, record["content"])
                 with self.subTest():
-                    self.assertEqual(record["content"], 0)
+                    self.assertEqual(prio, int(record["prio"]))
                 return
         self.assertTrue(False)
 
     def test_negative_prio_with_txt(self):
-        # if we sent the prio with an unsupported dns record type, the prio should be ignored (set to 0)
         pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
 
         txt_content = "interesting-content"
@@ -205,11 +203,11 @@ class TestDNSCreateMethod(DNSTestWithCleanup):
         self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name="test_pkb_client", prio=prio)
         records = pkb_client.dns_retrieve(TEST_DOMAIN)
         for record in records:
-            if record["id"] == str(self.record_id):
+            if record["id"] == self.record_id:
                 with self.subTest():
                     self.assertEqual(txt_content, record["content"])
                 with self.subTest():
-                    self.assertEqual(0, record["prio"])
+                    self.assertEqual(prio, int(record["prio"]))
                 return
         self.assertTrue(False)
 
@@ -220,23 +218,87 @@ class TestDNSEditMethod(DNSTestWithCleanup):
 
         txt_content = "interesting-content"
         name = "test_pkb_client"
-        tll = "342"
+        tll = 342
         self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name=name, ttl=tll)
 
         edited_txt_content = "more-interesting-content"
         edited_name = "more_test_pkb_client"
-        edited_tll = "423"
+        edited_tll = 423
         pkb_client.dns_edit(TEST_DOMAIN, self.record_id, "TXT", edited_txt_content, name=edited_name, ttl=edited_tll)
 
         records = pkb_client.dns_retrieve(TEST_DOMAIN)
         for record in records:
-            if record["id"] == str(self.record_id):
+            if record["id"] == self.record_id:
                 with self.subTest("txt record content is not edited"):
                     self.assertEqual(edited_txt_content, record["content"])
                 with self.subTest("txt record name is not edited"):
                     self.assertEqual("{}.{}".format(edited_name, TEST_DOMAIN), record["name"])
                 with self.subTest("txt record ttl is not edited"):
-                    self.assertEqual(edited_tll, record["ttl"])
+                    self.assertEqual(edited_tll, int(record["ttl"]))
+                return
+        self.assertTrue(False)
+
+    def test_change_subdomain_to_root_txt_record(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        txt_content = "interesting-content"
+        name = "test_pkb_client"
+        self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name=name)
+
+        edited_txt_content = "more-interesting-content"
+        edited_name = ""
+        pkb_client.dns_edit(TEST_DOMAIN, self.record_id, "TXT", edited_txt_content, name=edited_name)
+
+        records = pkb_client.dns_retrieve(TEST_DOMAIN)
+        for record in records:
+            if record["id"] == self.record_id:
+                with self.subTest("txt record content is not edited"):
+                    self.assertEqual(edited_txt_content, record["content"])
+                with self.subTest("txt record name is not edited"):
+                    self.assertEqual(TEST_DOMAIN, record["name"])
+                return
+        self.assertTrue(False)
+
+    def test_no_name_change(self):
+        # the name is required for each edit, otherwise the record will apply for the root domain
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        txt_content = "interesting-content"
+        name = "test_pkb_client"
+        self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name=name)
+
+        edited_txt_content = "more-interesting-content"
+        pkb_client.dns_edit(TEST_DOMAIN, self.record_id, "TXT", edited_txt_content)
+
+        records = pkb_client.dns_retrieve(TEST_DOMAIN)
+        for record in records:
+            if record["id"] == self.record_id:
+                with self.subTest("txt record content is not edited"):
+                    self.assertEqual(edited_txt_content, record["content"])
+                with self.subTest("txt record name is not edited"):
+                    self.assertEqual(TEST_DOMAIN, record["name"])
+                return
+        self.assertTrue(False)
+
+    def test_record_type_change(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        txt_content = "interesting-content"
+        name = "test_pkb_client"
+        self.record_id = pkb_client.dns_create(TEST_DOMAIN, "TXT", txt_content, name=name)
+
+        edited_txt_content = "more-interesting-content"
+        name = "test_pkb_client"
+        edited_record_type = "MX"
+        pkb_client.dns_edit(TEST_DOMAIN, self.record_id, edited_record_type, edited_txt_content, name=name)
+
+        records = pkb_client.dns_retrieve(TEST_DOMAIN)
+        for record in records:
+            if record["id"] == self.record_id:
+                with self.subTest("txt record content is not edited"):
+                    self.assertEqual(edited_txt_content, record["content"])
+                with self.subTest("record type is not edited"):
+                    self.assertEqual(edited_record_type, record["type"])
                 return
         self.assertTrue(False)
 
@@ -252,7 +314,7 @@ class TestDNSDeleteMethod(DNSTestWithCleanup):
         records = pkb_client.dns_retrieve(TEST_DOMAIN)
         record_exists = False
         for record in records:
-            if record["id"] == str(self.record_id):
+            if record["id"] == self.record_id:
                 record_exists = True
                 break
         with self.subTest("test txt record setup failed"):
@@ -263,7 +325,7 @@ class TestDNSDeleteMethod(DNSTestWithCleanup):
         records = pkb_client.dns_retrieve(TEST_DOMAIN)
         record_exists = False
         for record in records:
-            if record["id"] == str(self.record_id):
+            if record["id"] == self.record_id:
                 record_exists = True
                 break
         if not record_exists:

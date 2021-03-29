@@ -28,42 +28,44 @@ def main():
 
     subparsers = parser.add_subparsers(help="Supported API methods")
 
-    parser_ping = subparsers.add_parser("ping", help="API ping method")
+    parser_ping = subparsers.add_parser("ping", help="Ping the API Endpoint")
     parser_ping.set_defaults(func=PKBClient.ping)
 
-    parser_dns_create = subparsers.add_parser("dns-create", help="API dns create method")
+    parser_dns_create = subparsers.add_parser("dns-create", help="Create a new DNS record.")
     parser_dns_create.set_defaults(func=PKBClient.dns_create)
-    parser_dns_create.add_argument("domain", help="The domain for which the new DNS record entry should be created.")
-    parser_dns_create.add_argument("record_type", help="The type of the new DNS record entry.",
+    parser_dns_create.add_argument("domain", help="The domain for which the new DNS record should be created.")
+    parser_dns_create.add_argument("record_type", help="The type of the new DNS record.",
                                    choices=SUPPORTED_DNS_RECORD_TYPES)
-    parser_dns_create.add_argument("content", help="The content of the new DNS record entry.")
+    parser_dns_create.add_argument("content", help="The content of the new DNS record.")
     parser_dns_create.add_argument("--name",
-                                   help="The subdomain or * for wildcard for which the new DNS record entry should be "
-                                        "created. Not used will to create a DNS record on the root domain,",
+                                   help="The subdomain for which the new DNS record should be created."
+                                        "The * can be used for a wildcard DNS record."
+                                        "If not used, then a DNS record for the root domain will be created",
                                    required=False)
-    parser_dns_create.add_argument("--ttl", help="The ttl of the new DNS record entry.", required=False)
-    parser_dns_create.add_argument("--prio", help="The priority of the new DNS record entry.", required=False)
+    parser_dns_create.add_argument("--ttl", type=int, help="The ttl of the new DNS record.", required=False)
+    parser_dns_create.add_argument("--prio", type=int, help="The priority of the new DNS record.", required=False)
 
-    parser_dns_edit = subparsers.add_parser("dns-edit", help="API dns edit method")
+    parser_dns_edit = subparsers.add_parser("dns-edit", help="Edit an existing DNS record.")
     parser_dns_edit.set_defaults(func=PKBClient.dns_edit)
-    parser_dns_edit.add_argument("domain", help="The domain for which the DNS record entry should be edited.")
-    parser_dns_edit.add_argument("record_id", help="The id of the DNS record entry which should be edited.")
-    parser_dns_edit.add_argument("record_type", help="The new type of the DNS record entry.",
+    parser_dns_edit.add_argument("domain", help="The domain for which the DNS record should be edited.")
+    parser_dns_edit.add_argument("record_id", help="The id of the DNS record which should be edited.")
+    parser_dns_edit.add_argument("record_type", help="The new type of the DNS record.",
                                  choices=SUPPORTED_DNS_RECORD_TYPES)
-    parser_dns_edit.add_argument("content", help="The new content of the DNS record entry.")
+    parser_dns_edit.add_argument("content", help="The new content of the DNS record.")
     parser_dns_edit.add_argument("--name",
-                                 help="The subdomain or * for wildcard for which the new DNS record entry should be "
-                                      "created. Not used will to create a DNS record on the root domain,",
+                                 help="The new value of the subdomain for which the DNS record should apply. "
+                                      "The * can be used for a wildcard DNS record. If not set, the record will "
+                                      "be set for the root domain.",
                                  required=False)
-    parser_dns_edit.add_argument("--ttl", help="The new ttl of the DNS record entry.", required=False)
-    parser_dns_edit.add_argument("--prio", help="The new priority of the DNS record entry.", required=False)
+    parser_dns_edit.add_argument("--ttl", type=int, help="The new ttl of the DNS record.", required=False)
+    parser_dns_edit.add_argument("--prio", type=int, help="The new priority of the DNS record.", required=False)
 
-    parser_dns_delete = subparsers.add_parser("dns-delete", help="API dns delete method")
+    parser_dns_delete = subparsers.add_parser("dns-delete", help="Delete an existing DNS record.")
     parser_dns_delete.set_defaults(func=PKBClient.dns_delete)
-    parser_dns_delete.add_argument("domain", help="The domain for which the DNS record entry should be deleted.")
-    parser_dns_delete.add_argument("record_id", help="The id of the DNS record entry which should be deleted.")
+    parser_dns_delete.add_argument("domain", help="The domain for which the DNS record should be deleted.")
+    parser_dns_delete.add_argument("record_id", help="The id of the DNS record which should be deleted.")
 
-    parser_dns_receive = subparsers.add_parser("dns-receive", help="API dns receive method")
+    parser_dns_receive = subparsers.add_parser("dns-receive", help="Get all DNS records.")
     parser_dns_receive.set_defaults(func=PKBClient.dns_retrieve)
     parser_dns_receive.add_argument("domain", help="The domain for which the DNS record entries should be received.")
 
