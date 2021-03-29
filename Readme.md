@@ -100,7 +100,7 @@ pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-delete example.com 12345
 Get all DNS records of the domain `example.com`:
 
 ```commandline
-pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-receive example.com
+pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-retrieve example.com
 ```
 
 Change the TXT DNS record content with the ID `456789` of the domain `example.com` to `the answer is 42`:

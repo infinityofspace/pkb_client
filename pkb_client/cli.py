@@ -65,9 +65,9 @@ def main():
     parser_dns_delete.add_argument("domain", help="The domain for which the DNS record should be deleted.")
     parser_dns_delete.add_argument("record_id", help="The id of the DNS record which should be deleted.")
 
-    parser_dns_receive = subparsers.add_parser("dns-receive", help="Get all DNS records.")
+    parser_dns_receive = subparsers.add_parser("dns-retrieve", help="Get all DNS records.")
     parser_dns_receive.set_defaults(func=PKBClient.dns_retrieve)
-    parser_dns_receive.add_argument("domain", help="The domain for which the DNS record entries should be received.")
+    parser_dns_receive.add_argument("domain", help="The domain for which the DNS record entries should be retrieved.")
 
     args = parser.parse_args()
 
