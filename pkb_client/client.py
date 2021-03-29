@@ -46,8 +46,8 @@ class PKBClient:
             return json.loads(r.text).get("yourIp", None)
         else:
             raise Exception("ERROR: ping api call was not successfully\n"
-                            "Request status code: {}\n"
-                            "Request response text: {}".format(r.status_code, r.text))
+                            "Status code: {}\n"
+                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
 
     def dns_create(self,
                    domain: str,
@@ -93,8 +93,8 @@ class PKBClient:
             return str(json.loads(r.text).get("id", None))
         else:
             raise Exception("ERROR: DNS create api call was not successfully\n"
-                            "Request status code: {}\n"
-                            "Request response text: {}".format(r.status_code, r.text))
+                            "Status code: {}\n"
+                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
 
     def dns_edit(self,
                  domain: str,
@@ -144,8 +144,8 @@ class PKBClient:
             return True
         else:
             raise Exception("ERROR: DNS edit api call was not successfully\n"
-                            "Request status code: {}\n"
-                            "Request response text: {}".format(r.status_code, r.text))
+                            "Status code: {}\n"
+                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
 
     def dns_delete(self,
                    domain: str,
@@ -175,8 +175,8 @@ class PKBClient:
             return True
         else:
             raise Exception("ERROR: DNS delete api call was not successfully\n"
-                            "Request status code: {}\n"
-                            "Request response text: {}".format(r.status_code, r.text))
+                            "Status code: {}\n"
+                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
 
     def dns_retrieve(self, domain, **kwargs) -> list:
         """
@@ -201,5 +201,5 @@ class PKBClient:
             return json.loads(r.text).get("records", None)
         else:
             raise Exception("ERROR: DNS retrieve api call was not successfully\n"
-                            "Request status code: {}\n"
-                            "Request response text: {}".format(r.status_code, r.text))
+                            "Status code: {}\n"
+                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
