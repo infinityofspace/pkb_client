@@ -4,6 +4,8 @@ from urllib.parse import urljoin
 
 import requests
 
+from pkb_client.helper import parse_dns_record
+
 API_ENDPOINT = "https://porkbun.com/api/json/v3/"
 SUPPORTED_DNS_RECORD_TYPES = ["A", "AAAA", "MX", "CNAME", "ALIAS", "TXT", "NS", "SRV", "TLSA", "CAA"]
 
@@ -186,6 +188,28 @@ class PKBClient:
         :param domain: the domain for which the DNS records should be retrieved
 
         :return: list of DNS records as dicts
+
+        The list structure will be:
+        [
+            {
+                "id": "123456789",
+                "name": "example.com",
+                "type": "TXT",
+                "content": "this is a nice text",
+                "ttl": "300",
+                "prio": None,
+                "notes": ""
+            },
+            {
+                "id": "234567890",
+                "name": "example.com",
+                "type": "A",
+                "content": "0.0.0.0",
+                "ttl": "300",
+                "prio": 0,
+                "notes": ""
+            }
+        ]
         """
 
         assert domain is not None and len(domain) > 0
@@ -198,7 +222,7 @@ class PKBClient:
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
-            return json.loads(r.text).get("records", None)
+            return [parse_dns_record(record) for record in json.loads(r.text).get("records", [])]
         else:
             raise Exception("ERROR: DNS retrieve api call was not successfully\n"
                             "Status code: {}\n"
