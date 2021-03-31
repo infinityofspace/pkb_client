@@ -1,4 +1,6 @@
 import json
+from enum import Enum
+from pathlib import Path
 from typing import Optional
 from urllib.parse import urljoin
 
@@ -8,6 +10,22 @@ from pkb_client.helper import parse_dns_record
 
 API_ENDPOINT = "https://porkbun.com/api/json/v3/"
 SUPPORTED_DNS_RECORD_TYPES = ["A", "AAAA", "MX", "CNAME", "ALIAS", "TXT", "NS", "SRV", "TLSA", "CAA"]
+
+
+class DNSRestoreMode(Enum):
+    clear = 0
+    replace = 1
+    keep = 2
+
+    def __str__(self):
+        return self.name
+
+    @staticmethod
+    def from_string(a):
+        try:
+            return DNSRestoreMode[a]
+        except KeyError:
+            return a
 
 
 class PKBClient:
@@ -227,3 +245,145 @@ class PKBClient:
             raise Exception("ERROR: DNS retrieve api call was not successfully\n"
                             "Status code: {}\n"
                             "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
+
+    def dns_export(self, domain: str, filename: str, **kwargs) -> bool:
+        """
+        Export all DNS record from the given domain as json to a file.
+        This method does not not represent a Porkbun API method.
+
+        :param domain: the domain for which the DNS record should be retrieved and saved
+        :param filename: the filename where to save the exported DNS records
+
+        :return: True if everything went well
+        """
+
+        print("retrieve current DNS records...")
+        dns_records = self.dns_retrieve(domain)
+
+        print("save DNS records to {} ...".format(filename))
+        # merge the single DNS records into one single dict with the record id as key
+        dns_records_dict = dict()
+        for record in dns_records:
+            dns_records_dict[record["id"]] = record
+
+        with open(filename, "w") as f:
+            json.dump(dns_records_dict, f)
+        print("export finished")
+
+        return True
+
+    def dns_import(self, domain: str, filename: str, restore_mode: DNSRestoreMode, **kwargs) -> bool:
+        """
+        Restore
+        This method does not not represent a Porkbun API method.
+
+        :param domain: the domain for which the DNS record should be restored
+        :param filename: the filename from which the DNS records are to be restored
+        :param restore_mode: The restore mode (DNS records are identified by the record id)
+            clean: remove all existing DNS records and restore all DNS records from the provided file
+            replace: replace only existing DNS records with the DNS records from the provided file,
+                     but do not create any new DNS records
+            keep: keep the existing DNS records and only create new ones for all DNS records from
+                  the specified file if they do not exist
+
+        :return: True if everything went well
+        """
+
+        existing_dns_records = self.dns_retrieve(domain)
+
+        with open(filename, "r") as f:
+            exported_dns_records_dict = json.load(f)
+
+        if restore_mode is DNSRestoreMode.clear:
+            print("restore mode: clear")
+
+            try:
+                # delete all existing DNS records
+                for record in existing_dns_records:
+                    self.dns_delete(domain, record["id"])
+
+                # restore all exported records by creating new DNS records
+                for _, exported_record in exported_dns_records_dict.items():
+                    name = ".".join(exported_record["name"].split(".")[:-2])
+                    self.dns_create(domain=domain,
+                                    record_type=exported_record["type"],
+                                    content=exported_record["content"],
+                                    name=name,
+                                    ttl=exported_record["ttl"],
+                                    prio=exported_record["prio"])
+            except Exception as e:
+                print("something went wrong: {}".format(e.__str__()))
+                self.__handle_error_backup__(existing_dns_records)
+                print("import failed")
+                return False
+        elif restore_mode is DNSRestoreMode.replace:
+            print("restore mode: replace")
+
+            try:
+                for existing_record in existing_dns_records:
+                    record_id = existing_record["id"]
+                    exported_record = exported_dns_records_dict.get(record_id, None)
+                    # also check if the exported dns record is different to the existing record,
+                    # so we can reduce unnecessary api calls
+                    if exported_record is not None and exported_record != existing_record:
+                        name = ".".join(exported_record["name"].split(".")[:-2])
+                        self.dns_edit(domain=domain,
+                                      record_id=record_id,
+                                      record_type=exported_record["type"],
+                                      content=exported_record["content"],
+                                      name=name,
+                                      ttl=exported_record["ttl"],
+                                      prio=exported_record["prio"])
+            except Exception as e:
+                print("something went wrong: {}".format(e.__str__()))
+                self.__handle_error_backup__(existing_dns_records)
+                print("import failed")
+                return False
+        elif restore_mode is DNSRestoreMode.keep:
+            print("restore mode: keep")
+
+            existing_dns_records_dict = dict()
+            for record in existing_dns_records:
+                existing_dns_records_dict[record["id"]] = record
+
+            try:
+                for _, exported_record in exported_dns_records_dict.items():
+                    if exported_record["id"] not in existing_dns_records_dict:
+                        name = ".".join(exported_record["name"].split(".")[:-2])
+                        self.dns_create(domain=domain,
+                                        record_type=exported_record["type"],
+                                        content=exported_record["content"],
+                                        name=name,
+                                        ttl=exported_record["ttl"],
+                                        prio=exported_record["prio"])
+            except Exception as e:
+                print("something went wrong: {}".format(e.__str__()))
+                self.__handle_error_backup__(existing_dns_records)
+                print("import failed")
+                return False
+        else:
+            raise Exception("restore mode not supported")
+
+        print("import successfully completed")
+
+        return True
+
+    @staticmethod
+    def __handle_error_backup__(dns_records):
+        # merge the single DNS records into one single dict with the record id as key
+        dns_records_dict = dict()
+        for record in dns_records:
+            dns_records_dict[record["id"]] = record
+
+        # generate filename with incremental suffix
+        base_backup_filename = "pkb_client_dns_records_backup"
+        suffix = 0
+        backup_file_path = Path("{}_{}.json".format(base_backup_filename, suffix))
+        while backup_file_path.exists():
+            suffix += 1
+            backup_file_path = Path("{}_{}.json".format(base_backup_filename, suffix))
+
+        with open(backup_file_path, "w") as f:
+            json.dump(dns_records_dict, f)
+
+        print("a backup of your existing dns records was saved to {}".format(str(backup_file_path)))

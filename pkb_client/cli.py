@@ -2,7 +2,7 @@ import argparse
 import pprint
 import textwrap
 
-from pkb_client.client import PKBClient, SUPPORTED_DNS_RECORD_TYPES
+from pkb_client.client import PKBClient, SUPPORTED_DNS_RECORD_TYPES, DNSRestoreMode
 
 
 def main():
@@ -68,12 +68,29 @@ def main():
 
     parser_dns_receive = subparsers.add_parser("dns-retrieve", help="Get all DNS records.")
     parser_dns_receive.set_defaults(func=PKBClient.dns_retrieve)
-    parser_dns_receive.add_argument("domain", help="The domain for which the DNS record entries should be retrieved.")
+    parser_dns_receive.add_argument("domain", help="The domain for which the DNS record should be retrieved.")
+
+    parser_dns_export = subparsers.add_parser("dns-export", help="Save all DNS records to a local file as json.")
+    parser_dns_export.set_defaults(func=PKBClient.dns_export)
+    parser_dns_export.add_argument("domain",
+                                   help="The domain for which the DNS record should be retrieved and saved.")
+    parser_dns_export.add_argument("filename", help="The filename where to save the exported DNS records.")
+
+    parser_dns_import = subparsers.add_parser("dns-import", help="Restore all DNS records from a local file.",
+                                              formatter_class=argparse.RawTextHelpFormatter)
+    parser_dns_import.set_defaults(func=PKBClient.dns_import)
+    parser_dns_import.add_argument("domain", help="The domain for which the DNS record should be restored.")
+    parser_dns_import.add_argument("filename", help="The filename from which the DNS records are to be restored.")
+    parser_dns_import.add_argument("restore_mode", help="""The restore mode (DNS records are identified by the record id):
+    clean: remove all existing DNS records and restore all DNS records from the provided file
+    replace: replace only existing DNS records with the DNS records from the provided file, but do not create any new DNS records
+    keep: keep the existing DNS records and only create new ones for all DNS records from the specified file if they do not exist
+    """, type=DNSRestoreMode.from_string, choices=list(DNSRestoreMode))
 
     args = parser.parse_args()
 
     if not hasattr(args, "func"):
-        raise argparse.ArgumentError(None, "No api method specified. Please provide an API method and try again.")
+        raise argparse.ArgumentError(None, "No method specified. Please provide a method and try again.")
 
     if args.key is None:
         while True:
