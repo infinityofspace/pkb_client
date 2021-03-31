@@ -109,7 +109,17 @@ Change the TXT DNS record content with the ID `456789` of the domain `example.co
 pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-edit example.com 456789 TXT "the answer is 42"
 ```
 
-This call also returns the DNS record id.
+Exporting all current DNS records of the domain `example.com` to the file `dns_recods.json`:
+
+```commandline
+pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-export example.com dns_recods.json
+```
+
+Remove all existing DNS records of the domain `example.com` and restore the DNS records from the file `dns_recods.json`:
+
+```commandline
+pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-import example.com dns_recods.json clear
+```
 
 ### Third party notices
 
