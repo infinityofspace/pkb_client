@@ -23,8 +23,9 @@ def main():
                                     """)
     )
 
-    parser.add_argument("-k", "--key", help="The API key used for Porkbun API calls")
-    parser.add_argument("-s", "--secret", help="The API secret used for Porkbun API calls")
+    parser.add_argument("-k", "--key", help="The API key used for Porkbun API calls (usually starts with \"pk\").")
+    parser.add_argument("-s", "--secret",
+                        help="The API secret used for Porkbun API calls (usually starts with \"sk\").")
 
     subparsers = parser.add_subparsers(help="Supported API methods")
 
@@ -76,7 +77,7 @@ def main():
 
     if args.key is None:
         while True:
-            api_key = input("Please enter your API key you got from Porkbun: ")
+            api_key = input("Please enter your API key you got from Porkbun (usually starts with \"pk\"): ")
             if len(api_key) == 0:
                 print("The api key can not be empty.")
             else:
@@ -86,9 +87,9 @@ def main():
 
     if args.secret is None:
         while True:
-            api_secret = input("Please enter your API secret you got from Porkbun: ")
+            api_secret = input("Please enter your API key secret you got from Porkbun (usually starts with \"sk\"): ")
             if len(api_secret) == 0:
-                print("The api key can not be empty.")
+                print("The api key secret can not be empty.")
             else:
                 break
     else:
