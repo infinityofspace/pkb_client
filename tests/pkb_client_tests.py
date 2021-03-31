@@ -1,9 +1,11 @@
+import json
 import os
 import unittest
+from pathlib import Path
 
 import requests
 
-from pkb_client.client import PKBClient
+from pkb_client.client import PKBClient, DNSRestoreMode
 
 """
 WARNING: DO NOT RUN THIS TEST WITH A PRODUCTION DOMAIN OR IN A PRODUCTION ENVIRONMENT!!
@@ -344,6 +346,223 @@ class TestDNSReceiveMethod(unittest.TestCase):
         pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
         with self.assertRaises(Exception):
             pkb_client.dns_retrieve("invaliddomain")
+
+
+class TestDNSExport(unittest.TestCase):
+    def test_valid_domain(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        dns_records = pkb_client.dns_retrieve(domain=TEST_DOMAIN)
+        # reformat the dns records to a single dict
+        dns_records_dict = dict()
+        for record in dns_records:
+            dns_records_dict[record["id"]] = record
+
+        filepath = Path("dns_backup.json")
+        if filepath.exists():
+            filepath.unlink()
+        pkb_client.dns_export(domain=TEST_DOMAIN, filename=str(filepath))
+
+        with open(str("dns_backup.json"), "r") as f:
+            self.assertEqual(json.load(f), dns_records_dict)
+
+        filepath.unlink()
+
+    def test_invalid_domain(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(Exception):
+            pkb_client.dns_export(domain="invaliddomain", filename="dns_backup.json")
+
+    def test_empty_str_domain(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(AssertionError):
+            pkb_client.dns_export(domain="", filename="dns_backup.json")
+
+    def test_none_domain(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(AssertionError):
+            pkb_client.dns_export(domain=None, filename="dns_backup.json")
+
+    def test_filename_already_exists(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        filepath = Path("dns_backup.json")
+        filepath.touch()
+
+        with self.assertRaises(Exception):
+            pkb_client.dns_export(domain=TEST_DOMAIN, filename=str(filepath))
+
+        filepath.unlink()
+
+    def test_empty_str_filename(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(AssertionError):
+            pkb_client.dns_export(domain=TEST_DOMAIN, filename="")
+
+    def test_none_filename(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(AssertionError):
+            pkb_client.dns_export(domain=TEST_DOMAIN, filename=None)
+
+
+class TestDNSImport(unittest.TestCase):
+    def test_valid_clear_import(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        existing_dns_record_ids = set()
+        dns_records = pkb_client.dns_retrieve(TEST_DOMAIN)
+        for record in dns_records:
+            existing_dns_record_ids.add(record["id"])
+
+        filename = "dns_backup_clear.json"
+
+        with open(filename, "r") as f:
+            file_dns_records = json.load(f)
+
+        pkb_client.dns_import(domain=TEST_DOMAIN, filename=filename, restore_mode=DNSRestoreMode.clear)
+
+        new_dns_records = pkb_client.dns_retrieve(TEST_DOMAIN)
+        for new_record in new_dns_records:
+            # test if the previous dns records still exists
+            if new_record["id"] in existing_dns_record_ids:
+                self.assertTrue(False)
+            # test if the new dns record was created
+            new_record_created = False
+            for _, file_dns_record in file_dns_records.items():
+                if file_dns_record["name"] == new_record["name"] \
+                        and file_dns_record["type"] == new_record["type"] \
+                        and file_dns_record["content"] == new_record["content"] \
+                        and file_dns_record["ttl"] == new_record["ttl"] \
+                        and file_dns_record["prio"] == new_record["prio"]:
+                    new_record_created = True
+            self.assertTrue(new_record_created)
+
+    def test_valid_replace_import(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        existing_dns_record_ids = set()
+        dns_records = pkb_client.dns_retrieve(TEST_DOMAIN)
+        for record in dns_records:
+            existing_dns_record_ids.add(record["id"])
+
+        filename = "dns_backup_replace.json"
+
+        with open(filename, "r") as f:
+            file_dns_records = json.load(f)
+
+        pkb_client.dns_import(domain=TEST_DOMAIN, filename=filename, restore_mode=DNSRestoreMode.replace)
+
+        new_dns_records = pkb_client.dns_retrieve(TEST_DOMAIN)
+        for new_record in new_dns_records:
+            # test if the previous dns records still exists
+            if new_record["id"] not in existing_dns_record_ids:
+                self.assertTrue(False)
+            # test if the dns record was edited
+            record_edited = False
+            for _, file_dns_record in file_dns_records.items():
+                if file_dns_record["name"] == new_record["name"] \
+                        and file_dns_record["type"] == new_record["type"] \
+                        and file_dns_record["content"] == new_record["content"] \
+                        and file_dns_record["ttl"] == new_record["ttl"] \
+                        and file_dns_record["prio"] == new_record["prio"]:
+                    record_edited = True
+                    break
+            self.assertTrue(record_edited)
+
+    def test_valid_keep_import(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        existing_dns_records = dict()
+        dns_records = pkb_client.dns_retrieve(TEST_DOMAIN)
+        for record in dns_records:
+            existing_dns_records[record["id"]] = record
+
+        filename = "dns_backup_keep.json"
+
+        with open(filename, "r") as f:
+            file_dns_records = json.load(f)
+
+        pkb_client.dns_import(domain=TEST_DOMAIN, filename=filename, restore_mode=DNSRestoreMode.keep)
+
+        new_dns_records = pkb_client.dns_retrieve(TEST_DOMAIN)
+
+        # test if the all old dns records are kept
+        for _, existing_record in existing_dns_records.items():
+            record_kept = False
+            for new_record in new_dns_records:
+                if existing_record["id"] == new_record["id"] \
+                        and existing_record["name"] == new_record["name"] \
+                        and existing_record["type"] == new_record["type"] \
+                        and existing_record["content"] == new_record["content"] \
+                        and existing_record["ttl"] == new_record["ttl"] \
+                        and existing_record["prio"] == new_record["prio"]:
+                    record_kept = True
+                    break
+            with self.subTest():
+                self.assertTrue(record_kept)
+
+        # test if the new records are created
+        for new_record in new_dns_records:
+            if new_record["id"] not in existing_dns_records:
+                record_created = False
+                for _, file_dns_record in file_dns_records.items():
+                    if file_dns_record["name"] == new_record["name"] \
+                            and file_dns_record["type"] == new_record["type"] \
+                            and file_dns_record["content"] == new_record["content"] \
+                            and file_dns_record["ttl"] == new_record["ttl"] \
+                            and file_dns_record["prio"] == new_record["prio"]:
+                        record_created = True
+                        break
+                with self.subTest():
+                    self.assertTrue(record_created)
+
+    def test_invalid_domain(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(Exception):
+            pkb_client.dns_import(domain="invaliddomain", filename="dns_backup.json", restore_mode=DNSRestoreMode.clear)
+
+    def test_empty_str_domain(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(AssertionError):
+            pkb_client.dns_import(domain="", filename="dns_backup.json", restore_mode=DNSRestoreMode.clear)
+
+    def test_none_domain(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(AssertionError):
+            pkb_client.dns_import(domain=None, filename="dns_backup.json", restore_mode=DNSRestoreMode.clear)
+
+    def test_empty_str_filename(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(AssertionError):
+            pkb_client.dns_import(domain=TEST_DOMAIN, filename="", restore_mode=DNSRestoreMode.clear)
+
+    def test_none_filename(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.assertRaises(AssertionError):
+            pkb_client.dns_import(domain=TEST_DOMAIN, filename=None, restore_mode=DNSRestoreMode.clear)
+
+    def test_invalid_restore_mode(self):
+        pkb_client = PKBClient(PORKBUN_API_KEY, PORKBUN_API_SECRET)
+
+        with self.subTest("None as restore mode"):
+            with self.assertRaises(AssertionError):
+                pkb_client.dns_import(domain=TEST_DOMAIN, filename="dns_backup.json", restore_mode=None)
+        with self.subTest("empty string as restore mode"):
+            with self.assertRaises(AssertionError):
+                pkb_client.dns_import(domain=TEST_DOMAIN, filename="dns_backup.json", restore_mode="")
+        with self.subTest("number as restore mode"):
+            with self.assertRaises(AssertionError):
+                pkb_client.dns_import(domain=TEST_DOMAIN, filename="dns_backup.json", restore_mode=0)
 
 
 if __name__ == '__main__':

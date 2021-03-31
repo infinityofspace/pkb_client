@@ -257,6 +257,9 @@ class PKBClient:
         :return: True if everything went well
         """
 
+        assert domain is not None and len(domain) > 0
+        assert filename is not None and len(filename) > 0
+
         print("retrieve current DNS records...")
         dns_records = self.dns_retrieve(domain)
 
@@ -266,7 +269,10 @@ class PKBClient:
         for record in dns_records:
             dns_records_dict[record["id"]] = record
 
-        with open(filename, "w") as f:
+        filepath = Path(filename)
+        if filepath.exists():
+            raise Exception("File already exists. Please try another filename")
+        with open(filepath, "w") as f:
             json.dump(dns_records_dict, f)
         print("export finished")
 
@@ -288,6 +294,10 @@ class PKBClient:
 
         :return: True if everything went well
         """
+
+        assert domain is not None and len(domain) > 0
+        assert filename is not None and len(filename) > 0
+        assert isinstance(restore_mode, DNSRestoreMode)
 
         existing_dns_records = self.dns_retrieve(domain)
 
