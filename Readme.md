@@ -51,11 +51,11 @@ pip install .
 
 ### Usage
 
-Each request must be made with the API Key and Secret. You can easily create them at Porkbun. Just follow
+Each request must be made with the API key and secret. You can easily create them at Porkbun. Just follow
 the [official instructions](https://porkbun.com/api/json/v3/documentation#Authentication). Make sure that you explicitly
 activate the API usage for your domain at the end.
 
-After installation *pkb_client* is available under the command *pkb-client*.
+After installation *pkb_client* is available under the command `pkb-client`.
 
 You have to specify your API key and secret each time as follows:
 
@@ -85,11 +85,11 @@ Create a new TXT record for the subdomain `test` of the domain `example.com` wit
 of `500`:
 
 ```commandline
-pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-create example.com TXT "porkbun is cool" --name test --ttl 500
+pkb-client -k <YOUR-API-KEY> -s <YOUR-API-KEY-SECRET> dns-create example.com TXT "porkbun is cool" --name test --ttl 500
 ```
 
 The call returns the DNS record id. The record DNS ids are used to distinguish the DNS records and can be used for
-editing or deleting records.
+editing or deleting records. The ID is only a Porkbun internal identifier and is not publicly available.
 
 Delete the DNS record with the ID `12345` of the domain `example.com`:
 
@@ -120,6 +120,8 @@ Remove all existing DNS records of the domain `example.com` and restore the DNS 
 ```commandline
 pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-import example.com dns_recods.json clear
 ```
+
+*Note:* The import function uses the record ID to distinguish DNS records.
 
 ### Third party notices
 
