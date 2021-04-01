@@ -3,7 +3,7 @@
 Unofficial client for the Porkbun API
 
 ---
-![PyPI](https://img.shields.io/pypi/v/pkb_client) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pkb_client) [![Downloads](https://static.pepy.tech/personalized-badge/pkb-client?period=total&units=international_system&left_color=black&right_color=blue&left_text=Total%20Downloads)](https://pepy.tech/project/pkb_client) ![GitHub](https://img.shields.io/github/license/infinityofspace/pkb_client) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/pkb_client/Publish%20release%20distribution%20to%20PyPI)
+[![PyPI](https://img.shields.io/pypi/v/pkb_client)](https://pypi.org/project/pkb-client/) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pkb_client) [![Downloads](https://static.pepy.tech/personalized-badge/pkb-client?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Total%20Downloads)](https://pepy.tech/project/pkb-client) ![GitHub](https://img.shields.io/github/license/infinityofspace/pkb_client) ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/infinityofspace/pkb_client/Publish%20release%20distribution%20to%20PyPI)
 ---
 
 ### Table of Contents
