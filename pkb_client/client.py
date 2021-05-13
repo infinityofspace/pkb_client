@@ -1,4 +1,5 @@
 import json
+import logging
 from enum import Enum
 from pathlib import Path
 from typing import Optional
@@ -10,6 +11,9 @@ from pkb_client.helper import parse_dns_record
 
 API_ENDPOINT = "https://porkbun.com/api/json/v3/"
 SUPPORTED_DNS_RECORD_TYPES = ["A", "AAAA", "MX", "CNAME", "ALIAS", "TXT", "NS", "SRV", "TLSA", "CAA"]
+
+# prevent urllib3 to log request with the api key and secret
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 class DNSRestoreMode(Enum):
