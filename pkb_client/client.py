@@ -2,7 +2,7 @@ import json
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 from urllib.parse import urljoin
 
 import requests
@@ -381,6 +381,58 @@ class PKBClient:
         print("import successfully completed")
 
         return True
+
+    @staticmethod
+    def get_domain_pricing(**kwargs) -> dict:
+        """
+        Get the pricing for porkbun domains
+        see https://porkbun.com/api/json/v3/documentation#Domain%20Pricing for more info
+
+        :return: dict with pricing
+        """
+
+        url = urljoin(API_ENDPOINT, "pricing/get")
+        r = requests.post(url=url)
+
+        if r.status_code == 200:
+            return json.loads(r.text)
+        else:
+            raise Exception("ERROR: Domain pricing retrieve api call was not successfully\n"
+                            "Status code: {}\n"
+                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
+
+    def ssl_retrieve(self, domain, **kwargs) -> Tuple[str, str, str, str]:
+        """
+        API SSL bundle retrieve method: retrieve an SSL bundle for given domain
+        see https://porkbun.com/api/json/v3/documentation#SSL%20Retrieve%20Bundle%20by%20Domain for more info
+
+        :param domain: the domain for which the SSL bundle should be retrieved
+
+        :return: tuple of intermediate certificate, certificate chain, private key, public key
+        """
+
+        assert domain is not None and len(domain) > 0
+
+        url = urljoin(API_ENDPOINT, "ssl/retrieve/{}".format(domain))
+        req_json = {
+            "apikey": self.api_key,
+            "secretapikey": self.secret_api_key
+        }
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            ssl_bundle = json.loads(r.text)
+
+            intermediate_certificate = ssl_bundle["intermediate_certificate"]
+            certificate_chain = ssl_bundle["certificate_chain"]
+            private_key = ssl_bundle["private_key"]
+            public_key = ssl_bundle["public_key"]
+
+            return intermediate_certificate, certificate_chain, private_key, public_key
+        else:
+            raise Exception("ERROR: SSL bundle retrieve api call was not successfully\n"
+                            "Status code: {}\n"
+                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
 
     @staticmethod
     def __handle_error_backup__(dns_records):
