@@ -87,10 +87,24 @@ def main():
     keep: keep the existing DNS records and only create new ones for all DNS records from the specified file if they do not exist
     """, type=DNSRestoreMode.from_string, choices=list(DNSRestoreMode))
 
+    parser_domain_pricing = subparsers.add_parser("domain-pricing", help="Get the pricing for porkbun domains.")
+    parser_domain_pricing.set_defaults(func=PKBClient.get_domain_pricing)
+
+    parser_ssl_retrieve = subparsers.add_parser("ssl-retrieve", help="Retrieve an SSL bundle for given domain.")
+    parser_ssl_retrieve.set_defaults(func=PKBClient.ssl_retrieve)
+    parser_ssl_retrieve.add_argument("domain", help="The domain for which the SSL bundle should be retrieve.")
+
     args = parser.parse_args()
 
     if not hasattr(args, "func"):
         raise argparse.ArgumentError(None, "No method specified. Please provide a method and try again.")
+
+    pp = pprint.PrettyPrinter(indent=4)
+
+    # call the static methods
+    if args.func == PKBClient.get_domain_pricing:
+        pp.pprint(args.func(**vars(args)))
+        exit(0)
 
     if args.key is None:
         while True:
@@ -113,8 +127,6 @@ def main():
         api_secret = args.secret
 
     pkb_client = PKBClient(api_key, api_secret)
-
-    pp = pprint.PrettyPrinter(indent=4)
     pp.pprint(args.func(pkb_client, **vars(args)))
 
 
