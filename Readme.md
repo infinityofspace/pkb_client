@@ -13,8 +13,9 @@ Unofficial client for the Porkbun API
     1. [With pip (recommend)](#with-pip-recommend)
     2. [From source](#from-source)
 3. [Usage](#usage)
-4. [Third party notices](#third-party-notices)
-5. [License](#license)
+4. [Notes](#notes)
+5. [Third party notices](#third-party-notices)
+6. [License](#license)
 
 ---
 
@@ -123,14 +124,20 @@ pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-import example.com dns_rec
 
 *Note:* The import function uses the record ID to distinguish DNS records.
 
+### Notes
+
+Currently, TTL smaller than `600` are ignored by the Porkbun API and the minimum value is `600`, although a minimum
+value of `300` is [supported](https://porkbun.com/api/json/v3/documentation) and allowed by the RFC standard. However,
+you can do TTL smaller than `600` via the web dashboard.
+
 ### Third party notices
 
 All modules used by this project are listed below:
 
-| Name | License|
-|:---:|:---:|
-| [requests](https://github.com/psf/requests) | [Apache 2.0](https://raw.githubusercontent.com/psf/requests/master/LICENSE) |
-| [setuptools](https://github.com/pypa/setuptools) | [MIT](https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE) |
+|                       Name                       |                                   License                                   |
+|:------------------------------------------------:|:---------------------------------------------------------------------------:|
+|   [requests](https://github.com/psf/requests)    | [Apache 2.0](https://raw.githubusercontent.com/psf/requests/master/LICENSE) |
+| [setuptools](https://github.com/pypa/setuptools) |    [MIT](https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE)    |
 
 Furthermore, this readme file contains embeddings of [Shields.io](https://github.com/badges/shields)
 and [PePy](https://github.com/psincraian/pepy). The tests use [ipify](https://github.com/rdegges/ipify-api).
