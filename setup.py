@@ -15,12 +15,11 @@ setup(
     long_description_content_type="text/markdown",
     license="MIT",
     classifiers=[
-        "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: MIT License",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: Name Service (DNS)",
@@ -28,7 +27,7 @@ setup(
         "Topic :: System :: Systems Administration",
     ],
     packages=find_packages(),
-    python_requires=">=3.6",
+    python_requires=">=3.8",
     install_requires=[
         "setuptools>=39.0.1",
         "requests>=2.20.0"

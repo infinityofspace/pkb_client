@@ -26,7 +26,7 @@ find the official documentation of the Porkbun API [here](https://porkbun.com/ap
 
 ### Installation
 
-This project only works with Python 3, make sure you have at least Python 3.6 installed.
+This project only works with Python 3, make sure you have at least Python 3.8 installed.
 
 #### With pip (recommend)
 
