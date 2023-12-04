@@ -2,7 +2,7 @@ import json
 import logging
 from enum import Enum
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional, Tuple, List
 from urllib.parse import urljoin
 
 import requests
@@ -381,6 +381,56 @@ class PKBClient:
         print("import successfully completed")
 
         return True
+
+    def set_dns_servers(self, domain: str, name_servers: List[str]) -> bool:
+        """
+        Set the name servers for all your specified Porkbun domains.
+        See https://porkbun.com/api/json/v3/documentation#Domain%20Update%20Name%20Servers for more info.
+
+        :return: True if everything went well
+        """
+
+        assert domain is not None and len(domain) > 0
+        assert name_servers is not None and len(name_servers) > 0
+
+        url = urljoin(API_ENDPOINT, f"domain/updateNs/{domain}")
+        req_json = {
+            "apikey": self.api_key,
+            "secretapikey": self.secret_api_key,
+            "ns": name_servers
+        }
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200 and json.loads(r.text).get("status", None) == "SUCCESS":
+            return True
+        else:
+            raise Exception("ERROR: set dns servers api call was not successfully\n"
+                            "Status code: {}\n"
+                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
+
+    def get_dns_servers(self, domain: str) -> List[str]:
+        """
+        Get the name servers for a given domain.
+        See https://porkbun.com/api/json/v3/documentation#Domain%20Get%20Name%20Servers for more info.
+
+        :return: list of name servers
+        """
+
+        assert domain is not None and len(domain) > 0
+
+        url = urljoin(API_ENDPOINT, f"domain/getNs/{domain}")
+        req_json = {
+            "apikey": self.api_key,
+            "secretapikey": self.secret_api_key
+        }
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return json.loads(r.text).get("ns", [])
+        else:
+            raise Exception("ERROR: get dns servers api call was not successfully\n"
+                            "Status code: {}\n"
+                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
 
     @staticmethod
     def get_domain_pricing(**kwargs) -> dict:
