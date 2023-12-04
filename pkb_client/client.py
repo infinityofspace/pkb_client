@@ -285,7 +285,7 @@ class PKBClient:
     def dns_import(self, domain: str, filename: str, restore_mode: DNSRestoreMode, **kwargs) -> bool:
         """
         Restore
-        This method does not not represent a Porkbun API method.
+        This method does not represent a Porkbun API method.
 
         :param domain: the domain for which the DNS record should be restored
         :param filename: the filename from which the DNS records are to be restored
