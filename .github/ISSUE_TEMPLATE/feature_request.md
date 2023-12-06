@@ -1,6 +1,6 @@
 ---
 name: Feature request
-about: Create a feature request to make the skill even better
+about: Create a feature request to add new or change functionality
 title: ''
 labels: enhancement
 assignees: ''
