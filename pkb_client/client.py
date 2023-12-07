@@ -1,13 +1,12 @@
 import json
 import logging
-from enum import Enum
 from pathlib import Path
 from typing import Optional, Tuple, List
 from urllib.parse import urljoin
 
 import requests
 
-from pkb_client.helper import parse_dns_record
+from pkb_client.dns import DNSRecord, DNSRestoreMode
 
 API_ENDPOINT = "https://porkbun.com/api/json/v3/"
 SUPPORTED_DNS_RECORD_TYPES = ["A", "AAAA", "MX", "CNAME", "ALIAS", "TXT", "NS", "SRV", "TLSA", "CAA"]
@@ -16,20 +15,8 @@ SUPPORTED_DNS_RECORD_TYPES = ["A", "AAAA", "MX", "CNAME", "ALIAS", "TXT", "NS", 
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
-class DNSRestoreMode(Enum):
-    clear = 0
-    replace = 1
-    keep = 2
-
-    def __str__(self):
-        return self.name
-
-    @staticmethod
-    def from_string(a):
-        try:
-            return DNSRestoreMode[a]
-        except KeyError:
-            return a
+class PKBClientException(Exception):
+    pass
 
 
 class PKBClient:
@@ -37,7 +24,7 @@ class PKBClient:
     API client for Porkbun.
     """
 
-    def __init__(self, api_key: str, secret_api_key: str) -> None:
+    def __init__(self, api_key: str, secret_api_key: str, api_endpoint: str = API_ENDPOINT) -> None:
         """
         Creates a new PKBClient object.
 
@@ -50,28 +37,37 @@ class PKBClient:
 
         self.api_key = api_key
         self.secret_api_key = secret_api_key
+        self.api_endpoint = api_endpoint
+
+    def _get_auth_request_json(self) -> dict:
+        """
+        Get the request json for the authentication of the Porkbun API calls.
+
+        :return: the request json for the authentication of the Porkbun API calls
+        """
+
+        return {
+            "apikey": self.api_key,
+            "secretapikey": self.secret_api_key
+        }
 
     def ping(self, **kwargs) -> str:
         """
-        API ping method: get the current public ip address of the requesting system; can also be used for auth checking
-        see https://porkbun.com/api/json/v3/documentation#Authentication for more info
+        API ping method: get the current public ip address of the requesting system; can also be used for auth checking.
+        See https://porkbun.com/api/json/v3/documentation#Authentication for more info.
 
         :return: the current public ip address of the requesting system
         """
 
-        url = urljoin(API_ENDPOINT, "ping")
-        req_json = {
-            "apikey": self.api_key,
-            "secretapikey": self.secret_api_key
-        }
+        url = urljoin(self.api_endpoint, "ping")
+        req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
             return json.loads(r.text).get("yourIp", None)
         else:
-            raise Exception("ERROR: ping api call was not successfully\n"
-                            "Status code: {}\n"
-                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
+            response_json = json.loads(r.text)
+            raise PKBClientException(f"{response_json['status']}: {response_json['message']}")
 
     def dns_create(self,
                    domain: str,
@@ -81,8 +77,8 @@ class PKBClient:
                    ttl: Optional[int] = 300,
                    prio: Optional[int] = None, **kwargs) -> str:
         """
-        API DNS create method: create a new DNS record for given domain
-        see https://porkbun.com/api/json/v3/documentation#DNS%20Create%20Record for more info
+        API DNS create method: create a new DNS record for given domain.
+        See https://porkbun.com/api/json/v3/documentation#DNS%20Create%20Record for more info.
 
         :param domain: the domain for which the DNS record should be created
         :param record_type: the type of the new DNS record;
@@ -101,10 +97,9 @@ class PKBClient:
         assert content is not None and len(content) > 0
         assert ttl is None or 300 <= ttl <= 2147483647
 
-        url = urljoin(API_ENDPOINT, "dns/create/{}".format(domain))
+        url = urljoin(self.api_endpoint, f"dns/create/{domain}")
         req_json = {
-            "apikey": self.api_key,
-            "secretapikey": self.secret_api_key,
+            **self._get_auth_request_json(),
             "name": name,
             "type": record_type,
             "content": content,
@@ -116,9 +111,8 @@ class PKBClient:
         if r.status_code == 200:
             return str(json.loads(r.text).get("id", None))
         else:
-            raise Exception("ERROR: DNS create api call was not successfully\n"
-                            "Status code: {}\n"
-                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
+            response_json = json.loads(r.text)
+            raise PKBClientException(f"{response_json['status']}: {response_json['message']}")
 
     def dns_edit(self,
                  domain: str,
@@ -130,8 +124,8 @@ class PKBClient:
                  prio: int = None,
                  **kwargs) -> bool:
         """
-        API DNS edit method: edit an existing DNS record specified by the id for a given domain
-        see https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record for more info
+        API DNS edit method: edit an existing DNS record specified by the id for a given domain.
+        See https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record for more info.
 
         :param domain: the domain for which the DNS record should be edited
         :param record_id: the id of the DNS record which should be edited
@@ -152,10 +146,9 @@ class PKBClient:
         assert content is not None and len(content) > 0
         assert ttl is None or 300 <= ttl <= 2147483647
 
-        url = urljoin(API_ENDPOINT, "dns/edit/{}/{}".format(domain, record_id))
+        url = urljoin(self.api_endpoint, f"dns/edit/{domain}/{record_id}")
         req_json = {
-            "apikey": self.api_key,
-            "secretapikey": self.secret_api_key,
+            **self._get_auth_request_json(),
             "name": name,
             "type": record_type,
             "content": content,
@@ -167,17 +160,16 @@ class PKBClient:
         if r.status_code == 200:
             return True
         else:
-            raise Exception("ERROR: DNS edit api call was not successfully\n"
-                            "Status code: {}\n"
-                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
+            response_json = json.loads(r.text)
+            raise PKBClientException(f"{response_json['status']}: {response_json['message']}")
 
     def dns_delete(self,
                    domain: str,
                    record_id: str,
                    **kwargs) -> bool:
         """
-        API DNS delete method: delete an existing DNS record specified by the id for a given domain
-        see https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Record for more info
+        API DNS delete method: delete an existing DNS record specified by the id for a given domain.
+        See https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Record for more info.
 
         :param domain: the domain for which the DNS record should be deleted
         :param record_id: the id of the DNS record which should be deleted
@@ -188,72 +180,42 @@ class PKBClient:
         assert domain is not None and len(domain) > 0
         assert record_id is not None and len(record_id) > 0
 
-        url = urljoin(API_ENDPOINT, "dns/delete/{}/{}".format(domain, record_id))
-        req_json = {
-            "apikey": self.api_key,
-            "secretapikey": self.secret_api_key
-        }
+        url = urljoin(self.api_endpoint, f"dns/delete/{domain}/{record_id}")
+        req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
             return True
         else:
-            raise Exception("ERROR: DNS delete api call was not successfully\n"
-                            "Status code: {}\n"
-                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
+            response_json = json.loads(r.text)
+            raise PKBClientException(f"{response_json['status']}: {response_json['message']}")
 
-    def dns_retrieve(self, domain, **kwargs) -> list:
+    def dns_retrieve(self, domain, **kwargs) -> List[DNSRecord]:
         """
-        API DNS retrieve method: retrieve all DNS records for given domain
-        see https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records for more info
+        API DNS retrieve method: retrieve all DNS records for given domain.
+        See https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records for more info
 
         :param domain: the domain for which the DNS records should be retrieved
 
-        :return: list of DNS records as dicts
-
-        The list structure will be:
-        [
-            {
-                "id": "123456789",
-                "name": "example.com",
-                "type": "TXT",
-                "content": "this is a nice text",
-                "ttl": "300",
-                "prio": None,
-                "notes": ""
-            },
-            {
-                "id": "234567890",
-                "name": "example.com",
-                "type": "A",
-                "content": "0.0.0.0",
-                "ttl": "300",
-                "prio": 0,
-                "notes": ""
-            }
-        ]
+        :return: list of DNSRecords objects
         """
 
         assert domain is not None and len(domain) > 0
 
-        url = urljoin(API_ENDPOINT, "dns/retrieve/{}".format(domain))
-        req_json = {
-            "apikey": self.api_key,
-            "secretapikey": self.secret_api_key
-        }
+        url = urljoin(self.api_endpoint, "dns/retrieve/{}".format(domain))
+        req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
-            return [parse_dns_record(record) for record in json.loads(r.text).get("records", [])]
+            return [DNSRecord.from_dict(record) for record in json.loads(r.text).get("records", [])]
         else:
-            raise Exception("ERROR: DNS retrieve api call was not successfully\n"
-                            "Status code: {}\n"
-                            "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
+            response_json = json.loads(r.text)
+            raise PKBClientException(f"{response_json['status']}: {response_json['message']}")
 
     def dns_export(self, domain: str, filename: str, **kwargs) -> bool:
         """
         Export all DNS record from the given domain as json to a file.
-        This method does not not represent a Porkbun API method.
+        This method does not represent a Porkbun API method.
 
         :param domain: the domain for which the DNS record should be retrieved and saved
         :param filename: the filename where to save the exported DNS records
@@ -264,10 +226,10 @@ class PKBClient:
         assert domain is not None and len(domain) > 0
         assert filename is not None and len(filename) > 0
 
-        print("retrieve current DNS records...")
+        logging.info("retrieve current DNS records...")
         dns_records = self.dns_retrieve(domain)
 
-        print("save DNS records to {} ...".format(filename))
+        logging.info("save DNS records to {} ...".format(filename))
         # merge the single DNS records into one single dict with the record id as key
         dns_records_dict = dict()
         for record in dns_records:
@@ -278,13 +240,13 @@ class PKBClient:
             raise Exception("File already exists. Please try another filename")
         with open(filepath, "w") as f:
             json.dump(dns_records_dict, f)
-        print("export finished")
+        logging.info("export finished")
 
         return True
 
     def dns_import(self, domain: str, filename: str, restore_mode: DNSRestoreMode, **kwargs) -> bool:
         """
-        Restore
+        Restore all DNS records from a json file to the given domain.
         This method does not represent a Porkbun API method.
 
         :param domain: the domain for which the DNS record should be restored
@@ -309,7 +271,7 @@ class PKBClient:
             exported_dns_records_dict = json.load(f)
 
         if restore_mode is DNSRestoreMode.clear:
-            print("restore mode: clear")
+            logging.debug("restore mode: clear")
 
             try:
                 # delete all existing DNS records
@@ -326,12 +288,12 @@ class PKBClient:
                                     ttl=exported_record["ttl"],
                                     prio=exported_record["prio"])
             except Exception as e:
-                print("something went wrong: {}".format(e.__str__()))
+                logging.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
-                print("import failed")
+                logging.error("import failed")
                 return False
         elif restore_mode is DNSRestoreMode.replace:
-            print("restore mode: replace")
+            logging.debug("restore mode: replace")
 
             try:
                 for existing_record in existing_dns_records:
@@ -354,7 +316,7 @@ class PKBClient:
                 print("import failed")
                 return False
         elif restore_mode is DNSRestoreMode.keep:
-            print("restore mode: keep")
+            logging.debug("restore mode: keep")
 
             existing_dns_records_dict = dict()
             for record in existing_dns_records:
@@ -378,7 +340,7 @@ class PKBClient:
         else:
             raise Exception("restore mode not supported")
 
-        print("import successfully completed")
+        logging.info("import successfully completed")
 
         return True
 
@@ -393,10 +355,9 @@ class PKBClient:
         assert domain is not None and len(domain) > 0
         assert name_servers is not None and len(name_servers) > 0
 
-        url = urljoin(API_ENDPOINT, f"domain/updateNs/{domain}")
+        url = urljoin(self.api_endpoint, f"domain/updateNs/{domain}")
         req_json = {
-            "apikey": self.api_key,
-            "secretapikey": self.secret_api_key,
+            **self._get_auth_request_json(),
             "ns": name_servers
         }
         r = requests.post(url=url, json=req_json)
@@ -418,11 +379,8 @@ class PKBClient:
 
         assert domain is not None and len(domain) > 0
 
-        url = urljoin(API_ENDPOINT, f"domain/getNs/{domain}")
-        req_json = {
-            "apikey": self.api_key,
-            "secretapikey": self.secret_api_key
-        }
+        url = urljoin(self.api_endpoint, f"domain/getNs/{domain}")
+        req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
@@ -432,8 +390,7 @@ class PKBClient:
                             "Status code: {}\n"
                             "Message: {}".format(r.status_code, json.loads(r.text).get("message", "no message found")))
 
-    @staticmethod
-    def get_domain_pricing(**kwargs) -> dict:
+    def get_domain_pricing(self, **kwargs) -> dict:
         """
         Get the pricing for porkbun domains
         see https://porkbun.com/api/json/v3/documentation#Domain%20Pricing for more info
@@ -441,7 +398,7 @@ class PKBClient:
         :return: dict with pricing
         """
 
-        url = urljoin(API_ENDPOINT, "pricing/get")
+        url = urljoin(self.api_endpoint, "pricing/get")
         r = requests.post(url=url)
 
         if r.status_code == 200:
@@ -463,11 +420,8 @@ class PKBClient:
 
         assert domain is not None and len(domain) > 0
 
-        url = urljoin(API_ENDPOINT, "ssl/retrieve/{}".format(domain))
-        req_json = {
-            "apikey": self.api_key,
-            "secretapikey": self.secret_api_key
-        }
+        url = urljoin(self.api_endpoint, "ssl/retrieve/{}".format(domain))
+        req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
