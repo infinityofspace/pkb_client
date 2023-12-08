@@ -2,11 +2,24 @@ from dataclasses import dataclass
 from enum import Enum
 
 
+class DNSRecordType(Enum):
+    A = "A"
+    AAAA = "AAAA"
+    MX = "MX"
+    CNAME = "CNAME"
+    ALIAS = "ALIAS"
+    TXT = "TXT"
+    NS = "NS"
+    SRV = "SRV"
+    TLSA = "TLSA"
+    CAA = "CAA"
+
+
 @dataclass
 class DNSRecord:
     id: str
     name: str
-    type: str
+    type: DNSRecordType
     content: str
     ttl: str
     prio: str
@@ -17,7 +30,7 @@ class DNSRecord:
         return DNSRecord(
             id=d["id"],
             name=d["name"],
-            type=d["type"],
+            type=DNSRecordType[d["type"]],
             content=d["content"],
             ttl=d["ttl"],
             prio=d["prio"],
