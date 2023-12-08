@@ -25,16 +25,16 @@ class PKBClient:
     API client for Porkbun.
     """
 
-    def __init__(self, api_key: str, secret_api_key: str, api_endpoint: str = API_ENDPOINT) -> None:
+    def __init__(self,
+                 api_key: Optional[str] = None,
+                 secret_api_key: Optional[str] = None,
+                 api_endpoint: str = API_ENDPOINT) -> None:
         """
         Creates a new PKBClient object.
 
         :param api_key: the API key used for Porkbun API calls
         :param secret_api_key: the API secret used for Porkbun API calls
         """
-
-        assert api_key is not None and len(api_key) > 0
-        assert secret_api_key is not None and len(secret_api_key) > 0
 
         self.api_key = api_key
         self.secret_api_key = secret_api_key
@@ -46,6 +46,9 @@ class PKBClient:
 
         :return: the request json for the authentication of the Porkbun API calls
         """
+
+        assert self.api_key is not None and len(self.api_key) > 0
+        assert self.secret_api_key is not None and len(self.secret_api_key) > 0
 
         return {
             "apikey": self.api_key,

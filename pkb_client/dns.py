@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 
-class DNSRecordType(Enum):
+class DNSRecordType(str, Enum):
     A = "A"
     AAAA = "AAAA"
     MX = "MX"

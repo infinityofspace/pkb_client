@@ -1,9 +1,17 @@
 import argparse
-import pprint
+import dataclasses
+import json
 import textwrap
 
-from pkb_client.client import PKBClient, DNSRestoreMode
+from pkb_client.client import PKBClient, DNSRestoreMode, API_ENDPOINT
 from pkb_client.dns import DNSRecordType
+
+
+class CustomJSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if dataclasses.is_dataclass(o):
+            return dataclasses.asdict(o)
+        return super().default(o)
 
 
 def main():
@@ -27,6 +35,8 @@ def main():
     parser.add_argument("-k", "--key", help="The API key used for Porkbun API calls (usually starts with \"pk\").")
     parser.add_argument("-s", "--secret",
                         help="The API secret used for Porkbun API calls (usually starts with \"sk\").")
+    parser.add_argument("--debug", help="Enable debug mode.", action="store_true")
+    parser.add_argument("--endpoint", help="The API endpoint to use.", default=API_ENDPOINT)
 
     subparsers = parser.add_subparsers(help="Supported API methods")
 
@@ -100,11 +110,12 @@ def main():
     if not hasattr(args, "func"):
         raise argparse.ArgumentError(None, "No method specified. Please provide a method and try again.")
 
-    pp = pprint.PrettyPrinter(indent=4)
-
     # call the static methods
     if args.func == PKBClient.get_domain_pricing:
-        pp.pprint(args.func(**vars(args)))
+        pkb_client = PKBClient(api_endpoint=args.endpoint)
+        ret = args.func(pkb_client, **vars(args))
+
+        print(json.dumps(ret, cls=CustomJSONEncoder, indent=4))
         exit(0)
 
     if args.key is None:
@@ -127,8 +138,10 @@ def main():
     else:
         api_secret = args.secret
 
-    pkb_client = PKBClient(api_key, api_secret)
-    pp.pprint(args.func(pkb_client, **vars(args)))
+    pkb_client = PKBClient(api_key, api_secret, args.endpoint)
+    ret = args.func(pkb_client, **vars(args))
+
+    print(json.dumps(ret, cls=CustomJSONEncoder, indent=4))
 
 
 if __name__ == "__main__":
