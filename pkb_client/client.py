@@ -83,8 +83,7 @@ class PKBClient:
         See https://porkbun.com/api/json/v3/documentation#DNS%20Create%20Record for more info.
 
         :param domain: the domain for which the DNS record should be created
-        :param record_type: the type of the new DNS record;
-                            supported DNS record types: A, AAAA, MX, CNAME, ALIAS, TXT, NS, SRV, TLSA, CAA
+        :param record_type: the type of the new DNS record
         :param content: the content of the new DNS record
         :param name: the subdomain for which the new DNS record entry should apply; the * can be used for a
                      wildcard DNS record; if not used, then a DNS record for the root domain will be created
@@ -131,8 +130,7 @@ class PKBClient:
 
         :param domain: the domain for which the DNS record should be edited
         :param record_id: the id of the DNS record which should be edited
-        :param record_type: the new type of the DNS record;
-                            supported DNS record types: A, AAAA, MX, CNAME, ALIAS, TXT, NS, SRV, TLSA, CAA
+        :param record_type: the new type of the DNS record
         :param content: the new content of the DNS record
         :param name: the new value of the subdomain for which the DNS record should apply; the * can be used for a
                      wildcard DNS record; if not set, the record will be set for the record domain
@@ -350,7 +348,7 @@ class PKBClient:
 
     def set_dns_servers(self, domain: str, name_servers: List[str]) -> bool:
         """
-        Set the name servers for all your specified Porkbun domains.
+        Set the name servers your specified domain.
         See https://porkbun.com/api/json/v3/documentation#Domain%20Update%20Name%20Servers for more info.
 
         :return: True if everything went well
@@ -375,7 +373,7 @@ class PKBClient:
 
     def get_dns_servers(self, domain: str) -> List[str]:
         """
-        Get the name servers for a given domain.
+        Get the name servers for the given domain.
         See https://porkbun.com/api/json/v3/documentation#Domain%20Get%20Name%20Servers for more info.
 
         :return: list of name servers
@@ -396,8 +394,8 @@ class PKBClient:
 
     def get_domain_pricing(self, **kwargs) -> dict:
         """
-        Get the pricing for porkbun domains
-        see https://porkbun.com/api/json/v3/documentation#Domain%20Pricing for more info
+        Get the pricing for all Porkbun domains.
+        See https://porkbun.com/api/json/v3/documentation#Domain%20Pricing for more info.
 
         :return: dict with pricing
         """
@@ -414,8 +412,8 @@ class PKBClient:
 
     def ssl_retrieve(self, domain, **kwargs) -> SSLCertBundle:
         """
-        API SSL bundle retrieve method: retrieve an SSL bundle for given domain
-        see https://porkbun.com/api/json/v3/documentation#SSL%20Retrieve%20Bundle%20by%20Domain for more info
+        API SSL bundle retrieve method: retrieve an SSL bundle for the given domain.
+        See https://porkbun.com/api/json/v3/documentation#SSL%20Retrieve%20Bundle%20by%20Domain for more info.
 
         :param domain: the domain for which the SSL bundle should be retrieved
 
