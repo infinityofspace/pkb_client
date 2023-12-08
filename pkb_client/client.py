@@ -7,7 +7,7 @@ from urllib.parse import urljoin
 import requests
 
 from pkb_client.dns import DNSRecord, DNSRestoreMode, DNSRecordType
-from pkb_client.ssl import SSLCertBundle
+from pkb_client.ssl_cert import SSLCertBundle
 
 API_ENDPOINT = "https://porkbun.com/api/json/v3/"
 

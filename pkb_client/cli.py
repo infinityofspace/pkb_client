@@ -2,7 +2,8 @@ import argparse
 import pprint
 import textwrap
 
-from pkb_client.client import PKBClient, SUPPORTED_DNS_RECORD_TYPES, DNSRestoreMode
+from pkb_client.client import PKBClient, DNSRestoreMode
+from pkb_client.dns import DNSRecordType
 
 
 def main():
@@ -36,7 +37,7 @@ def main():
     parser_dns_create.set_defaults(func=PKBClient.dns_create)
     parser_dns_create.add_argument("domain", help="The domain for which the new DNS record should be created.")
     parser_dns_create.add_argument("record_type", help="The type of the new DNS record.",
-                                   choices=SUPPORTED_DNS_RECORD_TYPES)
+                                   choices=list(DNSRecordType))
     parser_dns_create.add_argument("content", help="The content of the new DNS record.")
     parser_dns_create.add_argument("--name",
                                    help="The subdomain for which the new DNS record should be created."
@@ -51,7 +52,7 @@ def main():
     parser_dns_edit.add_argument("domain", help="The domain for which the DNS record should be edited.")
     parser_dns_edit.add_argument("record_id", help="The id of the DNS record which should be edited.")
     parser_dns_edit.add_argument("record_type", help="The new type of the DNS record.",
-                                 choices=SUPPORTED_DNS_RECORD_TYPES)
+                                 choices=list(DNSRecordType))
     parser_dns_edit.add_argument("content", help="The new content of the DNS record.")
     parser_dns_edit.add_argument("--name",
                                  help="The new value of the subdomain for which the DNS record should apply. "
