@@ -7,6 +7,8 @@ from urllib.parse import urljoin
 import requests
 
 from pkb_client.dns import DNSRecord, DNSRestoreMode, DNSRecordType
+from pkb_client.domain import DomainInfo
+from pkb_client.forwarding import URLForwarding, URLForwardingType
 from pkb_client.ssl_cert import SSLCertBundle
 
 API_ENDPOINT = "https://porkbun.com/api/json/v3/"
@@ -390,6 +392,122 @@ class PKBClient:
 
         if r.status_code == 200:
             return json.loads(r.text).get("ns", [])
+        else:
+            response_json = json.loads(r.text)
+            raise PKBClientException(response_json.get("status", "Unknown status"),
+                                     response_json.get("message", "Unknown message"))
+
+    def list_domains(self, start: int = 0, **kwargs) -> List[DomainInfo]:
+        """
+        Get all domains for the account in chunks of 1000. If you reach the end of all domains, the list will be empty.
+        See https://porkbun.com/api/json/v3/documentation#Domain%20List%20All for more info.
+
+        :param start: the index of the first domain to retrieve
+
+        :return: list of DomainInfo objects
+        """
+        assert start >= 0
+
+        url = urljoin(self.api_endpoint, "domain/listAll")
+
+        req_json = {
+            **self._get_auth_request_json(),
+            "start": start
+        }
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return [DomainInfo.from_dict(domain) for domain in json.loads(r.text).get("domains", [])]
+        else:
+            response_json = json.loads(r.text)
+            raise PKBClientException(response_json.get("status", "Unknown status"),
+                                     response_json.get("message", "Unknown message"))
+
+    def get_url_forwarding(self, domain: str, **kwargs) -> List[URLForwarding]:
+        """
+        Get the url forwarding for the given domain.
+        See https://porkbun.com/api/json/v3/documentation#Domain%20Get%20URL%20Forwarding for more info.
+
+        :return: list of URLForwarding objects
+        """
+
+        assert domain is not None and len(domain) > 0
+
+        url = urljoin(self.api_endpoint, f"domain/getUrlForwarding/{domain}")
+        req_json = self._get_auth_request_json()
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return [URLForwarding.from_dict(forwarding) for forwarding in json.loads(r.text).get("forwards", [])]
+        else:
+            response_json = json.loads(r.text)
+            raise PKBClientException(response_json.get("status", "Unknown status"),
+                                     response_json.get("message", "Unknown message"))
+
+    def add_url_forward(self,
+                        domain: str,
+                        subdomain: str,
+                        location: str,
+                        type: URLForwardingType,
+                        include_path: bool,
+                        wildcard: bool,
+                        **kwargs) -> bool:
+        """
+        Add an url forward for the given domain.
+        See https://porkbun.com/api/json/v3/documentation#Domain%20Add%20URL%20Forward for more info.
+
+        :param domain: the domain for which the url forwarding should be added
+        :param subdomain: the subdomain for which the url forwarding should be added, can be empty for root domain
+        :param location: the location to which the url forwarding should redirect
+        :param type: the type of the url forwarding
+        :param include_path: if the path should be included in the url forwarding
+        :param wildcard: if the url forwarding should also be applied to all subdomains
+
+        :return: True if the forwarding was added successfully
+        """
+
+        assert domain is not None and len(domain) > 0
+        assert location is not None and len(location) > 0
+        assert type is not None
+
+        url = urljoin(self.api_endpoint, f"domain/addUrlForward/{domain}")
+        req_json = {
+            **self._get_auth_request_json(),
+            "subdomain": subdomain,
+            "location": location,
+            "type": type,
+            "includePath": include_path,
+            "wildcard": wildcard
+        }
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return True
+        else:
+            response_json = json.loads(r.text)
+            raise PKBClientException(response_json.get("status", "Unknown status"),
+                                     response_json.get("message", "Unknown message"))
+
+    def delete_url_forward(self, domain: str, id: str, **kwargs) -> bool:
+        """
+        Delete an url forward for the given domain.
+        See https://porkbun.com/api/json/v3/documentation#Domain%20Delete%20URL%20Forward for more info.
+
+        :param domain: the domain for which the url forwarding should be deleted
+        :param id: the id of the url forwarding which should be deleted
+
+        :return: True if the deletion was successful
+        """
+
+        assert domain is not None and len(domain) > 0
+        assert id is not None and len(id) > 0
+
+        url = urljoin(self.api_endpoint, f"domain/deleteUrlForward/{domain}/{id}")
+        req_json = self._get_auth_request_json()
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return True
         else:
             response_json = json.loads(r.text)
             raise PKBClientException(response_json.get("status", "Unknown status"),
