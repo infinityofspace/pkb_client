@@ -1,5 +1,5 @@
-from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from importlib import resources
 
 from tests import responses
@@ -38,6 +38,7 @@ class RequestHandler(BaseHTTPRequestHandler):
                 with resources.open_text(responses, "ping.json") as f:
                     response = json.load(f)
                 self._send_response(response)
+
             elif self.path == "/api/json/v3/domain/getNs/example.com":
                 with resources.open_text(responses, "domain_getNs.json") as f:
                     response = json.load(f)
@@ -46,6 +47,23 @@ class RequestHandler(BaseHTTPRequestHandler):
                 with resources.open_text(responses, "domain_listAll.json") as f:
                     response = json.load(f)
                 self._send_response(response)
+            elif self.path == "/api/json/v3/domain/updateNs/example.com":
+                with resources.open_text(responses, "success.json") as f:
+                    response = json.load(f)
+                self._send_response(response)
+            elif self.path == "/api/json/v3/domain/getUrlForwarding/example.com":
+                with resources.open_text(responses, "domain_getUrlForwarding.json") as f:
+                    response = json.load(f)
+                self._send_response(response)
+            elif self.path == "/api/json/v3/domain/addUrlForward/example.com":
+                with resources.open_text(responses, "success.json") as f:
+                    response = json.load(f)
+                self._send_response(response)
+            elif self.path == "/api/json/v3/domain/deleteUrlForward/example.com/123456":
+                with resources.open_text(responses, "success.json") as f:
+                    response = json.load(f)
+                self._send_response(response)
+
             elif self.path == "/api/json/v3/dns/create/example.com":
                 with resources.open_text(responses, "dns_create.json") as f:
                     response = json.load(f)

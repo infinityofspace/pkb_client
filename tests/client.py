@@ -6,6 +6,7 @@ from threading import Thread
 
 from pkb_client.client import PKBClient, PKBClientException
 from pkb_client.dns import DNSRecord
+from pkb_client.forwarding import URLForwarding, URLForwardingType
 from tests import responses
 from tests.handler import RequestHandler
 
@@ -70,3 +71,37 @@ class TestClientAuth(unittest.TestCase):
         records = [DNSRecord.from_dict(d) for d in response["records"]]
 
         self.assertEqual(records, success)
+
+    def test_set_dns_servers(self):
+        pkb_client = PKBClient("key", "secret", BASE_URL)
+        success = pkb_client.set_dns_servers("example.com", ["ns1.example.com", "ns2.example.com"])
+
+        self.assertTrue(success)
+
+    def test_get_url_forward(self):
+        pkb_client = PKBClient("key", "secret", BASE_URL)
+        forwardings = pkb_client.get_url_forward("example.com")
+
+        with resources.open_text(responses, "domain_getUrlForwarding.json") as f:
+            response = json.load(f)
+        expected_forwards = [URLForwarding.from_dict(d) for d in response["forwards"]]
+
+        self.assertEqual(forwardings, expected_forwards)
+
+    def test_add_url_forward(self):
+        pkb_client = PKBClient("key", "secret", BASE_URL)
+        success = pkb_client.add_url_forward("example.com",
+                                             "sub.example.com",
+                                             "https://www.example.com",
+                                             URLForwardingType.permanent,
+                                             False,
+                                             False)
+
+        self.assertTrue(success)
+
+    def test_delete_url_forwarding(self):
+        pkb_client = PKBClient("key", "secret", BASE_URL)
+        success = pkb_client.delete_url_forward("example.com",
+                                                "123456")
+
+        self.assertTrue(success)

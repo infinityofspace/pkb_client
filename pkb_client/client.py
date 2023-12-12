@@ -423,7 +423,7 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def get_url_forwarding(self, domain: str, **kwargs) -> List[URLForwarding]:
+    def get_url_forward(self, domain: str, **kwargs) -> List[URLForwarding]:
         """
         Get the url forwarding for the given domain.
         See https://porkbun.com/api/json/v3/documentation#Domain%20Get%20URL%20Forwarding for more info.
