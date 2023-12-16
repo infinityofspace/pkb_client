@@ -105,12 +105,17 @@ def main():
     parser_ssl_retrieve.set_defaults(func=PKBClient.ssl_retrieve)
     parser_ssl_retrieve.add_argument("domain", help="The domain for which the SSL bundle should be retrieve.")
 
+    parser_set_dns_server = subparsers.add_parser("set-dns-server", help="Set the DNS servers for a domain.")
+    parser_set_dns_server.set_defaults(func=PKBClient.set_dns_servers)
+    parser_set_dns_server.add_argument("domain", help="The domain for which the DNS servers should be set.")
+    parser_set_dns_server.add_argument("dns_servers", nargs="+", help="The DNS servers to be set.")
+
     args = parser.parse_args()
 
     if not hasattr(args, "func"):
         raise argparse.ArgumentError(None, "No method specified. Please provide a method and try again.")
 
-    # call the static methods
+    # call the api methods which do not require authentication
     if args.func == PKBClient.get_domain_pricing:
         pkb_client = PKBClient(api_endpoint=args.endpoint)
         ret = args.func(pkb_client, **vars(args))
