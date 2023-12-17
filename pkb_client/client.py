@@ -351,9 +351,9 @@ class PKBClient:
 
         return True
 
-    def set_dns_servers(self, domain: str, name_servers: List[str], **kwargs) -> bool:
+    def update_dns_servers(self, domain: str, name_servers: List[str], **kwargs) -> bool:
         """
-        Set the name servers your specified domain.
+        Update the name servers of the specified domain.
         See https://porkbun.com/api/json/v3/documentation#Domain%20Update%20Name%20Servers for more info.
 
         :return: True if everything went well

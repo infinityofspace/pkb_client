@@ -105,12 +105,12 @@ def main():
     parser_ssl_retrieve.set_defaults(func=PKBClient.ssl_retrieve)
     parser_ssl_retrieve.add_argument("domain", help="The domain for which the SSL bundle should be retrieve.")
 
-    parser_set_dns_server = subparsers.add_parser("set-dns-server", help="Set the DNS servers for a domain.")
-    parser_set_dns_server.set_defaults(func=PKBClient.set_dns_servers)
+    parser_set_dns_server = subparsers.add_parser("dns-servers-update", help="Set the DNS servers for a domain.")
+    parser_set_dns_server.set_defaults(func=PKBClient.update_dns_servers)
     parser_set_dns_server.add_argument("domain", help="The domain for which the DNS servers should be set.")
     parser_set_dns_server.add_argument("dns_servers", nargs="+", help="The DNS servers to be set.")
 
-    parser_get_dns_server = subparsers.add_parser("get-dns-server", help="Get the DNS servers for a domain.")
+    parser_get_dns_server = subparsers.add_parser("dns-servers-receive", help="Get the DNS servers for a domain.")
     parser_get_dns_server.set_defaults(func=PKBClient.get_dns_servers)
     parser_get_dns_server.add_argument("domain", help="The domain for which the DNS servers should be retrieved.")
 
