@@ -351,7 +351,7 @@ class PKBClient:
 
         return True
 
-    def set_dns_servers(self, domain: str, name_servers: List[str]) -> bool:
+    def set_dns_servers(self, domain: str, name_servers: List[str], **kwargs) -> bool:
         """
         Set the name servers your specified domain.
         See https://porkbun.com/api/json/v3/documentation#Domain%20Update%20Name%20Servers for more info.
@@ -376,7 +376,7 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def get_dns_servers(self, domain: str) -> List[str]:
+    def get_dns_servers(self, domain: str, **kwargs) -> List[str]:
         """
         Get the name servers for the given domain.
         See https://porkbun.com/api/json/v3/documentation#Domain%20Get%20Name%20Servers for more info.
