@@ -6,6 +6,7 @@ from datetime import datetime
 
 from pkb_client.client import PKBClient, DNSRestoreMode, API_ENDPOINT
 from pkb_client.dns import DNSRecordType
+from pkb_client.forwarding import URLForwardingType
 
 
 class CustomJSONEncoder(json.JSONEncoder):
@@ -122,6 +123,31 @@ def main():
     parser_list_domains.set_defaults(func=PKBClient.list_domains)
     parser_list_domains.add_argument("--start", type=int, help="The start index of the list.", default=0,
                                      required=False)
+
+    parser_get_url_forward = subparsers.add_parser("url-forward-retrieve", help="Retrieve all URL forwards.")
+    parser_get_url_forward.set_defaults(func=PKBClient.get_url_forward)
+    parser_get_url_forward.add_argument("domain", help="The domain for which the URL forwards should be retrieved.")
+
+    parser_add_url_forward = subparsers.add_parser("url-forward-create", help="Create a new URL forward.")
+    parser_add_url_forward.set_defaults(func=PKBClient.add_url_forward)
+    parser_add_url_forward.add_argument("domain", help="The domain for which the new URL forward should be created.")
+    parser_add_url_forward.add_argument("location", help="The location to which the url forwarding should redirect.", )
+    parser_add_url_forward.add_argument("type", help="The type of the url forwarding.",
+                                        choices=list(URLForwardingType))
+    parser_add_url_forward.add_argument("--subdomain",
+                                        help="The subdomain for which the url forwarding should be added.",
+                                        required=False, default="")
+    parser_add_url_forward.add_argument("--include-path",
+                                        help="Whether the path should be included in the url forwarding.",
+                                        action="store_true", default=False)
+    parser_add_url_forward.add_argument("--wildcard",
+                                        help="Whether the url forwarding should be also applied to subdomains.",
+                                        action="store_true", default=False)
+
+    parser_delete_url_forward = subparsers.add_parser("url-forward-delete", help="Delete an existing URL forward.")
+    parser_delete_url_forward.set_defaults(func=PKBClient.delete_url_forward)
+    parser_delete_url_forward.add_argument("domain", help="The domain for which the URL forward should be deleted.")
+    parser_delete_url_forward.add_argument("id", help="The id of the URL forward which should be deleted.")
 
     args = parser.parse_args()
 
