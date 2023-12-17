@@ -101,19 +101,19 @@ def main():
     keep: keep the existing DNS records and only create new ones for all DNS records from the specified file if they do not exist
     """, type=DNSRestoreMode.from_string, choices=list(DNSRestoreMode))
 
-    parser_domain_pricing = subparsers.add_parser("domain-pricing", help="Get the pricing for porkbun domains.")
+    parser_domain_pricing = subparsers.add_parser("domain-pricing", help="Get the pricing for Porkbun domains.")
     parser_domain_pricing.set_defaults(func=PKBClient.get_domain_pricing)
 
     parser_ssl_retrieve = subparsers.add_parser("ssl-retrieve", help="Retrieve an SSL bundle for given domain.")
     parser_ssl_retrieve.set_defaults(func=PKBClient.ssl_retrieve)
     parser_ssl_retrieve.add_argument("domain", help="The domain for which the SSL bundle should be retrieve.")
 
-    parser_set_dns_server = subparsers.add_parser("dns-servers-update", help="Set the DNS servers for a domain.")
-    parser_set_dns_server.set_defaults(func=PKBClient.update_dns_servers)
-    parser_set_dns_server.add_argument("domain", help="The domain for which the DNS servers should be set.")
-    parser_set_dns_server.add_argument("dns_servers", nargs="+", help="The DNS servers to be set.")
+    parser_update_dns_server = subparsers.add_parser("dns-servers-update", help="Update the DNS servers for a domain.")
+    parser_update_dns_server.set_defaults(func=PKBClient.update_dns_servers)
+    parser_update_dns_server.add_argument("domain", help="The domain for which the DNS servers should be set.")
+    parser_update_dns_server.add_argument("dns_servers", nargs="+", help="The DNS servers to be set.")
 
-    parser_get_dns_server = subparsers.add_parser("dns-servers-receive", help="Get the DNS servers for a domain.")
+    parser_get_dns_server = subparsers.add_parser("dns-servers-receive", help="Retrieve the DNS servers for a domain.")
     parser_get_dns_server.set_defaults(func=PKBClient.get_dns_servers)
     parser_get_dns_server.add_argument("domain", help="The domain for which the DNS servers should be retrieved.")
 
