@@ -2,6 +2,7 @@ import argparse
 import dataclasses
 import json
 import textwrap
+from datetime import datetime
 
 from pkb_client.client import PKBClient, DNSRestoreMode, API_ENDPOINT
 from pkb_client.dns import DNSRecordType
@@ -9,6 +10,8 @@ from pkb_client.dns import DNSRecordType
 
 class CustomJSONEncoder(json.JSONEncoder):
     def default(self, o):
+        if isinstance(o, datetime):
+            return o.isoformat()
         if dataclasses.is_dataclass(o):
             return dataclasses.asdict(o)
         return super().default(o)
@@ -113,6 +116,12 @@ def main():
     parser_get_dns_server = subparsers.add_parser("dns-servers-receive", help="Get the DNS servers for a domain.")
     parser_get_dns_server.set_defaults(func=PKBClient.get_dns_servers)
     parser_get_dns_server.add_argument("domain", help="The domain for which the DNS servers should be retrieved.")
+
+    parser_list_domains = subparsers.add_parser("domains-list",
+                                                help="List all domains in this account in chunks of 1000.")
+    parser_list_domains.set_defaults(func=PKBClient.list_domains)
+    parser_list_domains.add_argument("--start", type=int, help="The start index of the list.", default=0,
+                                     required=False)
 
     args = parser.parse_args()
 
