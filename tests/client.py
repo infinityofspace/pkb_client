@@ -74,7 +74,7 @@ class TestClientAuth(unittest.TestCase):
 
     def test_set_dns_servers(self):
         pkb_client = PKBClient("key", "secret", BASE_URL)
-        success = pkb_client.set_dns_servers("example.com", ["ns1.example.com", "ns2.example.com"])
+        success = pkb_client.update_dns_servers("example.com", ["ns1.example.com", "ns2.example.com"])
 
         self.assertTrue(success)
 
