@@ -168,6 +168,48 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
+    def dns_edit_all(self,
+                     domain: str,
+                     record_type: DNSRecordType,
+                     subdomain: str,
+                     content: str,
+                     ttl: int = 300,
+                     prio: int = None, **kwargs) -> bool:
+        """
+        API DNS edit method: edit all existing DNS record matching the domain, record type and subdomain.
+        See https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record%20by%20Domain,%20Subdomain%20and%20Type for more info.
+
+        :param domain: the domain for which the DNS record should be edited
+        :param record_type: the type of the DNS record
+        :param subdomain: the subdomain of the DNS record
+        :param content: the new content of the DNS record
+        :param ttl: the new time to live in seconds of the DNS record, have to be between 0 and 2147483647
+        :param prio: the new priority of the DNS record
+
+        :return: True if the editing was successful
+        """
+
+        assert domain is not None and len(domain) > 0
+        assert subdomain is not None and len(subdomain) > 0
+        assert content is not None and len(content) > 0
+
+        url = urljoin(self.api_endpoint, f"dns/editByNameType/{domain}/{record_type}/{subdomain}")
+        req_json = {
+            **self._get_auth_request_json(),
+            "type": record_type,
+            "content": content,
+            "ttl": ttl,
+            "prio": prio
+        }
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return True
+        else:
+            response_json = json.loads(r.text)
+            raise PKBClientException(response_json.get("status", "Unknown status"),
+                                     response_json.get("message", "Unknown message"))
+
     def dns_delete(self,
                    domain: str,
                    record_id: str,
