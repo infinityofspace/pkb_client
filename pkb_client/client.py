@@ -181,7 +181,7 @@ class PKBClient:
 
         :param domain: the domain for which the DNS record should be edited
         :param record_type: the type of the DNS record
-        :param subdomain: the subdomain of the DNS record
+        :param subdomain: the subdomain of the DNS record can be empty string for root domain
         :param content: the new content of the DNS record
         :param ttl: the new time to live in seconds of the DNS record, have to be between 0 and 2147483647
         :param prio: the new priority of the DNS record
@@ -190,7 +190,6 @@ class PKBClient:
         """
 
         assert domain is not None and len(domain) > 0
-        assert subdomain is not None and len(subdomain) > 0
         assert content is not None and len(content) > 0
 
         url = urljoin(self.api_endpoint, f"dns/editByNameType/{domain}/{record_type}/{subdomain}")
