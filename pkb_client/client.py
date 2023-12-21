@@ -237,6 +237,36 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
+    def dns_delete_all(self,
+                       domain: str,
+                       record_type: DNSRecordType,
+                       subdomain: str,
+                       **kwargs) -> bool:
+        """
+        API DNS delete method: delete all existing DNS record matching the domain, record type and subdomain.
+        See https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
+
+        :param domain: the domain for which the DNS record should be deleted
+        :param record_type: the type of the DNS record
+        :param subdomain: the subdomain of the DNS record can be empty string for root domain
+
+        :return: True if the deletion was successful
+        """
+
+        assert domain is not None and len(domain) > 0
+        assert record_type is not None
+
+        url = urljoin(self.api_endpoint, f"dns/deleteByNameType/{domain}/{record_type}/{subdomain}")
+        req_json = self._get_auth_request_json()
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return True
+        else:
+            response_json = json.loads(r.text)
+            raise PKBClientException(response_json.get("status", "Unknown status"),
+                                     response_json.get("message", "Unknown message"))
+
     def dns_retrieve(self, domain, **kwargs) -> List[DNSRecord]:
         """
         API DNS retrieve method: retrieve all DNS records for given domain.
