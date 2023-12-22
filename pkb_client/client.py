@@ -290,6 +290,36 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
+    def dns_retrieve_all(self,
+                         domain: str,
+                         record_type: DNSRecordType,
+                         subdomain: str,
+                         **kwargs) -> List[DNSRecord]:
+        """
+        API DNS retrieve method: retrieve all DNS records matching the domain, record type and subdomain.
+        See https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
+
+        :param domain: the domain for which the DNS records should be retrieved
+        :param record_type: the type of the DNS records
+        :param subdomain: the subdomain of the DNS records can be empty string for root domain
+
+        :return: list of DNSRecords objects
+        """
+
+        assert domain is not None and len(domain) > 0
+        assert record_type is not None
+
+        url = urljoin(self.api_endpoint, f"dns/retrieveByNameType/{domain}/{record_type}/{subdomain}")
+        req_json = self._get_auth_request_json()
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return [DNSRecord.from_dict(record) for record in json.loads(r.text).get("records", [])]
+        else:
+            response_json = json.loads(r.text)
+            raise PKBClientException(response_json.get("status", "Unknown status"),
+                                     response_json.get("message", "Unknown message"))
+
     def dns_export(self, domain: str, filename: str, **kwargs) -> bool:
         """
         Export all DNS record from the given domain as json to a file.
