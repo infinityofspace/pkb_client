@@ -1,0 +1,32 @@
+name: build and publish docs
+
+on:
+  push:
+    tags:
+      - "v*"
+    branches: # for testing
+      - main
+
+jobs:
+  build:
+    name: build and publish docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+
+      - name: Install sphinx
+        run: pip install sphinx
+
+      - name: Build docs
+        run: sphinx-build -b html docs/source docs/build
+
+      - name: Publish docs to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/build/html
