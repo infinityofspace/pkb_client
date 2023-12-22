@@ -28,7 +28,7 @@ jobs:
       - name: Open PR with changes
         uses: peter-evans/create-pull-request@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
           title: "[Docs]: update docs source"
           commit-message: "update docs source"
           branch: "docs_source_update"
