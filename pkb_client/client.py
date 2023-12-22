@@ -270,7 +270,7 @@ class PKBClient:
     def dns_retrieve(self, domain, **kwargs) -> List[DNSRecord]:
         """
         API DNS retrieve method: retrieve all DNS records for given domain.
-        See https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records for more info
+        See https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records for more info.
 
         :param domain: the domain for which the DNS records should be retrieved
 
