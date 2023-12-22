@@ -1,0 +1,37 @@
+name: update docs source
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - pkb_client/**
+
+jobs:
+  build:
+    name: update docs source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.8
+
+      - name: Install sphinx
+        run: pip install sphinx
+
+      - name: Build docs source
+        run: sphinx-apidoc -f -o docs/source pkb_client
+
+      - name: Open PR with changes
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          title: "[Docs]: update docs source"
+          commit-message: "update docs source"
+          branch: "docs_source_update"
+          delete-branch: true
+          label: "docs-update"
+          add-paths: docs/source
