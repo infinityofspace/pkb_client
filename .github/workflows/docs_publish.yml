@@ -23,10 +23,10 @@ jobs:
         run: pip install sphinx
 
       - name: Build docs
-        run: sphinx-build -b html docs/source docs/build
+        run: cd docs && make html
 
       - name: Publish docs to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/build
+          publish_dir: docs/build/html
