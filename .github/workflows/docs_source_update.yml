@@ -8,7 +8,7 @@ on:
       - pkb_client/**
 
 jobs:
-  build:
+  update:
     name: update docs source
     runs-on: ubuntu-latest
     steps:
