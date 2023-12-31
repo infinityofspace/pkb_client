@@ -1,0 +1,83 @@
+name: Bug Report
+description: File a bug report
+title: "[Bug]: "
+labels: ["bug", "triage"]
+
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for taking the time to fill out this bug report!"
+
+  - type: textarea
+    id: system-os-info
+    attributes:
+      label: OS info
+      description: The operating system and version are you using.
+      placeholder: eg. Debian 12 , Ubuntu 23.10, Arch 6.6.3, Windows 10, MacOS 12
+    validations:
+      required: true
+
+  - type: textarea
+    id: version-info
+    attributes:
+      label: pkb_client version
+      description: The pkb_client version are you using.
+      placeholder: eg. v1.2
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: Bug description
+      description: A clear and precise description of what the bug is.
+      placeholder: What happend?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-description
+    attributes:
+      label: Expected behaviour description
+      description: A simple and precise description of the expected behavior.
+      placeholder: What should happend?
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output.
+      render: shell
+    validations:
+      required: false
+      
+  - type: textarea
+    id: reproduce-steps
+    attributes:
+      label: Steps to reproduce
+      description: Steps to reproduce the behavior.
+      placeholder: How can the error be reproduced?
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: All further information on the context of the bug that does not belong to the other sections, such as a workaround or already tested approaches to a solution.
+      placeholder: Is there any further context?
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please check off the following checklist after you have performed the corresponding actions
+      options:
+        - label: I have checked for [existing Github issues](https://github.com/infinityofspace/pkb_client/issues) for the same bug.
+          required: true
+        - label: I have checked to see if there is newer current version that already fixes this error.
+          required: true
