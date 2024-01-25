@@ -21,7 +21,7 @@ body:
     id: version-info
     attributes:
       label: pkb_client version
-      description: The pkb_client version are you using.
+      description: The pkb_client version you are using.
       placeholder: eg. v1.2
     validations:
       required: true
