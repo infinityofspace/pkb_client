@@ -12,7 +12,7 @@ body:
     id: system-os-info
     attributes:
       label: OS info
-      description: The operating system and version are you using.
+      description: The operating system and version you are using.
       placeholder: eg. Debian 12 , Ubuntu 23.10, Arch 6.6.3, Windows 10, MacOS 12
     validations:
       required: true
