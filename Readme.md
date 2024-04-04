@@ -1,6 +1,6 @@
 # pkb_client
 
-Unofficial client for the Porkbun API
+Python client for the Porkbun API
 
 ---
 [![PyPI](https://img.shields.io/pypi/v/pkb_client)](https://pypi.org/project/pkb-client/) ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pkb_client) [![Downloads](https://static.pepy.tech/personalized-badge/pkb-client?period=total&units=international_system&left_color=grey&right_color=orange&left_text=Total%20Downloads)](https://pepy.tech/project/pkb-client) ![GitHub](https://img.shields.io/github/license/infinityofspace/pkb_client) ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/infinityofspace/pkb_client/pypi-publish-release.yml)
@@ -21,7 +21,7 @@ Unofficial client for the Porkbun API
 
 ### About
 
-*pkb_client* is an unofficial client for the [Porkbun](https://porkbun.com) API. It supports the v3 of the API. You can
+*pkb_client* is an python client for the [Porkbun](https://porkbun.com) API. It supports the v3 of the API. You can
 find the official documentation of the Porkbun API [here](https://porkbun.com/api/json/v3/documentation).
 
 ### Installation
@@ -141,6 +141,8 @@ All modules used by this project are listed below:
 
 Furthermore, this readme file contains embeddings of [Shields.io](https://github.com/badges/shields)
 and [PePy](https://github.com/psincraian/pepy). The tests use [ipify](https://github.com/rdegges/ipify-api).
+
+_This project is not associated with Porkbun LLC._
 
 ### License
 

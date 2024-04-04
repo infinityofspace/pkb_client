@@ -20,7 +20,7 @@ class CustomJSONEncoder(json.JSONEncoder):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Unofficial client for the Porkbun API",
+        description="Python client for the Porkbun API",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
                                     License:
