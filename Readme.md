@@ -15,7 +15,11 @@ Python client for the Porkbun API
 3. [Usage](#usage)
 4. [Notes](#notes)
 5. [Third party notices](#third-party-notices)
-6. [License](#license)
+6. [Development](#development)
+    1. [Setup environment](#setup-environment)
+    2. [Tests](#tests)
+    3. [Documentation](#documentation)
+7. [License](#license)
 
 ---
 
@@ -145,6 +149,44 @@ Furthermore, this readme file contains embeddings of [Shields.io](https://github
 and [PePy](https://github.com/psincraian/pepy). The tests use [ipify](https://github.com/rdegges/ipify-api).
 
 _This project is not associated with Porkbun LLC._
+
+### Development
+
+#### Setup environment
+
+First get the source code:
+
+```commandline
+git clone https://github.com/infinityofspace/pkb_client.git
+cd pkb_client
+```
+
+Now create a virtual environment, activate it and install all dependencies with the following commands:
+
+```commandline
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+
+Now you can start developing.
+
+#### Tests
+
+You can run the tests with the following command:
+
+```commandline
+python -m unittest tests/*.py
+```
+
+#### Documentation
+
+To build the documentation you can use the following commands:
+
+```commandline
+sphinx-apidoc -f -o docs/source pkb_client
+cd docs && make html
+```
 
 ### License
 
