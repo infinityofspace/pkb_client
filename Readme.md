@@ -47,7 +47,7 @@ pip3 install pkb_client -U
 ```commandline
 git clone https://github.com/infinityofspace/pkb_client.git
 cd pkb_client
-pip install .
+pip3 install .
 ```
 
 ### Usage
