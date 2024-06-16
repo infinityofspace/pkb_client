@@ -30,12 +30,13 @@ class PKBClient:
     def __init__(self,
                  api_key: Optional[str] = None,
                  secret_api_key: Optional[str] = None,
-                 api_endpoint: str = API_ENDPOINT) -> None:
+                 api_endpoint: Optional[str] = API_ENDPOINT) -> None:
         """
         Creates a new PKBClient object.
 
         :param api_key: the API key used for Porkbun API calls
         :param secret_api_key: the API secret used for Porkbun API calls
+        :param api_endpoint: the endpoint of the Porkbun API. Default is https://porkbun.com/api/json/v3/
         """
 
         self.api_key = api_key
