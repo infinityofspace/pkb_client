@@ -10,7 +10,7 @@ setup(
     version=pkb_client.__version__,
     author="infinityofspace",
     url="https://github.com/infinityofspace/pkb_client",
-    description="Unofficial client for the Porkbun API",
+    description="Python client for the Porkbun API",
     long_description=long_description,
     long_description_content_type="text/markdown",
     license="MIT",
