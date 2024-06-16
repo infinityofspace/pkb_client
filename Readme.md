@@ -54,9 +54,9 @@ pip install .
 
 Each request must be made with the API key and secret. You can easily create them at Porkbun. Just follow
 the [official instructions](https://porkbun.com/api/json/v3/documentation#Authentication). Make sure that you explicitly
-activate the API usage for your domain at the end. There are two ways to use abc. The first way is to use it as a Python
-module. See the [module documentation](https://infinityofspace.github.io/pkb_client) for more information. The second
-way is to use the module from the command line, see below for more information.
+activate the API usage for your domain at the end. There are two ways to use `pkb_client`. The first way is to use it as
+a Python module. See the [module documentation](https://infinityofspace.github.io/pkb_client) for more information. The
+second way is to use the module from the command line, see below for more information.
 
 After installation *pkb_client* is available under the command `pkb-client`.
 
