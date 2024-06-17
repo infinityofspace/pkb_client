@@ -268,19 +268,24 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def dns_retrieve(self, domain, **kwargs) -> List[DNSRecord]:
+    def dns_retrieve(self, domain, record_id: Optional[str] = None, **kwargs) -> List[DNSRecord]:
         """
-        API DNS retrieve method: retrieve all DNS records for given domain.
+        API DNS retrieve method: retrieve all DNS records for given domain if no record id is specified.
+        Otherwise, retrieve the DNS record of the specified domain with the given record id.
         See https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records for more info.
 
         :param domain: the domain for which the DNS records should be retrieved
+        :param record_id: the id of the DNS record which should be retrieved
 
         :return: list of DNSRecords objects
         """
 
         assert domain is not None and len(domain) > 0
 
-        url = urljoin(self.api_endpoint, "dns/retrieve/{}".format(domain))
+        if record_id is None:
+            url = urljoin(self.api_endpoint, f"dns/retrieve/{domain}")
+        else:
+            url = urljoin(self.api_endpoint, f"dns/retrieve/{domain}/{record_id}")
         req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
 
