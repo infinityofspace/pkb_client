@@ -93,7 +93,7 @@ class PKBClient:
         :param content: the content of the new DNS record
         :param name: the subdomain for which the new DNS record entry should apply; the * can be used for a
                      wildcard DNS record; if not used, then a DNS record for the root domain will be created
-        :param ttl: the time to live in seconds of the new DNS record; have to be between 0 and 2147483647
+        :param ttl: the time to live in seconds of the new DNS record; have to be between 300 and 86400
         :param prio: the priority of the new DNS record
 
         :return: the id of the new created DNS record
@@ -101,7 +101,7 @@ class PKBClient:
 
         assert domain is not None and len(domain) > 0
         assert content is not None and len(content) > 0
-        assert ttl is None or 300 <= ttl <= 2147483647
+        assert ttl is None or 300 <= ttl <= 86400
 
         url = urljoin(self.api_endpoint, f"dns/create/{domain}")
         req_json = {
@@ -140,7 +140,7 @@ class PKBClient:
         :param content: the new content of the DNS record
         :param name: the new value of the subdomain for which the DNS record should apply; the * can be used for a
                      wildcard DNS record; if not set, the record will be set for the record domain
-        :param ttl: the new time to live in seconds of the DNS record, have to be between 0 and 2147483647
+        :param ttl: the new time to live in seconds of the DNS record, have to be between 300 and 86400
         :param prio: the new priority of the DNS record
 
         :return: True if the editing was successful
@@ -149,7 +149,7 @@ class PKBClient:
         assert domain is not None and len(domain) > 0
         assert record_id is not None and len(record_id) > 0
         assert content is not None and len(content) > 0
-        assert ttl is None or 300 <= ttl <= 2147483647
+        assert ttl is None or 300 <= ttl <= 86400
 
         url = urljoin(self.api_endpoint, f"dns/edit/{domain}/{record_id}")
         req_json = {
@@ -184,7 +184,7 @@ class PKBClient:
         :param record_type: the type of the DNS record
         :param subdomain: the subdomain of the DNS record can be empty string for root domain
         :param content: the new content of the DNS record
-        :param ttl: the new time to live in seconds of the DNS record, have to be between 0 and 2147483647
+        :param ttl: the new time to live in seconds of the DNS record, have to be between 300 and 86400
         :param prio: the new priority of the DNS record
 
         :return: True if the editing was successful
@@ -192,6 +192,7 @@ class PKBClient:
 
         assert domain is not None and len(domain) > 0
         assert content is not None and len(content) > 0
+        assert ttl is None or 300 <= ttl <= 86400
 
         url = urljoin(self.api_endpoint, f"dns/editByNameType/{domain}/{record_type}/{subdomain}")
         req_json = {
