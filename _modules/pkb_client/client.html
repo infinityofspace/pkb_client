@@ -135,7 +135,7 @@
 <span class="sd">        :param content: the content of the new DNS record</span>
 <span class="sd">        :param name: the subdomain for which the new DNS record entry should apply; the * can be used for a</span>
 <span class="sd">                     wildcard DNS record; if not used, then a DNS record for the root domain will be created</span>
-<span class="sd">        :param ttl: the time to live in seconds of the new DNS record; have to be between 0 and 2147483647</span>
+<span class="sd">        :param ttl: the time to live in seconds of the new DNS record; have to be between 300 and 86400</span>
 <span class="sd">        :param prio: the priority of the new DNS record</span>
 
 <span class="sd">        :return: the id of the new created DNS record</span>
@@ -143,7 +143,7 @@
 
         <span class="k">assert</span> <span class="n">domain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="k">assert</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="k">assert</span> <span class="n">ttl</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="mi">300</span> <span class="o">&lt;=</span> <span class="n">ttl</span> <span class="o">&lt;=</span> <span class="mi">2147483647</span>
+        <span class="k">assert</span> <span class="n">ttl</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="mi">300</span> <span class="o">&lt;=</span> <span class="n">ttl</span> <span class="o">&lt;=</span> <span class="mi">86400</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;dns/create/</span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">req_json</span> <span class="o">=</span> <span class="p">{</span>
@@ -185,7 +185,7 @@
 <span class="sd">        :param content: the new content of the DNS record</span>
 <span class="sd">        :param name: the new value of the subdomain for which the DNS record should apply; the * can be used for a</span>
 <span class="sd">                     wildcard DNS record; if not set, the record will be set for the record domain</span>
-<span class="sd">        :param ttl: the new time to live in seconds of the DNS record, have to be between 0 and 2147483647</span>
+<span class="sd">        :param ttl: the new time to live in seconds of the DNS record, have to be between 300 and 86400</span>
 <span class="sd">        :param prio: the new priority of the DNS record</span>
 
 <span class="sd">        :return: True if the editing was successful</span>
@@ -194,7 +194,7 @@
         <span class="k">assert</span> <span class="n">domain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="k">assert</span> <span class="n">record_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">record_id</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="k">assert</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="k">assert</span> <span class="n">ttl</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="mi">300</span> <span class="o">&lt;=</span> <span class="n">ttl</span> <span class="o">&lt;=</span> <span class="mi">2147483647</span>
+        <span class="k">assert</span> <span class="n">ttl</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="mi">300</span> <span class="o">&lt;=</span> <span class="n">ttl</span> <span class="o">&lt;=</span> <span class="mi">86400</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;dns/edit/</span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">req_json</span> <span class="o">=</span> <span class="p">{</span>
@@ -232,7 +232,7 @@
 <span class="sd">        :param record_type: the type of the DNS record</span>
 <span class="sd">        :param subdomain: the subdomain of the DNS record can be empty string for root domain</span>
 <span class="sd">        :param content: the new content of the DNS record</span>
-<span class="sd">        :param ttl: the new time to live in seconds of the DNS record, have to be between 0 and 2147483647</span>
+<span class="sd">        :param ttl: the new time to live in seconds of the DNS record, have to be between 300 and 86400</span>
 <span class="sd">        :param prio: the new priority of the DNS record</span>
 
 <span class="sd">        :return: True if the editing was successful</span>
@@ -240,6 +240,7 @@
 
         <span class="k">assert</span> <span class="n">domain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
         <span class="k">assert</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">content</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">ttl</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="mi">300</span> <span class="o">&lt;=</span> <span class="n">ttl</span> <span class="o">&lt;=</span> <span class="mi">86400</span>
 
         <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;dns/editByNameType/</span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">record_type</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">subdomain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">req_json</span> <span class="o">=</span> <span class="p">{</span>
@@ -325,19 +326,24 @@
 
 <div class="viewcode-block" id="PKBClient.dns_retrieve">
 <a class="viewcode-back" href="../../pkb_client.html#pkb_client.client.PKBClient.dns_retrieve">[docs]</a>
-    <span class="k">def</span> <span class="nf">dns_retrieve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DNSRecord</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">dns_retrieve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="n">record_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">DNSRecord</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        API DNS retrieve method: retrieve all DNS records for given domain.</span>
+<span class="sd">        API DNS retrieve method: retrieve all DNS records for given domain if no record id is specified.</span>
+<span class="sd">        Otherwise, retrieve the DNS record of the specified domain with the given record id.</span>
 <span class="sd">        See https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records for more info.</span>
 
 <span class="sd">        :param domain: the domain for which the DNS records should be retrieved</span>
+<span class="sd">        :param record_id: the id of the DNS record which should be retrieved</span>
 
 <span class="sd">        :return: list of DNSRecords objects</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">assert</span> <span class="n">domain</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">domain</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
 
-        <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="s2">&quot;dns/retrieve/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">domain</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">record_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;dns/retrieve/</span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">urljoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api_endpoint</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;dns/retrieve/</span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">record_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">req_json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_auth_request_json</span><span class="p">()</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">req_json</span><span class="p">)</span>
 

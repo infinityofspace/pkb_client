@@ -131,7 +131,7 @@ See <a class="reference external" href="https://porkbun.com/api/json/v3/document
 <li><p><strong>content</strong> – the content of the new DNS record</p></li>
 <li><p><strong>name</strong> – the subdomain for which the new DNS record entry should apply; the * can be used for a
 wildcard DNS record; if not used, then a DNS record for the root domain will be created</p></li>
-<li><p><strong>ttl</strong> – the time to live in seconds of the new DNS record; have to be between 0 and 2147483647</p></li>
+<li><p><strong>ttl</strong> – the time to live in seconds of the new DNS record; have to be between 300 and 86400</p></li>
 <li><p><strong>prio</strong> – the priority of the new DNS record</p></li>
 </ul>
 </dd>
@@ -192,7 +192,7 @@ See <a class="reference external" href="https://porkbun.com/api/json/v3/document
 <li><p><strong>content</strong> – the new content of the DNS record</p></li>
 <li><p><strong>name</strong> – the new value of the subdomain for which the DNS record should apply; the * can be used for a
 wildcard DNS record; if not set, the record will be set for the record domain</p></li>
-<li><p><strong>ttl</strong> – the new time to live in seconds of the DNS record, have to be between 0 and 2147483647</p></li>
+<li><p><strong>ttl</strong> – the new time to live in seconds of the DNS record, have to be between 300 and 86400</p></li>
 <li><p><strong>prio</strong> – the new priority of the DNS record</p></li>
 </ul>
 </dd>
@@ -214,7 +214,7 @@ See <a class="reference external" href="https://porkbun.com/api/json/v3/document
 <li><p><strong>record_type</strong> – the type of the DNS record</p></li>
 <li><p><strong>subdomain</strong> – the subdomain of the DNS record can be empty string for root domain</p></li>
 <li><p><strong>content</strong> – the new content of the DNS record</p></li>
-<li><p><strong>ttl</strong> – the new time to live in seconds of the DNS record, have to be between 0 and 2147483647</p></li>
+<li><p><strong>ttl</strong> – the new time to live in seconds of the DNS record, have to be between 300 and 86400</p></li>
 <li><p><strong>prio</strong> – the new priority of the DNS record</p></li>
 </ul>
 </dd>
@@ -273,12 +273,16 @@ replace: replace only existing DNS records with the DNS records from the provide
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_retrieve">
-<span class="sig-name descname"><span class="pre">dns_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pkb_client.dns.DNSRecord" title="pkb_client.dns.DNSRecord"><span class="pre">DNSRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_retrieve" title="Link to this definition">¶</a></dt>
-<dd><p>API DNS retrieve method: retrieve all DNS records for given domain.
+<span class="sig-name descname"><span class="pre">dns_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pkb_client.dns.DNSRecord" title="pkb_client.dns.DNSRecord"><span class="pre">DNSRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_retrieve" title="Link to this definition">¶</a></dt>
+<dd><p>API DNS retrieve method: retrieve all DNS records for given domain if no record id is specified.
+Otherwise, retrieve the DNS record of the specified domain with the given record id.
 See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records">https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records</a> for more info.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>domain</strong> – the domain for which the DNS records should be retrieved</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>domain</strong> – the domain for which the DNS records should be retrieved</p></li>
+<li><p><strong>record_id</strong> – the id of the DNS record which should be retrieved</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of DNSRecords objects</p>
