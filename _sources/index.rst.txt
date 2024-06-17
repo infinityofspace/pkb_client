@@ -1,8 +1,3 @@
-.. pkb_client documentation master file, created by
-   sphinx-quickstart on Fri Dec 22 10:56:42 2023.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Welcome to pkb_client's documentation!
 ======================================
 
@@ -10,6 +5,17 @@ Welcome to pkb_client's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   installation
+   usage
+   modules
+
+About
+=====
+
+*pkb_client* is an python client for the `Porkbun <https://porkbun.com>`_ API. It supports the v3 of the API. You can
+find the official documentation of the Porkbun API `here <https://porkbun.com/api/json/v3/documentation>`_.
+
+*Note:* This project is not associated with Porkbun LLC.
 
 
 Indices and tables
