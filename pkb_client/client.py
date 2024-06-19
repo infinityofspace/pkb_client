@@ -27,6 +27,8 @@ class PKBClient:
     API client for Porkbun.
     """
 
+    default_ttl: int = 300
+
     def __init__(self,
                  api_key: Optional[str] = None,
                  secret_api_key: Optional[str] = None,
@@ -49,9 +51,6 @@ class PKBClient:
 
         :return: the request json for the authentication of the Porkbun API calls
         """
-
-        assert self.api_key is not None and len(self.api_key) > 0
-        assert self.secret_api_key is not None and len(self.secret_api_key) > 0
 
         return {
             "apikey": self.api_key,
@@ -82,7 +81,7 @@ class PKBClient:
                    record_type: DNSRecordType,
                    content: str,
                    name: Optional[str] = None,
-                   ttl: Optional[int] = 300,
+                   ttl: Optional[int] = default_ttl,
                    prio: Optional[int] = None, **kwargs) -> str:
         """
         API DNS create method: create a new DNS record for given domain.
@@ -99,9 +98,8 @@ class PKBClient:
         :return: the id of the new created DNS record
         """
 
-        assert domain is not None and len(domain) > 0
-        assert content is not None and len(content) > 0
-        assert ttl is None or 300 <= ttl <= 86400
+        if ttl > 86400 or ttl < self.default_ttl:
+            raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
         url = urljoin(self.api_endpoint, f"dns/create/{domain}")
         req_json = {
@@ -127,7 +125,7 @@ class PKBClient:
                  record_type: DNSRecordType,
                  content: str,
                  name: str = None,
-                 ttl: int = 300,
+                 ttl: int = default_ttl,
                  prio: int = None,
                  **kwargs) -> bool:
         """
@@ -146,10 +144,8 @@ class PKBClient:
         :return: True if the editing was successful
         """
 
-        assert domain is not None and len(domain) > 0
-        assert record_id is not None and len(record_id) > 0
-        assert content is not None and len(content) > 0
-        assert ttl is None or 300 <= ttl <= 86400
+        if ttl > 86400 or ttl < self.default_ttl:
+            raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
         url = urljoin(self.api_endpoint, f"dns/edit/{domain}/{record_id}")
         req_json = {
@@ -174,7 +170,7 @@ class PKBClient:
                      record_type: DNSRecordType,
                      subdomain: str,
                      content: str,
-                     ttl: int = 300,
+                     ttl: int = default_ttl,
                      prio: int = None, **kwargs) -> bool:
         """
         API DNS edit method: edit all existing DNS record matching the domain, record type and subdomain.
@@ -190,9 +186,8 @@ class PKBClient:
         :return: True if the editing was successful
         """
 
-        assert domain is not None and len(domain) > 0
-        assert content is not None and len(content) > 0
-        assert ttl is None or 300 <= ttl <= 86400
+        if ttl > 86400 or ttl < self.default_ttl:
+            raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
         url = urljoin(self.api_endpoint, f"dns/editByNameType/{domain}/{record_type}/{subdomain}")
         req_json = {
@@ -225,9 +220,6 @@ class PKBClient:
         :return: True if the deletion was successful
         """
 
-        assert domain is not None and len(domain) > 0
-        assert record_id is not None and len(record_id) > 0
-
         url = urljoin(self.api_endpoint, f"dns/delete/{domain}/{record_id}")
         req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
@@ -255,9 +247,6 @@ class PKBClient:
         :return: True if the deletion was successful
         """
 
-        assert domain is not None and len(domain) > 0
-        assert record_type is not None
-
         url = urljoin(self.api_endpoint, f"dns/deleteByNameType/{domain}/{record_type}/{subdomain}")
         req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
@@ -280,8 +269,6 @@ class PKBClient:
 
         :return: list of DNSRecords objects
         """
-
-        assert domain is not None and len(domain) > 0
 
         if record_id is None:
             url = urljoin(self.api_endpoint, f"dns/retrieve/{domain}")
@@ -313,9 +300,6 @@ class PKBClient:
         :return: list of DNSRecords objects
         """
 
-        assert domain is not None and len(domain) > 0
-        assert record_type is not None
-
         url = urljoin(self.api_endpoint, f"dns/retrieveByNameType/{domain}/{record_type}/{subdomain}")
         req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
@@ -337,9 +321,6 @@ class PKBClient:
 
         :return: True if everything went well
         """
-
-        assert domain is not None and len(domain) > 0
-        assert filename is not None and len(filename) > 0
 
         logging.info("retrieve current DNS records...")
         dns_records = self.dns_retrieve(domain)
@@ -375,10 +356,6 @@ class PKBClient:
 
         :return: True if everything went well
         """
-
-        assert domain is not None and len(domain) > 0
-        assert filename is not None and len(filename) > 0
-        assert isinstance(restore_mode, DNSRestoreMode)
 
         existing_dns_records = self.dns_retrieve(domain)
 
@@ -467,9 +444,6 @@ class PKBClient:
         :return: True if everything went well
         """
 
-        assert domain is not None and len(domain) > 0
-        assert name_servers is not None and len(name_servers) > 0
-
         url = urljoin(self.api_endpoint, f"domain/updateNs/{domain}")
         req_json = {
             **self._get_auth_request_json(),
@@ -492,8 +466,6 @@ class PKBClient:
         :return: list of name servers
         """
 
-        assert domain is not None and len(domain) > 0
-
         url = urljoin(self.api_endpoint, f"domain/getNs/{domain}")
         req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
@@ -514,7 +486,6 @@ class PKBClient:
 
         :return: list of DomainInfo objects
         """
-        assert start >= 0
 
         url = urljoin(self.api_endpoint, "domain/listAll")
 
@@ -538,8 +509,6 @@ class PKBClient:
 
         :return: list of URLForwarding objects
         """
-
-        assert domain is not None and len(domain) > 0
 
         url = urljoin(self.api_endpoint, f"domain/getUrlForwarding/{domain}")
         req_json = self._get_auth_request_json()
@@ -574,10 +543,6 @@ class PKBClient:
         :return: True if the forwarding was added successfully
         """
 
-        assert domain is not None and len(domain) > 0
-        assert location is not None and len(location) > 0
-        assert type is not None
-
         url = urljoin(self.api_endpoint, f"domain/addUrlForward/{domain}")
         req_json = {
             **self._get_auth_request_json(),
@@ -606,9 +571,6 @@ class PKBClient:
 
         :return: True if the deletion was successful
         """
-
-        assert domain is not None and len(domain) > 0
-        assert id is not None and len(id) > 0
 
         url = urljoin(self.api_endpoint, f"domain/deleteUrlForward/{domain}/{id}")
         req_json = self._get_auth_request_json()
@@ -648,8 +610,6 @@ class PKBClient:
 
         :return: tuple of intermediate certificate, certificate chain, private key, public key
         """
-
-        assert domain is not None and len(domain) > 0
 
         url = urljoin(self.api_endpoint, "ssl/retrieve/{}".format(domain))
         req_json = self._get_auth_request_json()
