@@ -52,6 +52,9 @@ class PKBClient:
         :return: the request json for the authentication of the Porkbun API calls
         """
 
+        if self.api_key is None or self.secret_api_key is None:
+            raise ValueError("api_key and secret_api_key must be set")
+
         return {
             "apikey": self.api_key,
             "secretapikey": self.secret_api_key
