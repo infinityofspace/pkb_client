@@ -32,7 +32,7 @@ class PKBClient:
     def __init__(self,
                  api_key: Optional[str] = None,
                  secret_api_key: Optional[str] = None,
-                 api_endpoint: Optional[str] = API_ENDPOINT) -> None:
+                 api_endpoint: str = API_ENDPOINT) -> None:
         """
         Creates a new PKBClient object.
 
@@ -81,7 +81,7 @@ class PKBClient:
                    record_type: DNSRecordType,
                    content: str,
                    name: Optional[str] = None,
-                   ttl: Optional[int] = default_ttl,
+                   ttl: int = default_ttl,
                    prio: Optional[int] = None, **kwargs) -> str:
         """
         API DNS create method: create a new DNS record for given domain.
@@ -93,8 +93,7 @@ class PKBClient:
         :param name: the subdomain for which the new DNS record entry should apply; the * can be used for a
                      wildcard DNS record; if not used, then a DNS record for the root domain will be created
         :param ttl: the time to live in seconds of the new DNS record; have to be between 300 and 86400
-        :param prio: the priority of the new DNS record
-
+        :param prio: the priority of the new DNS record (only records of type MX and SRV) otherwise None
         :return: the id of the new created DNS record
         """
 
@@ -124,9 +123,9 @@ class PKBClient:
                  record_id: str,
                  record_type: DNSRecordType,
                  content: str,
-                 name: str = None,
+                 name: Optional[str] = None,
                  ttl: int = default_ttl,
-                 prio: int = None,
+                 prio: Optional[int] = None,
                  **kwargs) -> bool:
         """
         API DNS edit method: edit an existing DNS record specified by the id for a given domain.
@@ -139,7 +138,7 @@ class PKBClient:
         :param name: the new value of the subdomain for which the DNS record should apply; the * can be used for a
                      wildcard DNS record; if not set, the record will be set for the record domain
         :param ttl: the new time to live in seconds of the DNS record, have to be between 300 and 86400
-        :param prio: the new priority of the DNS record
+        :param prio: the priority of the new DNS record (only records of type MX and SRV) otherwise None
 
         :return: True if the editing was successful
         """
@@ -171,7 +170,7 @@ class PKBClient:
                      subdomain: str,
                      content: str,
                      ttl: int = default_ttl,
-                     prio: int = None, **kwargs) -> bool:
+                     prio: Optional[int] = None, **kwargs) -> bool:
         """
         API DNS edit method: edit all existing DNS record matching the domain, record type and subdomain.
         See https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record%20by%20Domain,%20Subdomain%20and%20Type for more info.
@@ -181,7 +180,7 @@ class PKBClient:
         :param subdomain: the subdomain of the DNS record can be empty string for root domain
         :param content: the new content of the DNS record
         :param ttl: the new time to live in seconds of the DNS record, have to be between 300 and 86400
-        :param prio: the new priority of the DNS record
+        :param prio: the priority of the new DNS record (only records of type MX and SRV) otherwise None
 
         :return: True if the editing was successful
         """
