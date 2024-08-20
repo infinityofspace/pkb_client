@@ -52,3 +52,18 @@ class DNSRestoreMode(Enum):
             return DNSRestoreMode[a]
         except KeyError:
             return a
+
+
+class DNSFileFormat(Enum):
+    BIND = 0
+    JSON = 1
+
+    def __str__(self):
+        return self.name
+
+    @staticmethod
+    def from_string(a):
+        try:
+            return DNSFileFormat[a]
+        except KeyError:
+            return

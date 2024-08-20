@@ -5,7 +5,7 @@ import textwrap
 from datetime import datetime
 
 from pkb_client.client import PKBClient, DNSRestoreMode, API_ENDPOINT
-from pkb_client.dns import DNSRecordType
+from pkb_client.dns import DNSRecordType, DNSFileFormat
 from pkb_client.forwarding import URLForwardingType
 
 
@@ -32,7 +32,7 @@ def main():
                                             License: Apache-2.0 https://github.com/psf/requests/blob/master/LICENSE
                                         setuptools:
                                             Project: https://github.com/pypa/setuptools
-                                            License: MIT https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE                                            
+                                            License: MIT https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE
                                     """)
     )
 
@@ -85,11 +85,13 @@ def main():
     parser_dns_receive.set_defaults(func=PKBClient.dns_retrieve)
     parser_dns_receive.add_argument("domain", help="The domain for which the DNS record should be retrieved.")
 
-    parser_dns_export = subparsers.add_parser("dns-export", help="Save all DNS records to a local file as json.")
+    parser_dns_export = subparsers.add_parser("dns-export", help="Save all DNS records to a local file.")
     parser_dns_export.set_defaults(func=PKBClient.dns_export)
     parser_dns_export.add_argument("domain",
                                    help="The domain for which the DNS record should be retrieved and saved.")
     parser_dns_export.add_argument("filename", help="The filename where to save the exported DNS records.")
+    parser_dns_export.add_argument("--type", help="The file format in which the DNS records should be saved.",
+        type=DNSFileFormat.from_string, choices=list(DNSFileFormat), default=DNSFileFormat.JSON)
 
     parser_dns_import = subparsers.add_parser("dns-import", help="Restore all DNS records from a local file.",
                                               formatter_class=argparse.RawTextHelpFormatter)
@@ -101,6 +103,8 @@ def main():
     replace: replace only existing DNS records with the DNS records from the provided file, but do not create any new DNS records
     keep: keep the existing DNS records and only create new ones for all DNS records from the specified file if they do not exist
     """, type=DNSRestoreMode.from_string, choices=list(DNSRestoreMode))
+    parser_dns_import.add_argument("--type", help="The file format from which the DNS records should be restored.",
+        type=DNSFileFormat.from_string, choices=list(DNSFileFormat), default=DNSFileFormat.JSON)
 
     parser_domain_pricing = subparsers.add_parser("domain-pricing", help="Get the pricing for Porkbun domains.")
     parser_domain_pricing.set_defaults(func=PKBClient.get_domain_pricing)
