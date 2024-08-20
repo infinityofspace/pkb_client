@@ -15,6 +15,9 @@ class DNSRecordType(str, Enum):
     CAA = "CAA"
 
 
+DNS_RECORDS_WITH_PRIORITY = {DNSRecordType.MX, DNSRecordType.SRV}
+
+
 @dataclass
 class DNSRecord:
     id: str
@@ -54,16 +57,6 @@ class DNSRestoreMode(Enum):
             return a
 
 
-class DNSFileFormat(Enum):
-    BIND = 0
-    JSON = 1
-
-    def __str__(self):
-        return self.name
-
-    @staticmethod
-    def from_string(a):
-        try:
-            return DNSFileFormat[a]
-        except KeyError:
-            return
+class DNSFileFormat(str, Enum):
+    BIND = "BIND"
+    JSON = "JSON"
