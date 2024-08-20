@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 
 import requests
 
-from pkb_client.dns import DNSRecord, DNSRestoreMode, DNSRecordType
+from pkb_client.dns import DNSRecord, DNSRestoreMode, DNSRecordType, DNS_RECORDS_WITH_PRIORITY
 from pkb_client.domain import DomainInfo
 from pkb_client.forwarding import URLForwarding, URLForwardingType
 from pkb_client.ssl_cert import SSLCertBundle
@@ -103,6 +103,9 @@ class PKBClient:
         if ttl > 86400 or ttl < self.default_ttl:
             raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
+        if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
+            raise ValueError(f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}")
+
         url = urljoin(self.api_endpoint, f"dns/create/{domain}")
         req_json = {
             **self._get_auth_request_json(),
@@ -149,6 +152,9 @@ class PKBClient:
         if ttl > 86400 or ttl < self.default_ttl:
             raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
+        if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
+            raise ValueError(f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}")
+
         url = urljoin(self.api_endpoint, f"dns/edit/{domain}/{record_id}")
         req_json = {
             **self._get_auth_request_json(),
@@ -190,6 +196,9 @@ class PKBClient:
 
         if ttl > 86400 or ttl < self.default_ttl:
             raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
+
+        if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
+            raise ValueError(f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}")
 
         url = urljoin(self.api_endpoint, f"dns/editByNameType/{domain}/{record_type}/{subdomain}")
         req_json = {
