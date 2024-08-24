@@ -14,6 +14,9 @@ class DNSRecordType(str, Enum):
     TLSA = "TLSA"
     CAA = "CAA"
 
+    def __str__(self):
+        return self.value
+
 
 DNS_RECORDS_WITH_PRIORITY = {DNSRecordType.MX, DNSRecordType.SRV}
 

@@ -31,7 +31,8 @@ setup(
     python_requires=">=3.8",
     install_requires=[
         "setuptools>=39.0.1",
-        "requests>=2.20.0"
+        "requests>=2.20.0",
+        "dnspython~=2.6"
     ],
     entry_points={
         "console_scripts": [

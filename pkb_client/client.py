@@ -4,9 +4,10 @@ from pathlib import Path
 from typing import Optional, List
 from urllib.parse import urljoin
 
+import dns.resolver
 import requests
 
-from pkb_client.dns import DNSRecord, DNSRestoreMode, DNSRecordType, DNS_RECORDS_WITH_PRIORITY
+from pkb_client.dns import DNSRecord, DNSRestoreMode, DNSRecordType, DNSFileFormat, DNS_RECORDS_WITH_PRIORITY
 from pkb_client.domain import DomainInfo
 from pkb_client.forwarding import URLForwarding, URLForwardingType
 from pkb_client.ssl_cert import SSLCertBundle
@@ -322,13 +323,19 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def dns_export(self, domain: str, filename: str, **kwargs) -> bool:
+    def dns_export(self,
+                   domain: str,
+                   filename: str,
+                   type: DNSFileFormat = DNSFileFormat.JSON,
+                   **kwargs) -> bool:
         """
-        Export all DNS record from the given domain as json to a file.
-        This method does not represent a Porkbun API method.
+        Export all DNS record from the given domain to a file. This method does not represent a Porkbun API method.
+        If the file format is JSON, the DNS records with all custom fields like notes are exported.
+        In case the file format is BIND, a BIND zone file is created, which only contains the essential information.
 
         :param domain: the domain for which the DNS record should be retrieved and saved
         :param filename: the filename where to save the exported DNS records
+        :param type: the file format in which the DNS records should be saved
 
         :return: True if everything went well
         """
@@ -344,9 +351,35 @@ class PKBClient:
 
         filepath = Path(filename)
         if filepath.exists():
-            raise Exception("File already exists. Please try another filename")
-        with open(filepath, "w") as f:
-            json.dump(dns_records_dict, f)
+            logging.warning("file already exists, overwriting...")
+
+        if type == DNSFileFormat.JSON:
+            with open(filepath, "w") as f:
+                json.dump(dns_records_dict, f, default=lambda o: o.__dict__, indent=4)
+        elif type == DNSFileFormat.BIND:
+            # domain header
+            bind_file_content = f"$ORIGIN {domain}"
+
+            # SOA record
+            soa_records = dns.resolver.resolve(domain, "SOA")
+            if soa_records:
+                soa_record = soa_records[0]
+                bind_file_content += f"\n@ IN SOA {soa_record.mname} {soa_record.rname} ({soa_record.serial} {soa_record.refresh} {soa_record.retry} {soa_record.expire} {soa_record.minimum})"
+
+            # records
+            for record in dns_records:
+                # name 	record class 	ttl 	record type 	record data
+                if record.prio:
+                    record_content = f"{record.prio} {record.content}"
+                else:
+                    record_content = record.content
+                bind_file_content += f"\n{record.name} IN {record.ttl} {record.type} {record_content}"
+
+            with open(filepath, "w") as f:
+                f.write(bind_file_content)
+        else:
+            raise ValueError("Unknown file type")
+
         logging.info("export finished")
 
         return True
