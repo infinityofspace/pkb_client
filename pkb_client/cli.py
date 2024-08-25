@@ -169,7 +169,7 @@ def main():
         if len(api_key.strip()) == 0:
             while True:
                 api_key = input("Please enter your API key you got from Porkbun (usually starts with \"pk\"): ")
-                if len(api_key) == 0:
+                if len(api_key.strip()) == 0:
                     print("The api key can not be empty.")
                 else:
                     break
@@ -183,7 +183,7 @@ def main():
             while True:
                 api_secret = input(
                     "Please enter your API key secret you got from Porkbun (usually starts with \"sk\"): ")
-                if len(api_secret) == 0:
+                if len(api_secret.strip()) == 0:
                     print("The api key secret can not be empty.")
                 else:
                     break
