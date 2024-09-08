@@ -7,6 +7,7 @@ from urllib.parse import urljoin
 import dns.resolver
 import requests
 
+from pkb_client.bind_file import BindFile
 from pkb_client.dns import DNSRecord, DNSRestoreMode, DNSRecordType, DNSFileFormat, DNS_RECORDS_WITH_PRIORITY
 from pkb_client.domain import DomainInfo
 from pkb_client.forwarding import URLForwarding, URLForwardingType
@@ -475,6 +476,30 @@ class PKBClient:
                 return False
         else:
             raise Exception("restore mode not supported")
+
+        logging.info("import successfully completed")
+
+        return True
+
+    def dns_import_bind(self, filename: str, restore_mode: DNSRestoreMode, **kwargs) -> bool:
+        """
+        Restore all DNS records from a bind file.
+        This method does not represent a Porkbun API method.
+
+        :param filename: the bind filename from which the DNS records are to be restored
+        :param restore_mode: The restore mode (DNS records are identified by the record type and domain)
+            clean: remove all existing DNS records and restore all DNS records from the provided file
+            replace: replace only existing DNS records with the DNS records from the provided file,
+                     but do not create any new DNS records
+            keep: keep the existing DNS records and only create new ones for all DNS records from
+                  the specified file if they do not exist
+
+        :return: True if everything went well
+        """
+
+        bind_file = BindFile.from_file(filename)
+
+        existing_dns_records = self.dns_retrieve(bind_file.origin)
 
         logging.info("import successfully completed")
 
