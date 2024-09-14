@@ -27,19 +27,21 @@ class DNSRecord:
     name: str
     type: DNSRecordType
     content: str
-    ttl: str
-    prio: str
+    ttl: int
+    prio: int | None
     notes: str
 
     @staticmethod
     def from_dict(d):
+        # only use prio for supported record types since the API returns it for all records with default value 0
+        prio = int(d["prio"]) if d["type"] in DNS_RECORDS_WITH_PRIORITY else None
         return DNSRecord(
             id=d["id"],
             name=d["name"],
             type=DNSRecordType[d["type"]],
             content=d["content"],
-            ttl=d["ttl"],
-            prio=d["prio"],
+            ttl=int(d["ttl"]),
+            prio=prio,
             notes=d["notes"],
         )
 
