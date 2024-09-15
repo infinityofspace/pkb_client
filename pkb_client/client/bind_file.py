@@ -68,6 +68,9 @@ class BindFile:
                     if record_parts[3] not in DNSRecordType.__members__:
                         logging.warning(f"Ignoring unsupported record type: {line}")
                         continue
+                    if record_parts[2] not in RecordClass.__members__:
+                        logging.warning(f"Ignoring unsupported record class: {line}")
+                        continue
                     record_name = record_parts[0]
                     record_ttl = int(record_parts[1])
                     record_class = RecordClass[record_parts[2]]
@@ -78,6 +81,9 @@ class BindFile:
                     if record_parts[3] not in DNSRecordType.__members__:
                         logging.warning(f"Ignoring unsupported record type: {line}")
                         continue
+                    if record_parts[1] not in RecordClass.__members__:
+                        logging.warning(f"Ignoring unsupported record class: {line}")
+                        continue
                     record_name = record_parts[0]
                     record_ttl = int(record_parts[2])
                     record_class = RecordClass[record_parts[1]]
@@ -87,6 +93,9 @@ class BindFile:
                     # no ttl, use default or previous
                     if record_parts[2] not in DNSRecordType.__members__:
                         logging.warning(f"Ignoring unsupported record type: {line}")
+                        continue
+                    if record_parts[1] not in RecordClass.__members__:
+                        logging.warning(f"Ignoring unsupported record class: {line}")
                         continue
                     record_name = record_parts[0]
                     if ttl is None and not records:
