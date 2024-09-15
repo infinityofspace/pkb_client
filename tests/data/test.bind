@@ -1,0 +1,8 @@
+$ORIGIN test.com
+$TTL 1234
+@ IN SOA dns.example.com. dns2.example.com. (100 300 100 6000 600)
+test.com IN 600 A 1.2.3.4
+sub.test.com 600 IN A 4.3.2.1
+@ IN 600 AAAA 2001:db8::1 ; This is a comment
+
+test.com IN TXT pkb-client
