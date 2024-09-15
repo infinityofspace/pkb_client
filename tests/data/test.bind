@@ -7,3 +7,4 @@ sub.test.com. 600 IN A 4.3.2.1
 @ IN 600 AAAA 2001:db8::1 ; This is a comment
 
 test.com. IN TXT pkb-client
+test.com. 600 IN MX 10 mail.test.com.

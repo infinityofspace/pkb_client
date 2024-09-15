@@ -2,7 +2,7 @@ import logging
 from dataclasses import dataclass
 from enum import Enum
 
-from pkb_client.client.dns import DNSRecordType
+from pkb_client.client.dns import DNSRecordType, DNS_RECORDS_WITH_PRIORITY
 
 
 class RecordClass(str, Enum):
@@ -19,9 +19,17 @@ class BindRecord:
     record_class: RecordClass
     record_type: DNSRecordType
     data: str
+    prio: int | None = None
+    comment: str | None = None
 
     def __str__(self):
-        return f"{self.name} {self.ttl} {self.record_class} {self.record_type} {self.data}"
+        record_string = f"{self.name} {self.ttl} {self.record_class} {self.record_type}"
+        if self.prio is not None:
+            record_string += f" {self.prio}"
+        record_string += f" {self.data}"
+        if self.comment:
+            record_string += f" ; {self.comment}"
+        return record_string
 
 
 class BindFile:
@@ -55,7 +63,10 @@ class BindFile:
                 # whereby the ttl is optional
 
                 # drop any right trailing comments
-                line = line.split(";")[0].strip()
+                line_parts = line.split(";", 1)
+                line = line_parts[0].strip()
+                comment = line_parts[1].strip() if len(line_parts) > 1 else None
+                prio = None
 
                 # skip empty lines
                 if not line:
@@ -75,7 +86,11 @@ class BindFile:
                     record_ttl = int(record_parts[1])
                     record_class = RecordClass[record_parts[2]]
                     record_type = DNSRecordType[record_parts[3]]
-                    record_data = " ".join(record_parts[4:])
+                    if record_type in DNS_RECORDS_WITH_PRIORITY:
+                        prio = int(record_parts[4])
+                        record_data = " ".join(record_parts[5:])
+                    else:
+                        record_data = " ".join(record_parts[4:])
                 elif record_parts[2].isdigit():
                     # scheme 2
                     if record_parts[3] not in DNSRecordType.__members__:
@@ -88,7 +103,11 @@ class BindFile:
                     record_ttl = int(record_parts[2])
                     record_class = RecordClass[record_parts[1]]
                     record_type = DNSRecordType[record_parts[3]]
-                    record_data = " ".join(record_parts[4:])
+                    if record_type in DNS_RECORDS_WITH_PRIORITY:
+                        prio = int(record_parts[4])
+                        record_data = " ".join(record_parts[5:])
+                    else:
+                        record_data = " ".join(record_parts[4:])
                 else:
                     # no ttl, use default or previous
                     if record_parts[2] not in DNSRecordType.__members__:
@@ -103,12 +122,16 @@ class BindFile:
                     record_ttl = ttl or records[-1].ttl
                     record_class = RecordClass[record_parts[1]]
                     record_type = DNSRecordType[record_parts[2]]
-                    record_data = " ".join(record_parts[3:])
+                    if record_type in DNS_RECORDS_WITH_PRIORITY:
+                        prio = int(record_parts[3])
+                        record_data = " ".join(record_parts[4:])
+                    else:
+                        record_data = " ".join(record_parts[3:])
 
                 # replace @ in record name with origin
                 record_name = record_name.replace("@", origin)
 
-                records.append(BindRecord(record_name, record_ttl, record_class, record_type, record_data))
+                records.append(BindRecord(record_name, record_ttl, record_class, record_type, record_data, prio=prio, comment=comment))
 
         if origin is None:
             raise ValueError("No origin found in file")
