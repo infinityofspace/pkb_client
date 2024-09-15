@@ -423,7 +423,7 @@ class PKBClient:
         :param domain: the domain for which the DNS record should be restored
         :param filename: the filename from which the DNS records are to be restored
         :param restore_mode: The restore mode (DNS records are identified by the record id)
-            clean: remove all existing DNS records and restore all DNS records from the provided file
+            clear: remove all existing DNS records and restore all DNS records from the provided file
             replace: replace only existing DNS records with the DNS records from the provided file,
                      but do not create any new DNS records
             keep: keep the existing DNS records and only create new ones for all DNS records from

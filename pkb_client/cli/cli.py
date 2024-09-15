@@ -103,7 +103,7 @@ def main():
     parser_dns_import.add_argument("domain", help="The domain for which the DNS record should be restored.")
     parser_dns_import.add_argument("filename", help="The filename from which the DNS records are to be restored.")
     parser_dns_import.add_argument("restore_mode", help="""The restore mode (DNS records are identified by the record id):
-    clean: remove all existing DNS records and restore all DNS records from the provided file
+    clear: remove all existing DNS records and restore all DNS records from the provided file
     replace: replace only existing DNS records with the DNS records from the provided file, but do not create any new DNS records
     keep: keep the existing DNS records and only create new ones for all DNS records from the specified file if they do not exist
     """, type=DNSRestoreMode.from_string, choices=list(DNSRestoreMode))
