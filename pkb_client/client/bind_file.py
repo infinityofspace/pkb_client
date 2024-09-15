@@ -36,7 +36,7 @@ class BindRecord:
 class BindFile:
     origin: str
     ttl: Optional[int] = None
-    records: list[BindRecord]
+    records: List[BindRecord]
 
     def __init__(self, origin: str, ttl: Optional[int] = None, records: Optional[List[BindRecord]] = None) -> None:
         self.origin = origin
