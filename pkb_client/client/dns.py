@@ -60,8 +60,3 @@ class DNSRestoreMode(Enum):
             return DNSRestoreMode[a]
         except KeyError:
             return a
-
-
-class DNSFileFormat(str, Enum):
-    BIND = "BIND"
-    JSON = "JSON"
