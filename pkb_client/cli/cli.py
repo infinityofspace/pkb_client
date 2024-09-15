@@ -114,10 +114,8 @@ def main():
     parser_dns_import_bind.set_defaults(func=PKBClient.dns_import_bind)
     parser_dns_import_bind.add_argument("filename", help="The filename from which the DNS records are to be restored.")
     parser_dns_import_bind.add_argument("restore_mode", help="""The restore mode (DNS records are identified by the record id):
-    clean: remove all existing DNS records and restore all DNS records from the provided file
-    replace: replace only existing DNS records with the DNS records from the provided file, but do not create any new DNS records
-    keep: keep the existing DNS records and only create new ones for all DNS records from the specified file if they do not exist
-    """, type=DNSRestoreMode.from_string, choices=list(DNSRestoreMode))
+    clear: remove all existing DNS records and restore all DNS records from the provided file
+    """, type=DNSRestoreMode.from_string, choices=[DNSRestoreMode.clear])
 
     parser_domain_pricing = subparsers.add_parser("domain-pricing", help="Get the pricing for Porkbun domains.")
     parser_domain_pricing.set_defaults(func=PKBClient.get_domain_pricing)

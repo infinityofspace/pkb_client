@@ -513,23 +513,47 @@ class PKBClient:
 
     def dns_import_bind(self, filename: str, restore_mode: DNSRestoreMode, **kwargs) -> bool:
         """
-        Restore all DNS records from a bind file.
+        Restore all DNS records from a BIND file.
         This method does not represent a Porkbun API method.
 
         :param filename: the bind filename from which the DNS records are to be restored
-        :param restore_mode: The restore mode (DNS records are identified by the record type and domain)
-            clean: remove all existing DNS records and restore all DNS records from the provided file
-            replace: replace only existing DNS records with the DNS records from the provided file,
-                     but do not create any new DNS records
-            keep: keep the existing DNS records and only create new ones for all DNS records from
-                  the specified file if they do not exist
-
+        :param restore_mode: The restore mode:
+            clear: remove all existing DNS records and restore all DNS records from the provided file
         :return: True if everything went well
         """
 
         bind_file = BindFile.from_file(filename)
 
         existing_dns_records = self.dns_retrieve(bind_file.origin)
+
+        if restore_mode is DNSRestoreMode.clear:
+            logging.debug("restore mode: clear")
+
+            try:
+                # delete all existing DNS records
+                for record in existing_dns_records:
+                    self.dns_delete(bind_file.origin, record.id)
+
+                # restore all records from BIND file by creating new DNS records
+                for record in bind_file.records:
+                    # extract subdomain from record name
+                    subdomain = record.name.replace(bind_file.origin, "")
+                    # replace trailing dot
+                    subdomain = subdomain[:-1] if subdomain.endswith(".") else subdomain
+                    self.dns_create(domain=bind_file.origin,
+                                    record_type=record.record_type,
+                                    content=record.data,
+                                    name=subdomain,
+                                    ttl=record.ttl,
+                                    prio=record.prio)
+
+            except Exception as e:
+                logging.error("something went wrong: {}".format(e.__str__()))
+                self.__handle_error_backup__(existing_dns_records)
+                logging.error("import failed")
+                return False
+        else:
+            raise Exception("restore mode not supported")
 
         logging.info("import successfully completed")
 
