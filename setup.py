@@ -36,7 +36,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "pkb-client = pkb_client.cli:main",
+            "pkb-client = pkb_client.cli.cli:main",
         ]
     }
 )

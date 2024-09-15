@@ -7,11 +7,11 @@ from urllib.parse import urljoin
 import dns.resolver
 import requests
 
-from pkb_client.bind_file import BindFile
-from pkb_client.dns import DNSRecord, DNSRestoreMode, DNSRecordType, DNSFileFormat, DNS_RECORDS_WITH_PRIORITY
-from pkb_client.domain import DomainInfo
-from pkb_client.forwarding import URLForwarding, URLForwardingType
-from pkb_client.ssl_cert import SSLCertBundle
+from pkb_client.client.bind_file import BindFile
+from pkb_client.client.dns import DNSRecord, DNSRestoreMode, DNSRecordType, DNSFileFormat, DNS_RECORDS_WITH_PRIORITY
+from pkb_client.client.domain import DomainInfo
+from pkb_client.client.forwarding import URLForwarding, URLForwardingType
+from pkb_client.client.ssl_cert import SSLCertBundle
 
 API_ENDPOINT = "https://porkbun.com/api/json/v3/"
 

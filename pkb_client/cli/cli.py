@@ -4,9 +4,9 @@ import json
 import textwrap
 from datetime import datetime
 
-from pkb_client.client import PKBClient, DNSRestoreMode, API_ENDPOINT
-from pkb_client.dns import DNSRecordType, DNSFileFormat
-from pkb_client.forwarding import URLForwardingType
+from pkb_client.client import PKBClient, API_ENDPOINT
+from pkb_client.client.dns import DNSRecordType, DNSFileFormat, DNSRestoreMode
+from pkb_client.client.forwarding import URLForwardingType
 
 
 class CustomJSONEncoder(json.JSONEncoder):
@@ -91,7 +91,7 @@ def main():
                                    help="The domain for which the DNS record should be retrieved and saved.")
     parser_dns_export.add_argument("filename", help="The filename where to save the exported DNS records.")
     parser_dns_export.add_argument("--type", help="The file format in which the DNS records should be saved.",
-        choices=list(DNSFileFormat), default=DNSFileFormat.JSON)
+                                   choices=list(DNSFileFormat), default=DNSFileFormat.JSON)
 
     parser_dns_import = subparsers.add_parser("dns-import", help="Restore all DNS records from a local file.",
                                               formatter_class=argparse.RawTextHelpFormatter)
@@ -104,7 +104,7 @@ def main():
     keep: keep the existing DNS records and only create new ones for all DNS records from the specified file if they do not exist
     """, type=DNSRestoreMode.from_string, choices=list(DNSRestoreMode))
     parser_dns_import.add_argument("--type", help="The file format from which the DNS records should be restored.",
-        choices=list(DNSFileFormat), default=DNSFileFormat.JSON)
+                                   choices=list(DNSFileFormat), default=DNSFileFormat.JSON)
 
     parser_domain_pricing = subparsers.add_parser("domain-pricing", help="Get the pricing for Porkbun domains.")
     parser_domain_pricing.set_defaults(func=PKBClient.get_domain_pricing)
