@@ -1,7 +1,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 from pkb_client.client.dns import DNSRecordType, DNS_RECORDS_WITH_PRIORITY
 
@@ -38,7 +38,7 @@ class BindFile:
     ttl: Optional[int] = None
     records: list[BindRecord]
 
-    def __init__(self, origin: str, ttl: Optional[int] = None, records: Optional[list[BindRecord]] = None) -> None:
+    def __init__(self, origin: str, ttl: Optional[int] = None, records: Optional[List[BindRecord]] = None) -> None:
         self.origin = origin
         self.ttl = ttl
         self.records = records or []
