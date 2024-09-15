@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import Optional
 
 
 class DNSRecordType(str, Enum):
@@ -28,7 +29,7 @@ class DNSRecord:
     type: DNSRecordType
     content: str
     ttl: int
-    prio: int | None
+    prio: Optional[int]
     notes: str
 
     @staticmethod

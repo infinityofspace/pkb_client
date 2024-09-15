@@ -1,6 +1,7 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
+from typing import Optional
 
 from pkb_client.client.dns import DNSRecordType, DNS_RECORDS_WITH_PRIORITY
 
@@ -19,8 +20,8 @@ class BindRecord:
     record_class: RecordClass
     record_type: DNSRecordType
     data: str
-    prio: int | None = None
-    comment: str | None = None
+    prio: Optional[int] = None
+    comment: Optional[str] = None
 
     def __str__(self):
         record_string = f"{self.name} {self.ttl} {self.record_class} {self.record_type}"
@@ -34,10 +35,10 @@ class BindRecord:
 
 class BindFile:
     origin: str
-    ttl: int | None = None
+    ttl: Optional[int] = None
     records: list[BindRecord]
 
-    def __init__(self, origin: str, ttl: int | None = None, records: list[BindRecord] | None = None) -> None:
+    def __init__(self, origin: str, ttl: Optional[int] = None, records: Optional[list[BindRecord]] = None) -> None:
         self.origin = origin
         self.ttl = ttl
         self.records = records or []
@@ -131,7 +132,8 @@ class BindFile:
                 # replace @ in record name with origin
                 record_name = record_name.replace("@", origin)
 
-                records.append(BindRecord(record_name, record_ttl, record_class, record_type, record_data, prio=prio, comment=comment))
+                records.append(BindRecord(record_name, record_ttl, record_class, record_type, record_data, prio=prio,
+                                          comment=comment))
 
         if origin is None:
             raise ValueError("No origin found in file")
