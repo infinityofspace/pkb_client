@@ -1,6 +1,7 @@
 import argparse
 import dataclasses
 import json
+import os
 import textwrap
 from datetime import datetime
 
@@ -163,22 +164,29 @@ def main():
         exit(0)
 
     if args.key is None:
-        while True:
-            api_key = input("Please enter your API key you got from Porkbun (usually starts with \"pk\"): ")
-            if len(api_key) == 0:
-                print("The api key can not be empty.")
-            else:
-                break
+        # try to get the api key from the environment variable or fallback to user input
+        api_key = os.environ.get("PKB_API_KEY", "")
+        if len(api_key.strip()) == 0:
+            while True:
+                api_key = input("Please enter your API key you got from Porkbun (usually starts with \"pk\"): ")
+                if len(api_key.strip()) == 0:
+                    print("The api key can not be empty.")
+                else:
+                    break
     else:
         api_key = args.key
 
     if args.secret is None:
-        while True:
-            api_secret = input("Please enter your API key secret you got from Porkbun (usually starts with \"sk\"): ")
-            if len(api_secret) == 0:
-                print("The api key secret can not be empty.")
-            else:
-                break
+        # try to get the api secret from the environment variable or fallback to user input
+        api_secret = os.environ.get("PKB_API_SECRET", "")
+        if len(api_secret.strip()) == 0:
+            while True:
+                api_secret = input(
+                    "Please enter your API key secret you got from Porkbun (usually starts with \"sk\"): ")
+                if len(api_secret.strip()) == 0:
+                    print("The api key secret can not be empty.")
+                else:
+                    break
     else:
         api_secret = args.secret
 

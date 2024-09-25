@@ -71,8 +71,9 @@ pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> ping
 ```
 
 If you don't want to specify the key and secret in the program call, because for example the command line calls are
-logged and you don't want to log the API access, then you can also omit both arguments and *pkb-client* asks for a user
-input.
+logged and you don't want to log the API access, then you can also set the environment variables `PKB_API_KEY` and
+`PKB_API_SECRET`. If you not specify API key and secret in any way, *pkb-client* asks for a user input. The command line
+arguments of the API key and secret have the highest priority.
 
 You can see an overview of all usable API methods via the help:
 
