@@ -1,0 +1,9 @@
+$ORIGIN test.com.
+@ IN SOA dns.example.com. dns2.example.com. (100 300 100 6000 600)
+test.com. IN 600 A 1.2.3.4
+test.com. HS 600 A 1.2.3.4
+sub.test.com. 600 IN A 4.3.2.1
+@ IN 700 AAAA 2001:db8::1 ; This is a comment
+
+test.com. IN TXT pkb-client
+test.com. 600 IN MX 10 mail.test.com.

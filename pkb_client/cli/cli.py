@@ -5,9 +5,9 @@ import os
 import textwrap
 from datetime import datetime
 
-from pkb_client.client import PKBClient, DNSRestoreMode, API_ENDPOINT
-from pkb_client.dns import DNSRecordType
-from pkb_client.forwarding import URLForwardingType
+from pkb_client.client import PKBClient, API_ENDPOINT
+from pkb_client.client.dns import DNSRecordType, DNSRestoreMode
+from pkb_client.client.forwarding import URLForwardingType
 
 
 class CustomJSONEncoder(json.JSONEncoder):
@@ -33,7 +33,7 @@ def main():
                                             License: Apache-2.0 https://github.com/psf/requests/blob/master/LICENSE
                                         setuptools:
                                             Project: https://github.com/pypa/setuptools
-                                            License: MIT https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE                                            
+                                            License: MIT https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE
                                     """)
     )
 
@@ -86,22 +86,37 @@ def main():
     parser_dns_receive.set_defaults(func=PKBClient.dns_retrieve)
     parser_dns_receive.add_argument("domain", help="The domain for which the DNS record should be retrieved.")
 
-    parser_dns_export = subparsers.add_parser("dns-export", help="Save all DNS records to a local file as json.")
+    parser_dns_export = subparsers.add_parser("dns-export", help="Save all DNS records to a local json file.")
     parser_dns_export.set_defaults(func=PKBClient.dns_export)
     parser_dns_export.add_argument("domain",
                                    help="The domain for which the DNS record should be retrieved and saved.")
     parser_dns_export.add_argument("filename", help="The filename where to save the exported DNS records.")
 
-    parser_dns_import = subparsers.add_parser("dns-import", help="Restore all DNS records from a local file.",
+    parser_dns_export_bind = subparsers.add_parser("dns-export-bind", help="Save all DNS records to a local BIND file.")
+    parser_dns_export_bind.set_defaults(func=PKBClient.dns_export_bind)
+    parser_dns_export_bind.add_argument("domain",
+                                        help="The domain for which the DNS record should be retrieved and saved.")
+    parser_dns_export_bind.add_argument("filename", help="The filename where to save the exported DNS records.")
+
+    parser_dns_import = subparsers.add_parser("dns-import", help="Restore all DNS records from a local json file.",
                                               formatter_class=argparse.RawTextHelpFormatter)
     parser_dns_import.set_defaults(func=PKBClient.dns_import)
     parser_dns_import.add_argument("domain", help="The domain for which the DNS record should be restored.")
     parser_dns_import.add_argument("filename", help="The filename from which the DNS records are to be restored.")
     parser_dns_import.add_argument("restore_mode", help="""The restore mode (DNS records are identified by the record id):
-    clean: remove all existing DNS records and restore all DNS records from the provided file
+    clear: remove all existing DNS records and restore all DNS records from the provided file
     replace: replace only existing DNS records with the DNS records from the provided file, but do not create any new DNS records
     keep: keep the existing DNS records and only create new ones for all DNS records from the specified file if they do not exist
     """, type=DNSRestoreMode.from_string, choices=list(DNSRestoreMode))
+
+    parser_dns_import_bind = subparsers.add_parser("dns-import-bind",
+                                                   help="Restore all DNS records from a local BIND file.",
+                                                   formatter_class=argparse.RawTextHelpFormatter)
+    parser_dns_import_bind.set_defaults(func=PKBClient.dns_import_bind)
+    parser_dns_import_bind.add_argument("filename", help="The filename from which the DNS records are to be restored.")
+    parser_dns_import_bind.add_argument("restore_mode", help="""The restore mode (DNS records are identified by the record id):
+    clear: remove all existing DNS records and restore all DNS records from the provided file
+    """, type=DNSRestoreMode.from_string, choices=[DNSRestoreMode.clear])
 
     parser_domain_pricing = subparsers.add_parser("domain-pricing", help="Get the pricing for Porkbun domains.")
     parser_domain_pricing.set_defaults(func=PKBClient.get_domain_pricing)

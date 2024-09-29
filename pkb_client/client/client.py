@@ -4,12 +4,14 @@ from pathlib import Path
 from typing import Optional, List
 from urllib.parse import urljoin
 
+import dns.resolver
 import requests
 
-from pkb_client.dns import DNSRecord, DNSRestoreMode, DNSRecordType
-from pkb_client.domain import DomainInfo
-from pkb_client.forwarding import URLForwarding, URLForwardingType
-from pkb_client.ssl_cert import SSLCertBundle
+from pkb_client.client import BindFile
+from pkb_client.client.dns import DNSRecord, DNSRestoreMode, DNSRecordType, DNS_RECORDS_WITH_PRIORITY
+from pkb_client.client.domain import DomainInfo
+from pkb_client.client.forwarding import URLForwarding, URLForwardingType
+from pkb_client.client.ssl_cert import SSLCertBundle
 
 API_ENDPOINT = "https://porkbun.com/api/json/v3/"
 
@@ -103,6 +105,9 @@ class PKBClient:
         if ttl > 86400 or ttl < self.default_ttl:
             raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
+        if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
+            raise ValueError(f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}")
+
         url = urljoin(self.api_endpoint, f"dns/create/{domain}")
         req_json = {
             **self._get_auth_request_json(),
@@ -149,6 +154,9 @@ class PKBClient:
         if ttl > 86400 or ttl < self.default_ttl:
             raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
+        if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
+            raise ValueError(f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}")
+
         url = urljoin(self.api_endpoint, f"dns/edit/{domain}/{record_id}")
         req_json = {
             **self._get_auth_request_json(),
@@ -190,6 +198,9 @@ class PKBClient:
 
         if ttl > 86400 or ttl < self.default_ttl:
             raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
+
+        if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
+            raise ValueError(f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}")
 
         url = urljoin(self.api_endpoint, f"dns/editByNameType/{domain}/{record_type}/{subdomain}")
         req_json = {
@@ -313,10 +324,14 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def dns_export(self, domain: str, filename: str, **kwargs) -> bool:
+    def dns_export(self,
+                   domain: str,
+                   filename: str,
+                   **kwargs) -> bool:
         """
-        Export all DNS record from the given domain as json to a file.
+        Export all DNS record from the given domain to a json file.
         This method does not represent a Porkbun API method.
+        DNS records with all custom fields like notes are exported.
 
         :param domain: the domain for which the DNS record should be retrieved and saved
         :param filename: the filename where to save the exported DNS records
@@ -335,9 +350,67 @@ class PKBClient:
 
         filepath = Path(filename)
         if filepath.exists():
-            raise Exception("File already exists. Please try another filename")
+            logging.warning("file already exists, overwriting...")
+
         with open(filepath, "w") as f:
-            json.dump(dns_records_dict, f)
+            json.dump(dns_records_dict, f, default=lambda o: o.__dict__, indent=4)
+
+        logging.info("export finished")
+
+        return True
+
+    def dns_export_bind(self,
+                        domain: str,
+                        filename: str,
+                        **kwargs) -> bool:
+        """
+        Export all DNS record from the given domain to a BIND file.
+        This method does not represent a Porkbun API method.
+        Porkbun DNS record notes are exported as comments.
+
+        :param domain: the domain for which the DNS record should be retrieved and saved
+        :param filename: the filename where to save the exported DNS records
+
+        :return: True if everything went well
+        """
+
+        logging.info("retrieve current DNS records...")
+        dns_records = self.dns_retrieve(domain)
+
+        logging.info("save DNS records to {} ...".format(filename))
+        # merge the single DNS records into one single dict with the record id as key
+        dns_records_dict = dict()
+        for record in dns_records:
+            dns_records_dict[record.id] = record
+
+        filepath = Path(filename)
+        if filepath.exists():
+            logging.warning("file already exists, overwriting...")
+
+        # domain header
+        bind_file_content = f"$ORIGIN {domain}"
+
+        # SOA record
+        soa_records = dns.resolver.resolve(domain, "SOA")
+        if soa_records:
+            soa_record = soa_records[0]
+            bind_file_content += f"\n@ IN SOA {soa_record.mname} {soa_record.rname} ({soa_record.serial} {soa_record.refresh} {soa_record.retry} {soa_record.expire} {soa_record.minimum})"
+
+        # records
+        for record in dns_records:
+            # name 	record class 	ttl 	record type 	record data
+            if record.prio:
+                record_content = f"{record.prio} {record.content}"
+            else:
+                record_content = record.content
+            bind_file_content += f"\n{record.name} IN {record.ttl} {record.type} {record_content}"
+
+            if record.notes:
+                bind_file_content += f" ; {record.notes}"
+
+        with open(filepath, "w") as f:
+            f.write(bind_file_content)
+
         logging.info("export finished")
 
         return True
@@ -350,7 +423,7 @@ class PKBClient:
         :param domain: the domain for which the DNS record should be restored
         :param filename: the filename from which the DNS records are to be restored
         :param restore_mode: The restore mode (DNS records are identified by the record id)
-            clean: remove all existing DNS records and restore all DNS records from the provided file
+            clear: remove all existing DNS records and restore all DNS records from the provided file
             replace: replace only existing DNS records with the DNS records from the provided file,
                      but do not create any new DNS records
             keep: keep the existing DNS records and only create new ones for all DNS records from
@@ -433,6 +506,54 @@ class PKBClient:
                 return False
         else:
             raise Exception("restore mode not supported")
+
+        logging.info("import successfully completed")
+
+        return True
+
+    def dns_import_bind(self, filename: str, restore_mode: DNSRestoreMode, **kwargs) -> bool:
+        """
+        Restore all DNS records from a BIND file.
+        This method does not represent a Porkbun API method.
+
+        :param filename: the bind filename from which the DNS records are to be restored
+        :param restore_mode: The restore mode:
+            clear: remove all existing DNS records and restore all DNS records from the provided file
+        :return: True if everything went well
+        """
+
+        bind_file = BindFile.from_file(filename)
+
+        existing_dns_records = self.dns_retrieve(bind_file.origin)
+
+        if restore_mode is DNSRestoreMode.clear:
+            logging.debug("restore mode: clear")
+
+            try:
+                # delete all existing DNS records
+                for record in existing_dns_records:
+                    self.dns_delete(bind_file.origin, record.id)
+
+                # restore all records from BIND file by creating new DNS records
+                for record in bind_file.records:
+                    # extract subdomain from record name
+                    subdomain = record.name.replace(bind_file.origin, "")
+                    # replace trailing dot
+                    subdomain = subdomain[:-1] if subdomain.endswith(".") else subdomain
+                    self.dns_create(domain=bind_file.origin,
+                                    record_type=record.record_type,
+                                    content=record.data,
+                                    name=subdomain,
+                                    ttl=record.ttl,
+                                    prio=record.prio)
+
+            except Exception as e:
+                logging.error("something went wrong: {}".format(e.__str__()))
+                self.__handle_error_backup__(existing_dns_records)
+                logging.error("import failed")
+                return False
+        else:
+            raise Exception(f"restore mode '{restore_mode.value}' not supported")
 
         logging.info("import successfully completed")
 

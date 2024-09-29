@@ -5,8 +5,8 @@ from importlib import resources
 from threading import Thread
 
 from pkb_client.client import PKBClient, PKBClientException
-from pkb_client.dns import DNSRecord, DNSRecordType
-from pkb_client.forwarding import URLForwarding, URLForwardingType
+from pkb_client.client.dns import DNSRecord, DNSRecordType
+from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 from tests import responses
 from tests.handler import RequestHandler
 
@@ -48,13 +48,24 @@ class TestClientAuth(unittest.TestCase):
 
     def test_dns_create(self):
         pkb_client = PKBClient(KEY, SECRET, BASE_URL)
-        dns_id = pkb_client.dns_create("example.com", DNSRecordType.A, "172.0.0.1", "sub.example.com", 3600, 2)
+
+        dns_id = pkb_client.dns_create("example.com", DNSRecordType.A, "172.0.0.1", "sub.example.com", 3600)
+        dns_id = pkb_client.dns_create("example.com", DNSRecordType.MX, "172.0.0.1", "sub.example.com", 3600, 2)
+
+        with self.assertRaises(ValueError):
+            dns_id = pkb_client.dns_create("example.com", DNSRecordType.A, "172.0.0.1", "sub.example.com", 3600, 2)
 
         self.assertEqual("123456", dns_id)
 
     def test_dns_edit(self):
         pkb_client = PKBClient(KEY, SECRET, BASE_URL)
-        success = pkb_client.dns_edit("example.com", "123456", DNSRecordType.A, "172.0.0.1", "sub.example.com", 3600, 2)
+
+        success = pkb_client.dns_edit("example.com", "123456", DNSRecordType.A, "172.0.0.1", "sub.example.com", 3600)
+        success = pkb_client.dns_edit("example.com", "123456", DNSRecordType.MX, "172.0.0.1", "sub.example.com", 3600,
+                                      2)
+
+        with self.assertRaises(ValueError):
+            pkb_client.dns_edit("example.com", "123456", DNSRecordType.A, "172.0.0.1", "sub.example.com", 3600, 2)
 
         self.assertTrue(success)
 
@@ -107,3 +118,7 @@ class TestClientAuth(unittest.TestCase):
                                                 "123456")
 
         self.assertTrue(success)
+
+
+if __name__ == "__main__":
+    unittest.main()

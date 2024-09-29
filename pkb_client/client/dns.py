@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
+from typing import Optional
 
 
 class DNSRecordType(str, Enum):
@@ -14,6 +15,12 @@ class DNSRecordType(str, Enum):
     TLSA = "TLSA"
     CAA = "CAA"
 
+    def __str__(self):
+        return self.value
+
+
+DNS_RECORDS_WITH_PRIORITY = {DNSRecordType.MX, DNSRecordType.SRV}
+
 
 @dataclass
 class DNSRecord:
@@ -21,19 +28,21 @@ class DNSRecord:
     name: str
     type: DNSRecordType
     content: str
-    ttl: str
-    prio: str
+    ttl: int
+    prio: Optional[int]
     notes: str
 
     @staticmethod
     def from_dict(d):
+        # only use prio for supported record types since the API returns it for all records with default value 0
+        prio = int(d["prio"]) if d["type"] in DNS_RECORDS_WITH_PRIORITY else None
         return DNSRecord(
             id=d["id"],
             name=d["name"],
             type=DNSRecordType[d["type"]],
             content=d["content"],
-            ttl=d["ttl"],
-            prio=d["prio"],
+            ttl=int(d["ttl"]),
+            prio=prio,
             notes=d["notes"],
         )
 
