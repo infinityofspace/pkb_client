@@ -553,7 +553,7 @@ class PKBClient:
                 logging.error("import failed")
                 return False
         else:
-            raise Exception("restore mode not supported")
+            raise Exception(f"restore mode '{restore_mode.value}' not supported")
 
         logging.info("import successfully completed")
 
