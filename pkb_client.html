@@ -14,6 +14,7 @@
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pkb_client.cli package" href="pkb_client.cli.html" />
     <link rel="prev" title="pkb_client" href="modules.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -34,659 +35,86 @@
             
   <section id="pkb-client-package">
 <h1>pkb_client package<a class="headerlink" href="#pkb-client-package" title="Link to this heading">¶</a></h1>
-<section id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
-</section>
-<section id="module-pkb_client.cli">
-<span id="pkb-client-cli-module"></span><h2>pkb_client.cli module<a class="headerlink" href="#module-pkb_client.cli" title="Link to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pkb_client.cli.CustomJSONEncoder">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.cli.</span></span><span class="sig-name descname"><span class="pre">CustomJSONEncoder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">skipkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensure_ascii</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_circular</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separators</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/cli.html#CustomJSONEncoder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.cli.CustomJSONEncoder" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">JSONEncoder</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.cli.CustomJSONEncoder.default">
-<span class="sig-name descname"><span class="pre">default</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">o</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/cli.html#CustomJSONEncoder.default"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.cli.CustomJSONEncoder.default" title="Link to this definition">¶</a></dt>
-<dd><p>Implement this method in a subclass such that it returns
-a serializable object for <code class="docutils literal notranslate"><span class="pre">o</span></code>, or calls the base implementation
-(to raise a <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>).</p>
-<p>For example, to support arbitrary iterators, you could
-implement default like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">o</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">iterable</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-        <span class="k">pass</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
-    <span class="c1"># Let the base class default method raise the TypeError</span>
-    <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">o</span><span class="p">)</span>
-</pre></div>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pkb_client.cli.html">pkb_client.cli package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.cli.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.cli.html#pkb-client-cli-cli-module">pkb_client.cli.cli module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.cli.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pkb_client.client.html">pkb_client.client package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.client.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.client.html#module-pkb_client.client.bind_file">pkb_client.client.bind_file module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindFile"><code class="docutils literal notranslate"><span class="pre">BindFile</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindFile.from_file"><code class="docutils literal notranslate"><span class="pre">BindFile.from_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindFile.origin"><code class="docutils literal notranslate"><span class="pre">BindFile.origin</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindFile.records"><code class="docutils literal notranslate"><span class="pre">BindFile.records</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindFile.to_file"><code class="docutils literal notranslate"><span class="pre">BindFile.to_file()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindFile.ttl"><code class="docutils literal notranslate"><span class="pre">BindFile.ttl</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindRecord"><code class="docutils literal notranslate"><span class="pre">BindRecord</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindRecord.comment"><code class="docutils literal notranslate"><span class="pre">BindRecord.comment</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindRecord.data"><code class="docutils literal notranslate"><span class="pre">BindRecord.data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindRecord.name"><code class="docutils literal notranslate"><span class="pre">BindRecord.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindRecord.prio"><code class="docutils literal notranslate"><span class="pre">BindRecord.prio</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindRecord.record_class"><code class="docutils literal notranslate"><span class="pre">BindRecord.record_class</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindRecord.record_type"><code class="docutils literal notranslate"><span class="pre">BindRecord.record_type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.BindRecord.ttl"><code class="docutils literal notranslate"><span class="pre">BindRecord.ttl</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.RecordClass"><code class="docutils literal notranslate"><span class="pre">RecordClass</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.bind_file.RecordClass.IN"><code class="docutils literal notranslate"><span class="pre">RecordClass.IN</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.client.html#pkb-client-client-client-module">pkb_client.client.client module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.client.html#module-pkb_client.client.dns">pkb_client.client.dns module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord"><code class="docutils literal notranslate"><span class="pre">DNSRecord</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord.content"><code class="docutils literal notranslate"><span class="pre">DNSRecord.content</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord.from_dict"><code class="docutils literal notranslate"><span class="pre">DNSRecord.from_dict()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord.id"><code class="docutils literal notranslate"><span class="pre">DNSRecord.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord.name"><code class="docutils literal notranslate"><span class="pre">DNSRecord.name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord.notes"><code class="docutils literal notranslate"><span class="pre">DNSRecord.notes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord.prio"><code class="docutils literal notranslate"><span class="pre">DNSRecord.prio</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord.ttl"><code class="docutils literal notranslate"><span class="pre">DNSRecord.ttl</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord.type"><code class="docutils literal notranslate"><span class="pre">DNSRecord.type</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType"><code class="docutils literal notranslate"><span class="pre">DNSRecordType</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.A"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.A</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.AAAA"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.AAAA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.ALIAS"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.ALIAS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.CAA"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.CAA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.CNAME"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.CNAME</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.MX"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.MX</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.NS"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.NS</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.SRV"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.SRV</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.TLSA"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.TLSA</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType.TXT"><code class="docutils literal notranslate"><span class="pre">DNSRecordType.TXT</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRestoreMode"><code class="docutils literal notranslate"><span class="pre">DNSRestoreMode</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRestoreMode.clear"><code class="docutils literal notranslate"><span class="pre">DNSRestoreMode.clear</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRestoreMode.from_string"><code class="docutils literal notranslate"><span class="pre">DNSRestoreMode.from_string()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRestoreMode.keep"><code class="docutils literal notranslate"><span class="pre">DNSRestoreMode.keep</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRestoreMode.replace"><code class="docutils literal notranslate"><span class="pre">DNSRestoreMode.replace</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.client.html#pkb-client-client-domain-module">pkb_client.client.domain module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.client.html#pkb-client-client-forwarding-module">pkb_client.client.forwarding module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.client.html#pkb-client-client-ssl-cert-module">pkb_client.client.ssl_cert module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pkb_client.client.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
 </div>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pkb_client.cli.main">
-<span class="sig-prename descclassname"><span class="pre">pkb_client.cli.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/cli.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.cli.main" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="module-pkb_client.client">
-<span id="pkb-client-client-module"></span><h2>pkb_client.client module<a class="headerlink" href="#module-pkb_client.client" title="Link to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.client.</span></span><span class="sig-name descname"><span class="pre">PKBClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_api_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">api_endpoint</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'https://porkbun.com/api/json/v3/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>API client for Porkbun.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.add_url_forward">
-<span class="sig-name descname"><span class="pre">add_url_forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdomain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pkb_client.forwarding.URLForwardingType" title="pkb_client.forwarding.URLForwardingType"><span class="pre">URLForwardingType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wildcard</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.add_url_forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.add_url_forward" title="Link to this definition">¶</a></dt>
-<dd><p>Add an url forward for the given domain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#Domain%20Add%20URL%20Forward">https://porkbun.com/api/json/v3/documentation#Domain%20Add%20URL%20Forward</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the url forwarding should be added</p></li>
-<li><p><strong>subdomain</strong> – the subdomain for which the url forwarding should be added, can be empty for root domain</p></li>
-<li><p><strong>location</strong> – the location to which the url forwarding should redirect</p></li>
-<li><p><strong>type</strong> – the type of the url forwarding</p></li>
-<li><p><strong>include_path</strong> – if the path should be included in the url forwarding</p></li>
-<li><p><strong>wildcard</strong> – if the url forwarding should also be applied to all subdomains</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the forwarding was added successfully</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.delete_url_forward">
-<span class="sig-name descname"><span class="pre">delete_url_forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.delete_url_forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.delete_url_forward" title="Link to this definition">¶</a></dt>
-<dd><p>Delete an url forward for the given domain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#Domain%20Delete%20URL%20Forward">https://porkbun.com/api/json/v3/documentation#Domain%20Delete%20URL%20Forward</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the url forwarding should be deleted</p></li>
-<li><p><strong>id</strong> – the id of the url forwarding which should be deleted</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the deletion was successful</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_create">
-<span class="sig-name descname"><span class="pre">dns_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pkb_client.dns.DNSRecordType" title="pkb_client.dns.DNSRecordType"><span class="pre">DNSRecordType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_create" title="Link to this definition">¶</a></dt>
-<dd><p>API DNS create method: create a new DNS record for given domain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#DNS%20Create%20Record">https://porkbun.com/api/json/v3/documentation#DNS%20Create%20Record</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the DNS record should be created</p></li>
-<li><p><strong>record_type</strong> – the type of the new DNS record</p></li>
-<li><p><strong>content</strong> – the content of the new DNS record</p></li>
-<li><p><strong>name</strong> – the subdomain for which the new DNS record entry should apply; the * can be used for a
-wildcard DNS record; if not used, then a DNS record for the root domain will be created</p></li>
-<li><p><strong>ttl</strong> – the time to live in seconds of the new DNS record; have to be between 300 and 86400</p></li>
-<li><p><strong>prio</strong> – the priority of the new DNS record</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>the id of the new created DNS record</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_delete">
-<span class="sig-name descname"><span class="pre">dns_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_delete" title="Link to this definition">¶</a></dt>
-<dd><p>API DNS delete method: delete an existing DNS record specified by the id for a given domain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Record">https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Record</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the DNS record should be deleted</p></li>
-<li><p><strong>record_id</strong> – the id of the DNS record which should be deleted</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the deletion was successful</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_delete_all">
-<span class="sig-name descname"><span class="pre">dns_delete_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pkb_client.dns.DNSRecordType" title="pkb_client.dns.DNSRecordType"><span class="pre">DNSRecordType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdomain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_delete_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_delete_all" title="Link to this definition">¶</a></dt>
-<dd><p>API DNS delete method: delete all existing DNS record matching the domain, record type and subdomain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Records%20by%20Domain,%20Subdomain%20and%20Type">https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Records%20by%20Domain,%20Subdomain%20and%20Type</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the DNS record should be deleted</p></li>
-<li><p><strong>record_type</strong> – the type of the DNS record</p></li>
-<li><p><strong>subdomain</strong> – the subdomain of the DNS record can be empty string for root domain</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the deletion was successful</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_edit">
-<span class="sig-name descname"><span class="pre">dns_edit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pkb_client.dns.DNSRecordType" title="pkb_client.dns.DNSRecordType"><span class="pre">DNSRecordType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_edit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_edit" title="Link to this definition">¶</a></dt>
-<dd><p>API DNS edit method: edit an existing DNS record specified by the id for a given domain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record">https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the DNS record should be edited</p></li>
-<li><p><strong>record_id</strong> – the id of the DNS record which should be edited</p></li>
-<li><p><strong>record_type</strong> – the new type of the DNS record</p></li>
-<li><p><strong>content</strong> – the new content of the DNS record</p></li>
-<li><p><strong>name</strong> – the new value of the subdomain for which the DNS record should apply; the * can be used for a
-wildcard DNS record; if not set, the record will be set for the record domain</p></li>
-<li><p><strong>ttl</strong> – the new time to live in seconds of the DNS record, have to be between 300 and 86400</p></li>
-<li><p><strong>prio</strong> – the new priority of the DNS record</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the editing was successful</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_edit_all">
-<span class="sig-name descname"><span class="pre">dns_edit_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pkb_client.dns.DNSRecordType" title="pkb_client.dns.DNSRecordType"><span class="pre">DNSRecordType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdomain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">300</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_edit_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_edit_all" title="Link to this definition">¶</a></dt>
-<dd><p>API DNS edit method: edit all existing DNS record matching the domain, record type and subdomain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record%20by%20Domain,%20Subdomain%20and%20Type">https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record%20by%20Domain,%20Subdomain%20and%20Type</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the DNS record should be edited</p></li>
-<li><p><strong>record_type</strong> – the type of the DNS record</p></li>
-<li><p><strong>subdomain</strong> – the subdomain of the DNS record can be empty string for root domain</p></li>
-<li><p><strong>content</strong> – the new content of the DNS record</p></li>
-<li><p><strong>ttl</strong> – the new time to live in seconds of the DNS record, have to be between 300 and 86400</p></li>
-<li><p><strong>prio</strong> – the new priority of the DNS record</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if the editing was successful</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_export">
-<span class="sig-name descname"><span class="pre">dns_export</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_export"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_export" title="Link to this definition">¶</a></dt>
-<dd><p>Export all DNS record from the given domain as json to a file.
-This method does not represent a Porkbun API method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the DNS record should be retrieved and saved</p></li>
-<li><p><strong>filename</strong> – the filename where to save the exported DNS records</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if everything went well</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_import">
-<span class="sig-name descname"><span class="pre">dns_import</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">restore_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pkb_client.dns.DNSRestoreMode" title="pkb_client.dns.DNSRestoreMode"><span class="pre">DNSRestoreMode</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_import"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_import" title="Link to this definition">¶</a></dt>
-<dd><p>Restore all DNS records from a json file to the given domain.
-This method does not represent a Porkbun API method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the DNS record should be restored</p></li>
-<li><p><strong>filename</strong> – the filename from which the DNS records are to be restored</p></li>
-<li><p><strong>restore_mode</strong> – <p>The restore mode (DNS records are identified by the record id)
-clean: remove all existing DNS records and restore all DNS records from the provided file
-replace: replace only existing DNS records with the DNS records from the provided file,</p>
-<blockquote>
-<div><p>but do not create any new DNS records</p>
-</div></blockquote>
-<dl class="simple">
-<dt>keep: keep the existing DNS records and only create new ones for all DNS records from</dt><dd><p>the specified file if they do not exist</p>
-</dd>
-</dl>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if everything went well</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_retrieve">
-<span class="sig-name descname"><span class="pre">dns_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pkb_client.dns.DNSRecord" title="pkb_client.dns.DNSRecord"><span class="pre">DNSRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_retrieve" title="Link to this definition">¶</a></dt>
-<dd><p>API DNS retrieve method: retrieve all DNS records for given domain if no record id is specified.
-Otherwise, retrieve the DNS record of the specified domain with the given record id.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records">https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the DNS records should be retrieved</p></li>
-<li><p><strong>record_id</strong> – the id of the DNS record which should be retrieved</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of DNSRecords objects</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.dns_retrieve_all">
-<span class="sig-name descname"><span class="pre">dns_retrieve_all</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pkb_client.dns.DNSRecordType" title="pkb_client.dns.DNSRecordType"><span class="pre">DNSRecordType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdomain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pkb_client.dns.DNSRecord" title="pkb_client.dns.DNSRecord"><span class="pre">DNSRecord</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.dns_retrieve_all"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.dns_retrieve_all" title="Link to this definition">¶</a></dt>
-<dd><p>API DNS retrieve method: retrieve all DNS records matching the domain, record type and subdomain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records%20by%20Domain,%20Subdomain%20and%20Type">https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records%20by%20Domain,%20Subdomain%20and%20Type</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>domain</strong> – the domain for which the DNS records should be retrieved</p></li>
-<li><p><strong>record_type</strong> – the type of the DNS records</p></li>
-<li><p><strong>subdomain</strong> – the subdomain of the DNS records can be empty string for root domain</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of DNSRecords objects</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.get_dns_servers">
-<span class="sig-name descname"><span class="pre">get_dns_servers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.get_dns_servers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.get_dns_servers" title="Link to this definition">¶</a></dt>
-<dd><p>Get the name servers for the given domain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#Domain%20Get%20Name%20Servers">https://porkbun.com/api/json/v3/documentation#Domain%20Get%20Name%20Servers</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of name servers</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.get_domain_pricing">
-<span class="sig-name descname"><span class="pre">get_domain_pricing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.get_domain_pricing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.get_domain_pricing" title="Link to this definition">¶</a></dt>
-<dd><p>Get the pricing for all Porkbun domains.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#Domain%20Pricing">https://porkbun.com/api/json/v3/documentation#Domain%20Pricing</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict with pricing</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.get_url_forward">
-<span class="sig-name descname"><span class="pre">get_url_forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pkb_client.forwarding.URLForwarding" title="pkb_client.forwarding.URLForwarding"><span class="pre">URLForwarding</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.get_url_forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.get_url_forward" title="Link to this definition">¶</a></dt>
-<dd><p>Get the url forwarding for the given domain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#Domain%20Get%20URL%20Forwarding">https://porkbun.com/api/json/v3/documentation#Domain%20Get%20URL%20Forwarding</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of URLForwarding objects</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.list_domains">
-<span class="sig-name descname"><span class="pre">list_domains</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pkb_client.domain.DomainInfo" title="pkb_client.domain.DomainInfo"><span class="pre">DomainInfo</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.list_domains"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.list_domains" title="Link to this definition">¶</a></dt>
-<dd><p>Get all domains for the account in chunks of 1000. If you reach the end of all domains, the list will be empty.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#Domain%20List%20All">https://porkbun.com/api/json/v3/documentation#Domain%20List%20All</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>start</strong> – the index of the first domain to retrieve</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of DomainInfo objects</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.ping">
-<span class="sig-name descname"><span class="pre">ping</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.ping"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.ping" title="Link to this definition">¶</a></dt>
-<dd><p>API ping method: get the current public ip address of the requesting system; can also be used for auth checking.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#Authentication">https://porkbun.com/api/json/v3/documentation#Authentication</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>the current public ip address of the requesting system</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.ssl_retrieve">
-<span class="sig-name descname"><span class="pre">ssl_retrieve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pkb_client.ssl_cert.SSLCertBundle" title="pkb_client.ssl_cert.SSLCertBundle"><span class="pre">SSLCertBundle</span></a></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.ssl_retrieve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.ssl_retrieve" title="Link to this definition">¶</a></dt>
-<dd><p>API SSL bundle retrieve method: retrieve an SSL bundle for the given domain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#SSL%20Retrieve%20Bundle%20by%20Domain">https://porkbun.com/api/json/v3/documentation#SSL%20Retrieve%20Bundle%20by%20Domain</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>domain</strong> – the domain for which the SSL bundle should be retrieved</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>tuple of intermediate certificate, certificate chain, private key, public key</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClient.update_dns_servers">
-<span class="sig-name descname"><span class="pre">update_dns_servers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name_servers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClient.update_dns_servers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClient.update_dns_servers" title="Link to this definition">¶</a></dt>
-<dd><p>Update the name servers of the specified domain.
-See <a class="reference external" href="https://porkbun.com/api/json/v3/documentation#Domain%20Update%20Name%20Servers">https://porkbun.com/api/json/v3/documentation#Domain%20Update%20Name%20Servers</a> for more info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>True if everything went well</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py exception">
-<dt class="sig sig-object py" id="pkb_client.client.PKBClientException">
-<em class="property"><span class="pre">exception</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.client.</span></span><span class="sig-name descname"><span class="pre">PKBClientException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/client.html#PKBClientException"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.client.PKBClientException" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
-</dd></dl>
-
-</section>
-<section id="module-pkb_client.dns">
-<span id="pkb-client-dns-module"></span><h2>pkb_client.dns module<a class="headerlink" href="#module-pkb_client.dns" title="Link to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecord">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.dns.</span></span><span class="sig-name descname"><span class="pre">DNSRecord</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pkb_client.dns.DNSRecordType" title="pkb_client.dns.DNSRecordType"><span class="pre">pkb_client.dns.DNSRecordType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttl</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prio</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">notes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/dns.html#DNSRecord"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.dns.DNSRecord" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecord.content">
-<span class="sig-name descname"><span class="pre">content</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecord.content" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecord.from_dict">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/dns.html#DNSRecord.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.dns.DNSRecord.from_dict" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecord.id">
-<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecord.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecord.name">
-<span class="sig-name descname"><span class="pre">name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecord.name" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecord.notes">
-<span class="sig-name descname"><span class="pre">notes</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecord.notes" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecord.prio">
-<span class="sig-name descname"><span class="pre">prio</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecord.prio" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecord.ttl">
-<span class="sig-name descname"><span class="pre">ttl</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecord.ttl" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecord.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#pkb_client.dns.DNSRecordType" title="pkb_client.dns.DNSRecordType"><span class="pre">DNSRecordType</span></a></em><a class="headerlink" href="#pkb_client.dns.DNSRecord.type" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.dns.</span></span><span class="sig-name descname"><span class="pre">DNSRecordType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/dns.html#DNSRecordType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.dns.DNSRecordType" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.A">
-<span class="sig-name descname"><span class="pre">A</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'A'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.A" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.AAAA">
-<span class="sig-name descname"><span class="pre">AAAA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'AAAA'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.AAAA" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.ALIAS">
-<span class="sig-name descname"><span class="pre">ALIAS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ALIAS'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.ALIAS" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.CAA">
-<span class="sig-name descname"><span class="pre">CAA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CAA'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.CAA" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.CNAME">
-<span class="sig-name descname"><span class="pre">CNAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'CNAME'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.CNAME" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.MX">
-<span class="sig-name descname"><span class="pre">MX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'MX'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.MX" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.NS">
-<span class="sig-name descname"><span class="pre">NS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'NS'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.NS" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.SRV">
-<span class="sig-name descname"><span class="pre">SRV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SRV'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.SRV" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.TLSA">
-<span class="sig-name descname"><span class="pre">TLSA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TLSA'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.TLSA" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRecordType.TXT">
-<span class="sig-name descname"><span class="pre">TXT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TXT'</span></em><a class="headerlink" href="#pkb_client.dns.DNSRecordType.TXT" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRestoreMode">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.dns.</span></span><span class="sig-name descname"><span class="pre">DNSRestoreMode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/dns.html#DNSRestoreMode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.dns.DNSRestoreMode" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRestoreMode.clear">
-<span class="sig-name descname"><span class="pre">clear</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#pkb_client.dns.DNSRestoreMode.clear" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRestoreMode.from_string">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/dns.html#DNSRestoreMode.from_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.dns.DNSRestoreMode.from_string" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRestoreMode.keep">
-<span class="sig-name descname"><span class="pre">keep</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#pkb_client.dns.DNSRestoreMode.keep" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.dns.DNSRestoreMode.replace">
-<span class="sig-name descname"><span class="pre">replace</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#pkb_client.dns.DNSRestoreMode.replace" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-pkb_client.domain">
-<span id="pkb-client-domain-module"></span><h2>pkb_client.domain module<a class="headerlink" href="#module-pkb_client.domain" title="Link to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.domain.</span></span><span class="sig-name descname"><span class="pre">DomainInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">domain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tld</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expire_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">datetime.datetime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">security_lock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">whois_privacy</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_renew</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">not_local</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/domain.html#DomainInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.domain.DomainInfo" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.auto_renew">
-<span class="sig-name descname"><span class="pre">auto_renew</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pkb_client.domain.DomainInfo.auto_renew" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.create_date">
-<span class="sig-name descname"><span class="pre">create_date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#pkb_client.domain.DomainInfo.create_date" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.domain">
-<span class="sig-name descname"><span class="pre">domain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.domain.DomainInfo.domain" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.expire_date">
-<span class="sig-name descname"><span class="pre">expire_date</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">datetime</span></em><a class="headerlink" href="#pkb_client.domain.DomainInfo.expire_date" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.from_dict">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/domain.html#DomainInfo.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.domain.DomainInfo.from_dict" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.not_local">
-<span class="sig-name descname"><span class="pre">not_local</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pkb_client.domain.DomainInfo.not_local" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.security_lock">
-<span class="sig-name descname"><span class="pre">security_lock</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pkb_client.domain.DomainInfo.security_lock" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.status">
-<span class="sig-name descname"><span class="pre">status</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.domain.DomainInfo.status" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.tld">
-<span class="sig-name descname"><span class="pre">tld</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.domain.DomainInfo.tld" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.domain.DomainInfo.whois_privacy">
-<span class="sig-name descname"><span class="pre">whois_privacy</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pkb_client.domain.DomainInfo.whois_privacy" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-pkb_client.forwarding">
-<span id="pkb-client-forwarding-module"></span><h2>pkb_client.forwarding module<a class="headerlink" href="#module-pkb_client.forwarding" title="Link to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwarding">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.forwarding.</span></span><span class="sig-name descname"><span class="pre">URLForwarding</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subdomain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">location</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pkb_client.forwarding.URLForwardingType" title="pkb_client.forwarding.URLForwardingType"><span class="pre">pkb_client.forwarding.URLForwardingType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wildcard</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/forwarding.html#URLForwarding"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.forwarding.URLForwarding" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwarding.from_dict">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/forwarding.html#URLForwarding.from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.forwarding.URLForwarding.from_dict" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwarding.id">
-<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.forwarding.URLForwarding.id" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwarding.include_path">
-<span class="sig-name descname"><span class="pre">include_path</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pkb_client.forwarding.URLForwarding.include_path" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwarding.location">
-<span class="sig-name descname"><span class="pre">location</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.forwarding.URLForwarding.location" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwarding.subdomain">
-<span class="sig-name descname"><span class="pre">subdomain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.forwarding.URLForwarding.subdomain" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwarding.type">
-<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#pkb_client.forwarding.URLForwardingType" title="pkb_client.forwarding.URLForwardingType"><span class="pre">URLForwardingType</span></a></em><a class="headerlink" href="#pkb_client.forwarding.URLForwarding.type" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwarding.wildcard">
-<span class="sig-name descname"><span class="pre">wildcard</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#pkb_client.forwarding.URLForwarding.wildcard" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwardingType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.forwarding.</span></span><span class="sig-name descname"><span class="pre">URLForwardingType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">names=&lt;not</span> <span class="pre">given&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">*values</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start=1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary=None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/forwarding.html#URLForwardingType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.forwarding.URLForwardingType" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwardingType.permanent">
-<span class="sig-name descname"><span class="pre">permanent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'permanent'</span></em><a class="headerlink" href="#pkb_client.forwarding.URLForwardingType.permanent" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.forwarding.URLForwardingType.temporary">
-<span class="sig-name descname"><span class="pre">temporary</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'temporary'</span></em><a class="headerlink" href="#pkb_client.forwarding.URLForwardingType.temporary" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-</section>
-<section id="module-pkb_client.ssl_cert">
-<span id="pkb-client-ssl-cert-module"></span><h2>pkb_client.ssl_cert module<a class="headerlink" href="#module-pkb_client.ssl_cert" title="Link to this heading">¶</a></h2>
-<dl class="py class">
-<dt class="sig sig-object py" id="pkb_client.ssl_cert.SSLCertBundle">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pkb_client.ssl_cert.</span></span><span class="sig-name descname"><span class="pre">SSLCertBundle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intermediate_certificate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">certificate_chain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">private_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pkb_client/ssl_cert.html#SSLCertBundle"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pkb_client.ssl_cert.SSLCertBundle" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.ssl_cert.SSLCertBundle.certificate_chain">
-<span class="sig-name descname"><span class="pre">certificate_chain</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.ssl_cert.SSLCertBundle.certificate_chain" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.ssl_cert.SSLCertBundle.intermediate_certificate">
-<span class="sig-name descname"><span class="pre">intermediate_certificate</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.ssl_cert.SSLCertBundle.intermediate_certificate" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.ssl_cert.SSLCertBundle.private_key">
-<span class="sig-name descname"><span class="pre">private_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.ssl_cert.SSLCertBundle.private_key" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="pkb_client.ssl_cert.SSLCertBundle.public_key">
-<span class="sig-name descname"><span class="pre">public_key</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#pkb_client.ssl_cert.SSLCertBundle.public_key" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </section>
 <section id="module-pkb_client">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pkb_client" title="Link to this heading">¶</a></h2>
@@ -735,6 +163,7 @@ See <a class="reference external" href="https://porkbun.com/api/json/v3/document
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="modules.html">pkb_client</a><ul>
       <li>Previous: <a href="modules.html" title="previous chapter">pkb_client</a></li>
+      <li>Next: <a href="pkb_client.cli.html" title="next chapter">pkb_client.cli package</a></li>
   </ul></li>
   </ul></li>
 </ul>

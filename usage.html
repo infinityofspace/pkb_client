@@ -37,8 +37,8 @@
 <h1>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h1>
 <section id="module">
 <h2>Module<a class="headerlink" href="#module" title="Link to this heading">¶</a></h2>
-<p>The module provides the <a class="reference internal" href="pkb_client.html#pkb_client.client.PKBClient" title="pkb_client.client.PKBClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">PKBClient</span></code></a> class, which is used to interact with the PKB API.
-To use the PKB client, you need to create an instance of the <a class="reference internal" href="pkb_client.html#pkb_client.client.PKBClient" title="pkb_client.client.PKBClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">PKBClient</span></code></a> class:</p>
+<p>The module provides the <code class="xref py py-class docutils literal notranslate"><span class="pre">PKBClient</span></code> class, which is used to interact with the PKB API.
+To use the PKB client, you need to create an instance of the <code class="xref py py-class docutils literal notranslate"><span class="pre">PKBClient</span></code> class:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pkb_client.client</span> <span class="kn">import</span> <span class="n">PKBClient</span>
 
 <span class="n">pkb</span> <span class="o">=</span> <span class="n">PKBClient</span><span class="p">(</span>
@@ -52,7 +52,7 @@ To use the PKB client, you need to create an instance of the <a class="reference
 that require authentication (e.g. to manage dns records of your domains). Moreover the api_endpoint is also optional and
 defaults to the latest version of the official PKB API endpoint.</p>
 <p>For example to get the domain pricing, which does not require authentication, you can use the
-<a class="reference internal" href="pkb_client.html#pkb_client.client.PKBClient.get_domain_pricing" title="pkb_client.client.PKBClient.get_domain_pricing"><code class="xref py py-func docutils literal notranslate"><span class="pre">get_domain_pricing</span></code></a> method:</p>
+<code class="xref py py-func docutils literal notranslate"><span class="pre">get_domain_pricing</span></code> method:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pkb_client.client</span> <span class="kn">import</span> <span class="n">PKBClient</span>
 
 <span class="n">pkb</span> <span class="o">=</span> <span class="n">PKBClient</span><span class="p">()</span>
@@ -60,17 +60,54 @@ defaults to the latest version of the official PKB API endpoint.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">domain_pricing</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>You can find all available methods in the <a class="reference internal" href="pkb_client.html#pkb_client.client.PKBClient" title="pkb_client.client.PKBClient"><code class="xref py py-class docutils literal notranslate"><span class="pre">PKBClient</span></code></a> class documentation.</p>
+<p>You can find all available methods in the <code class="xref py py-class docutils literal notranslate"><span class="pre">PKBClient</span></code> class documentation.</p>
 </section>
 <section id="cli">
 <h2>CLI<a class="headerlink" href="#cli" title="Link to this heading">¶</a></h2>
-<p>The module also provides a CLI to interact with the PKB API. To use the CLI, you need to install the package:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pkb_client
+<p>The module also provides a CLI to interact with the PKB API. For example to get the domain pricing, you can use the <cite>get-domain-pricing</cite> command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkb-client<span class="w"> </span>domain-pricing
 </pre></div>
 </div>
-<p>This creates the <cite>pkb-client</cite> command, which can be used to interact with the PKB API.
-For example to get the domain pricing, you can use the <cite>get-domain-pricing</cite> command:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkb-client<span class="w"> </span>domain-pricing
+<p>All available commands can be listed with the <cite>–help</cite> option:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkb-client<span class="w"> </span>--help
+</pre></div>
+</div>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>cli.py<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">[</span>-k<span class="w"> </span>KEY<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>SECRET<span class="o">]</span><span class="w"> </span><span class="o">[</span>--debug<span class="o">]</span><span class="w"> </span><span class="o">[</span>--endpoint<span class="w"> </span>ENDPOINT<span class="o">]</span>
+<span class="w">          </span><span class="o">{</span>ping,dns-create,dns-edit,dns-delete,dns-retrieve,dns-export,dns-export-bind,dns-import,dns-import-bind,domain-pricing,ssl-retrieve,dns-servers-update,dns-servers-receive,domains-list,url-forward-retrieve,url-forward-create,url-forward-delete<span class="o">}</span>
+<span class="w">          </span>...
+
+Python<span class="w"> </span>client<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>Porkbun<span class="w"> </span>API
+
+positional<span class="w"> </span>arguments:
+<span class="w">  </span><span class="o">{</span>ping,dns-create,dns-edit,dns-delete,dns-retrieve,dns-export,dns-export-bind,dns-import,dns-import-bind,domain-pricing,ssl-retrieve,dns-servers-update,dns-servers-receive,domains-list,url-forward-retrieve,url-forward-create,url-forward-delete<span class="o">}</span>
+<span class="w">                        </span>Supported<span class="w"> </span>API<span class="w"> </span>methods
+<span class="w">    </span>ping<span class="w">                </span>Ping<span class="w"> </span>the<span class="w"> </span>API<span class="w"> </span>Endpoint
+<span class="w">    </span>dns-create<span class="w">          </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>DNS<span class="w"> </span>record.
+<span class="w">    </span>dns-edit<span class="w">            </span>Edit<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>DNS<span class="w"> </span>record.
+<span class="w">    </span>dns-delete<span class="w">          </span>Delete<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>DNS<span class="w"> </span>record.
+<span class="w">    </span>dns-retrieve<span class="w">        </span>Get<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records.
+<span class="w">    </span>dns-export<span class="w">          </span>Save<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>json<span class="w"> </span>file.
+<span class="w">    </span>dns-export-bind<span class="w">     </span>Save<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>BIND<span class="w"> </span>file.
+<span class="w">    </span>dns-import<span class="w">          </span>Restore<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>from<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>json<span class="w"> </span>file.
+<span class="w">    </span>dns-import-bind<span class="w">     </span>Restore<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>from<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>BIND<span class="w"> </span>file.
+<span class="w">    </span>domain-pricing<span class="w">      </span>Get<span class="w"> </span>the<span class="w"> </span>pricing<span class="w"> </span><span class="k">for</span><span class="w"> </span>Porkbun<span class="w"> </span>domains.
+<span class="w">    </span>ssl-retrieve<span class="w">        </span>Retrieve<span class="w"> </span>an<span class="w"> </span>SSL<span class="w"> </span>bundle<span class="w"> </span><span class="k">for</span><span class="w"> </span>given<span class="w"> </span>domain.
+<span class="w">    </span>dns-servers-update<span class="w">  </span>Update<span class="w"> </span>the<span class="w"> </span>DNS<span class="w"> </span>servers<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>domain.
+<span class="w">    </span>dns-servers-receive
+<span class="w">                        </span>Retrieve<span class="w"> </span>the<span class="w"> </span>DNS<span class="w"> </span>servers<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>domain.
+<span class="w">    </span>domains-list<span class="w">        </span>List<span class="w"> </span>all<span class="w"> </span>domains<span class="w"> </span><span class="k">in</span><span class="w"> </span>this<span class="w"> </span>account<span class="w"> </span><span class="k">in</span><span class="w"> </span>chunks<span class="w"> </span>of<span class="w"> </span><span class="m">1000</span>.
+<span class="w">    </span>url-forward-retrieve
+<span class="w">                        </span>Retrieve<span class="w"> </span>all<span class="w"> </span>URL<span class="w"> </span>forwards.
+<span class="w">    </span>url-forward-create<span class="w">  </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>URL<span class="w"> </span>forward.
+<span class="w">    </span>url-forward-delete<span class="w">  </span>Delete<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>URL<span class="w"> </span>forward.
+
+options:
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
+<span class="w">  </span>-k<span class="w"> </span>KEY,<span class="w"> </span>--key<span class="w"> </span>KEY<span class="w">     </span>The<span class="w"> </span>API<span class="w"> </span>key<span class="w"> </span>used<span class="w"> </span><span class="k">for</span><span class="w"> </span>Porkbun<span class="w"> </span>API<span class="w"> </span>calls<span class="w"> </span><span class="o">(</span>usually<span class="w"> </span>starts<span class="w"> </span>with<span class="w"> </span><span class="s2">&quot;pk&quot;</span><span class="o">)</span>.
+<span class="w">  </span>-s<span class="w"> </span>SECRET,<span class="w"> </span>--secret<span class="w"> </span>SECRET
+<span class="w">                        </span>The<span class="w"> </span>API<span class="w"> </span>secret<span class="w"> </span>used<span class="w"> </span><span class="k">for</span><span class="w"> </span>Porkbun<span class="w"> </span>API<span class="w"> </span>calls<span class="w"> </span><span class="o">(</span>usually<span class="w"> </span>starts<span class="w"> </span>with<span class="w"> </span><span class="s2">&quot;sk&quot;</span><span class="o">)</span>.
+<span class="w">  </span>--debug<span class="w">               </span>Enable<span class="w"> </span>debug<span class="w"> </span>mode.
+<span class="w">  </span>--endpoint<span class="w"> </span>ENDPOINT<span class="w">   </span>The<span class="w"> </span>API<span class="w"> </span>endpoint<span class="w"> </span>to<span class="w"> </span>use.
 </pre></div>
 </div>
 </section>

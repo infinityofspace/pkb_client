@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pkb_client.client.bind_file &#8212; pkb_client v2.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/basic.css?v=c058f7c8" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/alabaster.css?v=27fed22d" />
+    <script src="../../../_static/documentation_options.js?v=aa039f9c"></script>
+    <script src="../../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+   
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for pkb_client.client.bind_file</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">List</span>
+
+<span class="kn">from</span> <span class="nn">pkb_client.client.dns</span> <span class="kn">import</span> <span class="n">DNSRecordType</span><span class="p">,</span> <span class="n">DNS_RECORDS_WITH_PRIORITY</span>
+
+
+<div class="viewcode-block" id="RecordClass">
+<a class="viewcode-back" href="../../../pkb_client.client.html#pkb_client.client.bind_file.RecordClass">[docs]</a>
+<span class="k">class</span> <span class="nc">RecordClass</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="n">IN</span> <span class="o">=</span> <span class="s2">&quot;IN&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span></div>
+
+
+
+<div class="viewcode-block" id="BindRecord">
+<a class="viewcode-back" href="../../../pkb_client.client.html#pkb_client.client.bind_file.BindRecord">[docs]</a>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">BindRecord</span><span class="p">:</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">ttl</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">record_class</span><span class="p">:</span> <span class="n">RecordClass</span>
+    <span class="n">record_type</span><span class="p">:</span> <span class="n">DNSRecordType</span>
+    <span class="n">data</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">prio</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">comment</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">record_string</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ttl</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">record_class</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">record_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prio</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">record_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">prio</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">record_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">comment</span><span class="p">:</span>
+            <span class="n">record_string</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; ; </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">comment</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">record_string</span></div>
+
+
+
+<div class="viewcode-block" id="BindFile">
+<a class="viewcode-back" href="../../../pkb_client.client.html#pkb_client.client.bind_file.BindFile">[docs]</a>
+<span class="k">class</span> <span class="nc">BindFile</span><span class="p">:</span>
+    <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">ttl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">records</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BindRecord</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">ttl</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">records</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">BindRecord</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span> <span class="o">=</span> <span class="n">ttl</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">records</span> <span class="o">=</span> <span class="n">records</span> <span class="ow">or</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="BindFile.from_file">
+<a class="viewcode-back" href="../../../pkb_client.client.html#pkb_client.client.bind_file.BindFile.from_file">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BindFile&quot;</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">file_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+        <span class="c1"># parse the file line by line</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">ttl</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">records</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file_data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$ORIGIN&quot;</span><span class="p">):</span>
+                <span class="n">origin</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;$TTL&quot;</span><span class="p">):</span>
+                <span class="n">ttl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># parse the records with the two possible formats:</span>
+                <span class="c1"># 1: name 	ttl 	record-class 	record-type 	record-data</span>
+                <span class="c1"># 2: name 	record-class 	ttl 	record-type 	record-data</span>
+                <span class="c1"># whereby the ttl is optional</span>
+
+                <span class="c1"># drop any right trailing comments</span>
+                <span class="n">line_parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="n">comment</span> <span class="o">=</span> <span class="n">line_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line_parts</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="kc">None</span>
+                <span class="n">prio</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="c1"># skip empty lines</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># find which format the line is</span>
+                <span class="n">record_parts</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                    <span class="c1"># scheme 1</span>
+                    <span class="k">if</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DNSRecordType</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring unsupported record type: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RecordClass</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring unsupported record class: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="n">record_name</span> <span class="o">=</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">record_ttl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">record_class</span> <span class="o">=</span> <span class="n">RecordClass</span><span class="p">[</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+                    <span class="n">record_type</span> <span class="o">=</span> <span class="n">DNSRecordType</span><span class="p">[</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+                    <span class="k">if</span> <span class="n">record_type</span> <span class="ow">in</span> <span class="n">DNS_RECORDS_WITH_PRIORITY</span><span class="p">:</span>
+                        <span class="n">prio</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+                        <span class="n">record_data</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">5</span><span class="p">:])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">record_data</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+                <span class="k">elif</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">isdigit</span><span class="p">():</span>
+                    <span class="c1"># scheme 2</span>
+                    <span class="k">if</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DNSRecordType</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring unsupported record type: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RecordClass</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring unsupported record class: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="n">record_name</span> <span class="o">=</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">record_ttl</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                    <span class="n">record_class</span> <span class="o">=</span> <span class="n">RecordClass</span><span class="p">[</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                    <span class="n">record_type</span> <span class="o">=</span> <span class="n">DNSRecordType</span><span class="p">[</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span>
+                    <span class="k">if</span> <span class="n">record_type</span> <span class="ow">in</span> <span class="n">DNS_RECORDS_WITH_PRIORITY</span><span class="p">:</span>
+                        <span class="n">prio</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+                        <span class="n">record_data</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">5</span><span class="p">:])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">record_data</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># no ttl, use default or previous</span>
+                    <span class="k">if</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DNSRecordType</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring unsupported record type: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">RecordClass</span><span class="o">.</span><span class="n">__members__</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ignoring unsupported record class: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="n">record_name</span> <span class="o">=</span> <span class="n">record_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">ttl</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">records</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No TTL found in file&quot;</span><span class="p">)</span>
+                    <span class="n">record_ttl</span> <span class="o">=</span> <span class="n">ttl</span> <span class="ow">or</span> <span class="n">records</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">ttl</span>
+                    <span class="n">record_class</span> <span class="o">=</span> <span class="n">RecordClass</span><span class="p">[</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                    <span class="n">record_type</span> <span class="o">=</span> <span class="n">DNSRecordType</span><span class="p">[</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+                    <span class="k">if</span> <span class="n">record_type</span> <span class="ow">in</span> <span class="n">DNS_RECORDS_WITH_PRIORITY</span><span class="p">:</span>
+                        <span class="n">prio</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+                        <span class="n">record_data</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">4</span><span class="p">:])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">record_data</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">record_parts</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span>
+
+                <span class="c1"># replace @ in record name with origin</span>
+                <span class="n">record_name</span> <span class="o">=</span> <span class="n">record_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">,</span> <span class="n">origin</span><span class="p">)</span>
+
+                <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BindRecord</span><span class="p">(</span><span class="n">record_name</span><span class="p">,</span> <span class="n">record_ttl</span><span class="p">,</span> <span class="n">record_class</span><span class="p">,</span> <span class="n">record_type</span><span class="p">,</span> <span class="n">record_data</span><span class="p">,</span> <span class="n">prio</span><span class="o">=</span><span class="n">prio</span><span class="p">,</span>
+                                          <span class="n">comment</span><span class="o">=</span><span class="n">comment</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No origin found in file&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">BindFile</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">ttl</span><span class="p">,</span> <span class="n">records</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="BindFile.to_file">
+<a class="viewcode-back" href="../../../pkb_client.client.html#pkb_client.client.bind_file.BindFile.to_file">[docs]</a>
+    <span class="k">def</span> <span class="nf">to_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">bind</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;$ORIGIN </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bind</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;$TTL </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ttl</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
+            <span class="n">bind</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">record</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">return</span> <span class="n">bind</span></div>
+
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../../index.html">pkb_client</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">pkb_client</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2023-2024, infinityofspace.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.0.2</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
