@@ -75,7 +75,7 @@ logged and you don't want to log the API access, then you can also set the envir
 `PKB_API_SECRET`. If you not specify API key and secret in any way, *pkb-client* asks for a user input. The command line
 arguments of the API key and secret have the highest priority.
 
-You can see an overview of all usable API methods via the help:
+You can see an overview of all usable cli methods via the help:
 
 ```commandline
 pkb-client -h
@@ -129,7 +129,7 @@ Remove all existing DNS records of the domain `example.com` and restore the DNS 
 pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-import example.com dns_recods.json clear
 ```
 
-*Note:* The import function uses the record ID to distinguish DNS records.
+*Note:* The `dns-import` function uses the record ID to distinguish DNS records.
 
 ### Notes
 
