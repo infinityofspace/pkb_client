@@ -13,7 +13,7 @@ from pkb_client.client.domain import DomainInfo
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 from pkb_client.client.ssl_cert import SSLCertBundle
 
-API_ENDPOINT = "https://porkbun.com/api/json/v3/"
+API_ENDPOINT = "https://api.porkbun.com/api/json/v3/"
 
 # prevent urllib3 to log request with the api key and secret
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -65,7 +65,7 @@ class PKBClient:
     def ping(self, **kwargs) -> str:
         """
         API ping method: get the current public ip address of the requesting system; can also be used for auth checking.
-        See https://porkbun.com/api/json/v3/documentation#Authentication for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#Authentication for more info.
 
         :return: the current public ip address of the requesting system
         """
@@ -90,7 +90,7 @@ class PKBClient:
                    prio: Optional[int] = None, **kwargs) -> str:
         """
         API DNS create method: create a new DNS record for given domain.
-        See https://porkbun.com/api/json/v3/documentation#DNS%20Create%20Record for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#DNS%20Create%20Record for more info.
 
         :param domain: the domain for which the DNS record should be created
         :param record_type: the type of the new DNS record
@@ -137,7 +137,7 @@ class PKBClient:
                  **kwargs) -> bool:
         """
         API DNS edit method: edit an existing DNS record specified by the id for a given domain.
-        See https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record for more info.
 
         :param domain: the domain for which the DNS record should be edited
         :param record_id: the id of the DNS record which should be edited
@@ -184,7 +184,7 @@ class PKBClient:
                      prio: Optional[int] = None, **kwargs) -> bool:
         """
         API DNS edit method: edit all existing DNS record matching the domain, record type and subdomain.
-        See https://porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record%20by%20Domain,%20Subdomain%20and%20Type for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record%20by%20Domain,%20Subdomain%20and%20Type for more info.
 
         :param domain: the domain for which the DNS record should be edited
         :param record_type: the type of the DNS record
@@ -225,7 +225,7 @@ class PKBClient:
                    **kwargs) -> bool:
         """
         API DNS delete method: delete an existing DNS record specified by the id for a given domain.
-        See https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Record for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#DNS%20Delete%20Record for more info.
 
         :param domain: the domain for which the DNS record should be deleted
         :param record_id: the id of the DNS record which should be deleted
@@ -251,7 +251,7 @@ class PKBClient:
                        **kwargs) -> bool:
         """
         API DNS delete method: delete all existing DNS record matching the domain, record type and subdomain.
-        See https://porkbun.com/api/json/v3/documentation#DNS%20Delete%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#DNS%20Delete%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
 
         :param domain: the domain for which the DNS record should be deleted
         :param record_type: the type of the DNS record
@@ -275,7 +275,7 @@ class PKBClient:
         """
         API DNS retrieve method: retrieve all DNS records for given domain if no record id is specified.
         Otherwise, retrieve the DNS record of the specified domain with the given record id.
-        See https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records for more info.
 
         :param domain: the domain for which the DNS records should be retrieved
         :param record_id: the id of the DNS record which should be retrieved
@@ -304,7 +304,7 @@ class PKBClient:
                          **kwargs) -> List[DNSRecord]:
         """
         API DNS retrieve method: retrieve all DNS records matching the domain, record type and subdomain.
-        See https://porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
 
         :param domain: the domain for which the DNS records should be retrieved
         :param record_type: the type of the DNS records
@@ -562,7 +562,7 @@ class PKBClient:
     def update_dns_servers(self, domain: str, name_servers: List[str], **kwargs) -> bool:
         """
         Update the name servers of the specified domain.
-        See https://porkbun.com/api/json/v3/documentation#Domain%20Update%20Name%20Servers for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#Domain%20Update%20Name%20Servers for more info.
 
         :return: True if everything went well
         """
@@ -584,7 +584,7 @@ class PKBClient:
     def get_dns_servers(self, domain: str, **kwargs) -> List[str]:
         """
         Get the name servers for the given domain.
-        See https://porkbun.com/api/json/v3/documentation#Domain%20Get%20Name%20Servers for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#Domain%20Get%20Name%20Servers for more info.
 
         :return: list of name servers
         """
@@ -603,7 +603,7 @@ class PKBClient:
     def list_domains(self, start: int = 0, **kwargs) -> List[DomainInfo]:
         """
         Get all domains for the account in chunks of 1000. If you reach the end of all domains, the list will be empty.
-        See https://porkbun.com/api/json/v3/documentation#Domain%20List%20All for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#Domain%20List%20All for more info.
 
         :param start: the index of the first domain to retrieve
 
@@ -628,7 +628,7 @@ class PKBClient:
     def get_url_forward(self, domain: str, **kwargs) -> List[URLForwarding]:
         """
         Get the url forwarding for the given domain.
-        See https://porkbun.com/api/json/v3/documentation#Domain%20Get%20URL%20Forwarding for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#Domain%20Get%20URL%20Forwarding for more info.
 
         :return: list of URLForwarding objects
         """
@@ -653,8 +653,8 @@ class PKBClient:
                         wildcard: bool,
                         **kwargs) -> bool:
         """
-        Add an url forward for the given domain.
-        See https://porkbun.com/api/json/v3/documentation#Domain%20Add%20URL%20Forward for more info.
+        Add a url forward for the given domain.
+        See https://api.porkbun.com/api/json/v3/documentation#Domain%20Add%20URL%20Forward for more info.
 
         :param domain: the domain for which the url forwarding should be added
         :param subdomain: the subdomain for which the url forwarding should be added, can be empty for root domain
@@ -687,7 +687,7 @@ class PKBClient:
     def delete_url_forward(self, domain: str, id: str, **kwargs) -> bool:
         """
         Delete an url forward for the given domain.
-        See https://porkbun.com/api/json/v3/documentation#Domain%20Delete%20URL%20Forward for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#Domain%20Delete%20URL%20Forward for more info.
 
         :param domain: the domain for which the url forwarding should be deleted
         :param id: the id of the url forwarding which should be deleted
@@ -709,7 +709,7 @@ class PKBClient:
     def get_domain_pricing(self, **kwargs) -> dict:
         """
         Get the pricing for all Porkbun domains.
-        See https://porkbun.com/api/json/v3/documentation#Domain%20Pricing for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#Domain%20Pricing for more info.
 
         :return: dict with pricing
         """
@@ -727,7 +727,7 @@ class PKBClient:
     def ssl_retrieve(self, domain, **kwargs) -> SSLCertBundle:
         """
         API SSL bundle retrieve method: retrieve an SSL bundle for the given domain.
-        See https://porkbun.com/api/json/v3/documentation#SSL%20Retrieve%20Bundle%20by%20Domain for more info.
+        See https://api.porkbun.com/api/json/v3/documentation#SSL%20Retrieve%20Bundle%20by%20Domain for more info.
 
         :param domain: the domain for which the SSL bundle should be retrieved
 

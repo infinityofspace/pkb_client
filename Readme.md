@@ -26,7 +26,7 @@ Python client for the Porkbun API
 ### About
 
 *pkb_client* is an python client for the [Porkbun](https://porkbun.com) API. It supports the v3 of the API. You can
-find the official documentation of the Porkbun API [here](https://porkbun.com/api/json/v3/documentation).
+find the official documentation of the Porkbun API [here](https://api.porkbun.com/api/json/v3/documentation).
 
 ### Installation
 
@@ -57,7 +57,7 @@ pip3 install .
 ### Usage
 
 Each request must be made with the API key and secret. You can easily create them at Porkbun. Just follow
-the [official instructions](https://porkbun.com/api/json/v3/documentation#Authentication). Make sure that you explicitly
+the [official instructions](https://api.porkbun.com/api/json/v3/documentation#Authentication). Make sure that you explicitly
 activate the API usage for your domain at the end. There are two ways to use `pkb_client`. The first way is to use it as
 a Python module. See the [module documentation](https://infinityofspace.github.io/pkb_client) for more information. The
 second way is to use the module from the command line, see below for more information.
@@ -134,7 +134,7 @@ pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> dns-import example.com dns_rec
 ### Notes
 
 Currently, TTL smaller than `600` are ignored by the Porkbun API and the minimum value is `600`, although a minimum
-value of `300` is [supported](https://porkbun.com/api/json/v3/documentation) and allowed by the RFC standard. However,
+value of `300` is [supported](https://api.porkbun.com/api/json/v3/documentation) and allowed by the RFC standard. However,
 you can do TTL smaller than `600` via the web dashboard.
 
 ### Third party notices
