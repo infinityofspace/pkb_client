@@ -14,7 +14,7 @@ To use the PKB client, you need to create an instance of the :class:`PKBClient <
     pkb = PKBClient(
         api_key="<your-api-key>",
         secret_api_key="<your-secret-api-key>",
-        api_endpoint="https://porkbun.com/api/json/v3",
+        api_endpoint="https://api.porkbun.com/api/json/v3",
     )
 
 Whereby the api_key and secret_api_key are optional and only required if you want to use the PKB API with API endpoints
