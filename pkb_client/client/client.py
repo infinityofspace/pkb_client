@@ -62,7 +62,7 @@ class PKBClient:
             "secretapikey": self.secret_api_key
         }
 
-    def ping(self, **kwargs) -> str:
+    def ping(self) -> str:
         """
         API ping method: get the current public ip address of the requesting system; can also be used for auth checking.
         See https://api.porkbun.com/api/json/v3/documentation#Authentication for more info.
@@ -87,7 +87,7 @@ class PKBClient:
                    content: str,
                    name: Optional[str] = None,
                    ttl: int = default_ttl,
-                   prio: Optional[int] = None, **kwargs) -> str:
+                   prio: Optional[int] = None) -> str:
         """
         API DNS create method: create a new DNS record for given domain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Create%20Record for more info.
@@ -133,8 +133,7 @@ class PKBClient:
                  content: str,
                  name: Optional[str] = None,
                  ttl: int = default_ttl,
-                 prio: Optional[int] = None,
-                 **kwargs) -> bool:
+                 prio: Optional[int] = None) -> bool:
         """
         API DNS edit method: edit an existing DNS record specified by the id for a given domain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record for more info.
@@ -181,7 +180,7 @@ class PKBClient:
                      subdomain: str,
                      content: str,
                      ttl: int = default_ttl,
-                     prio: Optional[int] = None, **kwargs) -> bool:
+                     prio: Optional[int] = None) -> bool:
         """
         API DNS edit method: edit all existing DNS record matching the domain, record type and subdomain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record%20by%20Domain,%20Subdomain%20and%20Type for more info.
@@ -221,8 +220,7 @@ class PKBClient:
 
     def dns_delete(self,
                    domain: str,
-                   record_id: str,
-                   **kwargs) -> bool:
+                   record_id: str) -> bool:
         """
         API DNS delete method: delete an existing DNS record specified by the id for a given domain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Delete%20Record for more info.
@@ -247,8 +245,7 @@ class PKBClient:
     def dns_delete_all(self,
                        domain: str,
                        record_type: DNSRecordType,
-                       subdomain: str,
-                       **kwargs) -> bool:
+                       subdomain: str) -> bool:
         """
         API DNS delete method: delete all existing DNS record matching the domain, record type and subdomain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Delete%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
@@ -271,7 +268,7 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def dns_retrieve(self, domain, record_id: Optional[str] = None, **kwargs) -> List[DNSRecord]:
+    def dns_retrieve(self, domain, record_id: Optional[str] = None) -> List[DNSRecord]:
         """
         API DNS retrieve method: retrieve all DNS records for given domain if no record id is specified.
         Otherwise, retrieve the DNS record of the specified domain with the given record id.
@@ -300,8 +297,7 @@ class PKBClient:
     def dns_retrieve_all(self,
                          domain: str,
                          record_type: DNSRecordType,
-                         subdomain: str,
-                         **kwargs) -> List[DNSRecord]:
+                         subdomain: str) -> List[DNSRecord]:
         """
         API DNS retrieve method: retrieve all DNS records matching the domain, record type and subdomain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
@@ -326,8 +322,7 @@ class PKBClient:
 
     def dns_export(self,
                    domain: str,
-                   filename: str,
-                   **kwargs) -> bool:
+                   filename: str) -> bool:
         """
         Export all DNS record from the given domain to a json file.
         This method does not represent a Porkbun API method.
@@ -361,8 +356,7 @@ class PKBClient:
 
     def dns_export_bind(self,
                         domain: str,
-                        filename: str,
-                        **kwargs) -> bool:
+                        filename: str) -> bool:
         """
         Export all DNS record from the given domain to a BIND file.
         This method does not represent a Porkbun API method.
@@ -415,7 +409,7 @@ class PKBClient:
 
         return True
 
-    def dns_import(self, domain: str, filename: str, restore_mode: DNSRestoreMode, **kwargs) -> bool:
+    def dns_import(self, domain: str, filename: str, restore_mode: DNSRestoreMode) -> bool:
         """
         Restore all DNS records from a json file to the given domain.
         This method does not represent a Porkbun API method.
@@ -511,7 +505,7 @@ class PKBClient:
 
         return True
 
-    def dns_import_bind(self, filename: str, restore_mode: DNSRestoreMode, **kwargs) -> bool:
+    def dns_import_bind(self, filename: str, restore_mode: DNSRestoreMode) -> bool:
         """
         Restore all DNS records from a BIND file.
         This method does not represent a Porkbun API method.
@@ -559,7 +553,7 @@ class PKBClient:
 
         return True
 
-    def update_dns_servers(self, domain: str, name_servers: List[str], **kwargs) -> bool:
+    def update_dns_servers(self, domain: str, name_servers: List[str]) -> bool:
         """
         Update the name servers of the specified domain.
         See https://api.porkbun.com/api/json/v3/documentation#Domain%20Update%20Name%20Servers for more info.
@@ -581,7 +575,7 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def get_dns_servers(self, domain: str, **kwargs) -> List[str]:
+    def get_dns_servers(self, domain: str) -> List[str]:
         """
         Get the name servers for the given domain.
         See https://api.porkbun.com/api/json/v3/documentation#Domain%20Get%20Name%20Servers for more info.
@@ -600,7 +594,7 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def list_domains(self, start: int = 0, **kwargs) -> List[DomainInfo]:
+    def list_domains(self, start: int = 0) -> List[DomainInfo]:
         """
         Get all domains for the account in chunks of 1000. If you reach the end of all domains, the list will be empty.
         See https://api.porkbun.com/api/json/v3/documentation#Domain%20List%20All for more info.
@@ -625,7 +619,7 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def get_url_forward(self, domain: str, **kwargs) -> List[URLForwarding]:
+    def get_url_forward(self, domain: str) -> List[URLForwarding]:
         """
         Get the url forwarding for the given domain.
         See https://api.porkbun.com/api/json/v3/documentation#Domain%20Get%20URL%20Forwarding for more info.
@@ -650,8 +644,7 @@ class PKBClient:
                         location: str,
                         type: URLForwardingType,
                         include_path: bool,
-                        wildcard: bool,
-                        **kwargs) -> bool:
+                        wildcard: bool) -> bool:
         """
         Add a url forward for the given domain.
         See https://api.porkbun.com/api/json/v3/documentation#Domain%20Add%20URL%20Forward for more info.
@@ -684,7 +677,7 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def delete_url_forward(self, domain: str, id: str, **kwargs) -> bool:
+    def delete_url_forward(self, domain: str, id: str) -> bool:
         """
         Delete an url forward for the given domain.
         See https://api.porkbun.com/api/json/v3/documentation#Domain%20Delete%20URL%20Forward for more info.
@@ -706,7 +699,7 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def get_domain_pricing(self, **kwargs) -> dict:
+    def get_domain_pricing(self) -> dict:
         """
         Get the pricing for all Porkbun domains.
         See https://api.porkbun.com/api/json/v3/documentation#Domain%20Pricing for more info.
@@ -724,7 +717,7 @@ class PKBClient:
             raise PKBClientException(response_json.get("status", "Unknown status"),
                                      response_json.get("message", "Unknown message"))
 
-    def ssl_retrieve(self, domain, **kwargs) -> SSLCertBundle:
+    def ssl_retrieve(self, domain) -> SSLCertBundle:
         """
         API SSL bundle retrieve method: retrieve an SSL bundle for the given domain.
         See https://api.porkbun.com/api/json/v3/documentation#SSL%20Retrieve%20Bundle%20by%20Domain for more info.

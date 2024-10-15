@@ -165,20 +165,27 @@ def main():
     parser_delete_url_forward.add_argument("domain", help="The domain for which the URL forward should be deleted.")
     parser_delete_url_forward.add_argument("id", help="The id of the URL forward which should be deleted.")
 
-    args = parser.parse_args()
+    args = vars(parser.parse_args())
 
-    if not hasattr(args, "func"):
+    debug = args.pop("debug", False)
+
+    func = args.pop("func", None)
+    if not func:
         raise argparse.ArgumentError(None, "No method specified. Please provide a method and try again.")
 
+    endpoint = args.pop("endpoint")
+    api_key = args.pop("key")
+    api_secret = args.pop("secret")
+
     # call the api methods which do not require authentication
-    if args.func == PKBClient.get_domain_pricing:
-        pkb_client = PKBClient(api_endpoint=args.endpoint)
-        ret = args.func(pkb_client, **vars(args))
+    if func == PKBClient.get_domain_pricing:
+        pkb_client = PKBClient(api_endpoint=endpoint)
+        ret = func(pkb_client, **args)
 
         print(json.dumps(ret, cls=CustomJSONEncoder, indent=4))
         exit(0)
 
-    if args.key is None:
+    if api_key is None:
         # try to get the api key from the environment variable or fallback to user input
         api_key = os.environ.get("PKB_API_KEY", "")
         if len(api_key.strip()) == 0:
@@ -188,10 +195,8 @@ def main():
                     print("The api key can not be empty.")
                 else:
                     break
-    else:
-        api_key = args.key
 
-    if args.secret is None:
+    if api_secret is None:
         # try to get the api secret from the environment variable or fallback to user input
         api_secret = os.environ.get("PKB_API_SECRET", "")
         if len(api_secret.strip()) == 0:
@@ -202,11 +207,10 @@ def main():
                     print("The api key secret can not be empty.")
                 else:
                     break
-    else:
-        api_secret = args.secret
 
-    pkb_client = PKBClient(api_key, api_secret, args.endpoint)
-    ret = args.func(pkb_client, **vars(args))
+    pkb_client = PKBClient(api_key, api_secret, endpoint)
+
+    ret = func(pkb_client, **args)
 
     print(json.dumps(ret, cls=CustomJSONEncoder, indent=4))
 
