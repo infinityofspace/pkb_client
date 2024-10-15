@@ -123,6 +123,26 @@ class TestClientAuth(unittest.TestCase):
     def test_dns_edit_all(self):
         pkb_client = PKBClient("key", "secret")
 
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/editByNameType/example.com/A/sub"),
+            json={
+                "status": "SUCCESS"
+            },
+            match=[matchers.json_params_matcher(
+                {"apikey": "key", "secretapikey": "secret", "type": "A", "content": "127.0.0.1", "ttl": 1234,
+                 "prio": None})]
+        )
+
+        success = pkb_client.dns_edit_all("example.com", DNSRecordType.A, "sub", "127.0.0.1", 1234)
+
+        self.assertTrue(success)
+
+    def test_dns_edit_all_invalid_prio_record_type(self):
+        pkb_client = PKBClient("key", "secret")
+
+        with self.assertRaises(ValueError):
+            pkb_client.dns_edit_all("example.com", DNSRecordType.A, "sub", "127.0.0.1", 1234, 2)
+
     @responses.activate
     def test_dns_delete(self):
         pkb_client = PKBClient("key", "secret")
@@ -137,6 +157,23 @@ class TestClientAuth(unittest.TestCase):
         )
 
         success = pkb_client.dns_delete("example.com", "123456")
+
+        self.assertTrue(success)
+
+    @responses.activate
+    def test_dns_delete_all(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/deleteByNameType/example.com/A/sub"),
+            json={
+                "status": "SUCCESS"
+            },
+            match=[matchers.json_params_matcher(
+                {"apikey": "key", "secretapikey": "secret"})]
+        )
+
+        success = pkb_client.dns_delete_all("example.com", DNSRecordType.A, "sub")
 
         self.assertTrue(success)
 
@@ -176,6 +213,38 @@ class TestClientAuth(unittest.TestCase):
 
         expected_records = [
             DNSRecord("123456", "example.com", DNSRecordType.A, "127.0.0.1", 600, None, ""),
+            DNSRecord("1234567", "sub.example.com", DNSRecordType.A, "127.0.0.2", 600, None, "")
+        ]
+        self.assertEqual(expected_records, records)
+
+    @responses.activate
+    def test_dns_retrieve_all(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/retrieveByNameType/example.com/A/sub"),
+            json={
+                "status": "SUCCESS",
+                "records": [
+                    {
+                        "id": "1234567",
+                        "name": "sub.example.com",
+                        "type": "A",
+                        "content": "127.0.0.2",
+                        "ttl": 600,
+                        "prio": None,
+                        "notes": ""
+                    }
+                ]
+            },
+            match=[matchers.json_params_matcher(
+                {"apikey": "key", "secretapikey": "secret"})
+            ]
+        )
+
+        records = pkb_client.dns_retrieve_all("example.com", DNSRecordType.A, "sub")
+
+        expected_records = [
             DNSRecord("1234567", "sub.example.com", DNSRecordType.A, "127.0.0.2", 600, None, "")
         ]
         self.assertEqual(expected_records, records)
