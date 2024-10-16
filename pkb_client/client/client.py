@@ -711,7 +711,7 @@ class PKBClient:
         r = requests.post(url=url)
 
         if r.status_code == 200:
-            return json.loads(r.text)
+            return json.loads(r.text)["pricing"]
         else:
             response_json = json.loads(r.text)
             raise PKBClientException(response_json.get("status", "Unknown status"),
@@ -727,17 +727,16 @@ class PKBClient:
         :return: tuple of intermediate certificate, certificate chain, private key, public key
         """
 
-        url = urljoin(self.api_endpoint, "ssl/retrieve/{}".format(domain))
+        url = urljoin(self.api_endpoint, f"ssl/retrieve/{domain}")
         req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
             ssl_bundle = json.loads(r.text)
 
-            return SSLCertBundle(intermediate_certificate=ssl_bundle["intermediate_certificate"],
-                                 certificate_chain=ssl_bundle["certificate_chain"],
-                                 private_key=ssl_bundle["private_key"],
-                                 public_key=ssl_bundle["public_key"])
+            return SSLCertBundle(certificate_chain=ssl_bundle["certificatechain"],
+                                 private_key=ssl_bundle["privatekey"],
+                                 public_key=ssl_bundle["publickey"])
         else:
             response_json = json.loads(r.text)
             raise PKBClientException(response_json.get("status", "Unknown status"),

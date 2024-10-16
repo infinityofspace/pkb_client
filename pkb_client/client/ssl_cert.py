@@ -3,9 +3,6 @@ from dataclasses import dataclass
 
 @dataclass
 class SSLCertBundle:
-    # The intermediate certificate.
-    intermediate_certificate: str
-
     # The complete certificate chain.
     certificate_chain: str
 

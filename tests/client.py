@@ -6,6 +6,7 @@ from responses import matchers
 from responses.registries import OrderedRegistry
 
 from pkb_client.client import PKBClient, PKBClientException, API_ENDPOINT
+from pkb_client.client import SSLCertBundle
 from pkb_client.client.dns import DNSRecord, DNSRecordType
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 
@@ -345,6 +346,76 @@ class TestClientAuth(unittest.TestCase):
                                                 "123456")
 
         self.assertTrue(success)
+
+    @responses.activate
+    def test_get_domain_pricing(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "pricing/get"),
+            json={
+                "status": "SUCCESS",
+                "pricing": {
+                    "com": {
+                        "registration": "42.42",
+                        "renewal": "4.2",
+                        "transfer": "42.2",
+                        "coupons": []
+                    },
+                    "test": {
+                        "registration": "4.42",
+                        "renewal": "44.2",
+                        "transfer": "4.2",
+                        "coupons": []
+                    }
+                }
+            }
+        )
+
+        pricing = pkb_client.get_domain_pricing()
+
+        expected_pricing = {
+            "com": {
+                "registration": "42.42",
+                "renewal": "4.2",
+                "transfer": "42.2",
+                "coupons": []
+            },
+            "test": {
+                "registration": "4.42",
+                "renewal": "44.2",
+                "transfer": "4.2",
+                "coupons": []
+            }
+        }
+
+        self.assertEqual(expected_pricing, pricing)
+
+    @responses.activate
+    def test_ssl_retrieve(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "ssl/retrieve/example.com"),
+            json={
+                "status": "SUCCESS",
+                "certificatechain": "----BEGIN CERTIFICATE-----\nabc1-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc2-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc3-----END CERTIFICATE-----\n",
+                "privatekey": "-----BEGIN PRIVATE KEY-----\nabc4-----END PRIVATE KEY-----\n",
+                "publickey": "-----BEGIN PUBLIC KEY-----\nabc5-----END PUBLIC KEY-----\n"
+            },
+            match=[matchers.json_params_matcher(
+                {"apikey": "key", "secretapikey": "secret"})]
+        )
+
+        ssl_cert_bundle = pkb_client.ssl_retrieve("example.com")
+
+        expected_ssl_cert_bundle = SSLCertBundle(
+            certificate_chain="----BEGIN CERTIFICATE-----\nabc1-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc2-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc3-----END CERTIFICATE-----\n",
+            private_key="-----BEGIN PRIVATE KEY-----\nabc4-----END PRIVATE KEY-----\n",
+            public_key="-----BEGIN PUBLIC KEY-----\nabc5-----END PUBLIC KEY-----\n"
+        )
+
+        self.assertEqual(expected_ssl_cert_bundle, ssl_cert_bundle)
 
 
 if __name__ == "__main__":
