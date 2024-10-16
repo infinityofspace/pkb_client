@@ -1,3 +1,5 @@
+import json
+import tempfile
 import unittest
 from urllib.parse import urljoin
 
@@ -416,6 +418,69 @@ class TestClientAuth(unittest.TestCase):
         )
 
         self.assertEqual(expected_ssl_cert_bundle, ssl_cert_bundle)
+
+    @responses.activate
+    def test_export_dns(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/retrieve/example.com"),
+            json={
+                "status": "SUCCESS",
+                "records": [
+                    {
+                        "id": "123456",
+                        "name": "example.com",
+                        "type": "A",
+                        "content": "127.0.0.1",
+                        "ttl": "600",
+                        "prio": None,
+                        "notes": ""
+                    },
+                    {
+                        "id": "1234567",
+                        "name": "sub.example.com",
+                        "type": "A",
+                        "content": "127.0.0.2",
+                        "ttl": "1200",
+                        "prio": None,
+                        "notes": "This is a comment"
+                    }
+                ]
+            },
+            match=[matchers.json_params_matcher(
+                {"apikey": "key", "secretapikey": "secret"})
+            ]
+        )
+
+        with tempfile.NamedTemporaryFile() as f:
+            pkb_client.dns_export("example.com", f.name)
+
+            with open(f.name, "r") as f:
+                exported_dns_file = json.load(f)
+
+        expected_exported_dns_file = {
+            "123456": {
+                "id": "123456",
+                "name": "example.com",
+                "type": "A",
+                "content": "127.0.0.1",
+                "ttl": 600,
+                "prio": None,
+                "notes": ""
+            },
+            "1234567": {
+                "id": "1234567",
+                "name": "sub.example.com",
+                "type": "A",
+                "content": "127.0.0.2",
+                "ttl": 1200,
+                "prio": None,
+                "notes": "This is a comment"
+            }
+        }
+
+        self.assertEqual(expected_exported_dns_file, exported_dns_file)
 
 
 if __name__ == "__main__":
