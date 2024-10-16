@@ -53,7 +53,7 @@ class TestClientAuth(unittest.TestCase):
         self.assertEqual("127.0.0.1", ip_address)
 
     @responses.activate(registry=OrderedRegistry)
-    def test_dns_create(self):
+    def test_create_dns_record(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -66,7 +66,8 @@ class TestClientAuth(unittest.TestCase):
                 {"apikey": "key", "secretapikey": "secret", "name": "sub.example.com", "type": "A",
                  "content": "127.0.0.1", "ttl": 3600, "prio": None})],
         )
-        assert "123456" == pkb_client.dns_create("example.com", DNSRecordType.A, "127.0.0.1", "sub.example.com", 3600)
+        assert "123456" == pkb_client.create_dns_record("example.com", DNSRecordType.A, "127.0.0.1", "sub.example.com",
+                                                        3600)
 
         responses.post(
             url=urljoin(API_ENDPOINT, "dns/create/example.com"),
@@ -78,16 +79,17 @@ class TestClientAuth(unittest.TestCase):
                 {"apikey": "key", "secretapikey": "secret", "name": "sub.example.com", "type": "MX",
                  "content": "127.0.0.1", "ttl": 3600, "prio": 2})],
         )
-        assert "234561" == pkb_client.dns_create("example.com", DNSRecordType.MX, "127.0.0.1", "sub.example.com", 3600,
-                                                 2)
+        assert "234561" == pkb_client.create_dns_record("example.com", DNSRecordType.MX, "127.0.0.1", "sub.example.com",
+                                                        3600,
+                                                        2)
 
-    def test_dns_create_invalid_prio_record_type(self):
+    def test_create_dns_record_invalid_prio_record_type(self):
         pkb_client = PKBClient("key", "secret")
         with self.assertRaises(ValueError):
-            pkb_client.dns_create("example.com", DNSRecordType.A, "127.0.0.1", "sub.example.com", 3600, 2)
+            pkb_client.create_dns_record("example.com", DNSRecordType.A, "127.0.0.1", "sub.example.com", 3600, 2)
 
     @responses.activate(registry=OrderedRegistry)
-    def test_dns_edit(self):
+    def test_update_dns_record(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -100,7 +102,8 @@ class TestClientAuth(unittest.TestCase):
                  "name": "sub.example.com", "ttl": 3600, "prio": None})],
         )
 
-        success = pkb_client.dns_edit("example.com", "123456", DNSRecordType.A, "127.0.0.1", "sub.example.com", 3600)
+        success = pkb_client.update_dns_record("example.com", "123456", DNSRecordType.A, "127.0.0.1",
+                                               "sub.example.com", 3600)
         self.assertTrue(success)
 
         responses.post(
@@ -113,17 +116,19 @@ class TestClientAuth(unittest.TestCase):
                  "name": "sub.example.com", "ttl": 3600, "prio": 2})],
         )
 
-        success = pkb_client.dns_edit("example.com", "123456", DNSRecordType.MX, "127.0.0.1", "sub.example.com", 3600,
-                                      2)
+        success = pkb_client.update_dns_record("example.com", "123456", DNSRecordType.MX, "127.0.0.1",
+                                               "sub.example.com", 3600,
+                                               2)
         self.assertTrue(success)
 
-    def test_dns_edit_invalid_prio_record_type(self):
+    def test_update_dns_records_invalid_prio_record_type(self):
         pkb_client = PKBClient("key", "secret")
         with self.assertRaises(ValueError):
-            pkb_client.dns_edit("example.com", "123456", DNSRecordType.A, "127.0.0.1", "sub.example.com", 3600, 2)
+            pkb_client.update_dns_record("example.com", "123456", DNSRecordType.A, "127.0.0.1", "sub.example.com",
+                                         3600, 2)
 
     @responses.activate
-    def test_dns_edit_all(self):
+    def test_update_all_dns_records(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -136,18 +141,18 @@ class TestClientAuth(unittest.TestCase):
                  "prio": None})]
         )
 
-        success = pkb_client.dns_edit_all("example.com", DNSRecordType.A, "sub", "127.0.0.1", 1234)
+        success = pkb_client.update_all_dns_records("example.com", DNSRecordType.A, "sub", "127.0.0.1", 1234)
 
         self.assertTrue(success)
 
-    def test_dns_edit_all_invalid_prio_record_type(self):
+    def test_update_all_dns_records_all_invalid_prio_record_type(self):
         pkb_client = PKBClient("key", "secret")
 
         with self.assertRaises(ValueError):
-            pkb_client.dns_edit_all("example.com", DNSRecordType.A, "sub", "127.0.0.1", 1234, 2)
+            pkb_client.update_all_dns_records("example.com", DNSRecordType.A, "sub", "127.0.0.1", 1234, 2)
 
     @responses.activate
-    def test_dns_delete(self):
+    def test_delete_dns_record(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -159,12 +164,12 @@ class TestClientAuth(unittest.TestCase):
                 {"apikey": "key", "secretapikey": "secret"})],
         )
 
-        success = pkb_client.dns_delete("example.com", "123456")
+        success = pkb_client.delete_dns_record("example.com", "123456")
 
         self.assertTrue(success)
 
     @responses.activate
-    def test_dns_delete_all(self):
+    def test_delete_all_dns_records(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -176,12 +181,12 @@ class TestClientAuth(unittest.TestCase):
                 {"apikey": "key", "secretapikey": "secret"})]
         )
 
-        success = pkb_client.dns_delete_all("example.com", DNSRecordType.A, "sub")
+        success = pkb_client.delete_all_dns_records("example.com", DNSRecordType.A, "sub")
 
         self.assertTrue(success)
 
     @responses.activate
-    def test_dns_retrieve(self):
+    def test_get_dns_records(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -212,7 +217,7 @@ class TestClientAuth(unittest.TestCase):
             match=[matchers.json_params_matcher(
                 {"apikey": "key", "secretapikey": "secret"})],
         )
-        records = pkb_client.dns_retrieve("example.com")
+        records = pkb_client.get_dns_records("example.com")
 
         expected_records = [
             DNSRecord("123456", "example.com", DNSRecordType.A, "127.0.0.1", 600, None, ""),
@@ -221,7 +226,7 @@ class TestClientAuth(unittest.TestCase):
         self.assertEqual(expected_records, records)
 
     @responses.activate
-    def test_dns_retrieve_all(self):
+    def test_get_all_dns_records(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -245,7 +250,7 @@ class TestClientAuth(unittest.TestCase):
             ]
         )
 
-        records = pkb_client.dns_retrieve_all("example.com", DNSRecordType.A, "sub")
+        records = pkb_client.get_all_dns_records("example.com", DNSRecordType.A, "sub")
 
         expected_records = [
             DNSRecord("1234567", "sub.example.com", DNSRecordType.A, "127.0.0.2", 600, None, "")
@@ -253,7 +258,7 @@ class TestClientAuth(unittest.TestCase):
         self.assertEqual(expected_records, records)
 
     @responses.activate
-    def test_set_dns_servers(self):
+    def test_update_dns_servers(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -271,7 +276,7 @@ class TestClientAuth(unittest.TestCase):
         self.assertTrue(success)
 
     @responses.activate
-    def test_get_url_forward(self):
+    def test_get_url_forwards(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -299,7 +304,7 @@ class TestClientAuth(unittest.TestCase):
             }
         )
 
-        forwards = pkb_client.get_url_forward("example.com")
+        forwards = pkb_client.get_url_forwards("example.com")
 
         expected_forwards = [
             URLForwarding("123456", "", "https://example.com", URLForwardingType.temporary, False, True),
@@ -309,7 +314,7 @@ class TestClientAuth(unittest.TestCase):
         self.assertEqual(expected_forwards, forwards)
 
     @responses.activate
-    def test_add_url_forward(self):
+    def test_create_url_forward(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -323,17 +328,17 @@ class TestClientAuth(unittest.TestCase):
                  "type": "permanent", "includePath": False, "wildcard": False})]
         )
 
-        success = pkb_client.add_url_forward("example.com",
-                                             "sub.example.com",
-                                             "https://www.example.com",
-                                             URLForwardingType.permanent,
-                                             False,
-                                             False)
+        success = pkb_client.create_url_forward("example.com",
+                                                "sub.example.com",
+                                                "https://www.example.com",
+                                                URLForwardingType.permanent,
+                                                False,
+                                                False)
 
         self.assertTrue(success)
 
     @responses.activate
-    def test_delete_url_forwarding(self):
+    def test_delete_url_forward(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -394,7 +399,7 @@ class TestClientAuth(unittest.TestCase):
         self.assertEqual(expected_pricing, pricing)
 
     @responses.activate
-    def test_ssl_retrieve(self):
+    def test_get_ssl_bundle(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -409,7 +414,7 @@ class TestClientAuth(unittest.TestCase):
                 {"apikey": "key", "secretapikey": "secret"})]
         )
 
-        ssl_cert_bundle = pkb_client.ssl_retrieve("example.com")
+        ssl_cert_bundle = pkb_client.get_ssl_bundle("example.com")
 
         expected_ssl_cert_bundle = SSLCertBundle(
             certificate_chain="----BEGIN CERTIFICATE-----\nabc1-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc2-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc3-----END CERTIFICATE-----\n",
@@ -420,7 +425,7 @@ class TestClientAuth(unittest.TestCase):
         self.assertEqual(expected_ssl_cert_bundle, ssl_cert_bundle)
 
     @responses.activate
-    def test_export_dns(self):
+    def test_export_dns_records(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -454,7 +459,7 @@ class TestClientAuth(unittest.TestCase):
         )
 
         with tempfile.NamedTemporaryFile() as f:
-            pkb_client.dns_export("example.com", f.name)
+            pkb_client.export_dns_records("example.com", f.name)
 
             with open(f.name, "r") as f:
                 exported_dns_file = json.load(f)
