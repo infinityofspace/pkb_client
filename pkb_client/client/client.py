@@ -15,8 +15,8 @@ from pkb_client.client.ssl_cert import SSLCertBundle
 
 API_ENDPOINT = "https://api.porkbun.com/api/json/v3/"
 
-# prevent urllib3 to log request with the api key and secret
-logging.getLogger("urllib3").setLevel(logging.WARNING)
+logger = logging.getLogger("pkb_client")
+logging.basicConfig(level=logging.INFO)
 
 
 class PKBClientException(Exception):
@@ -34,18 +34,22 @@ class PKBClient:
     def __init__(self,
                  api_key: Optional[str] = None,
                  secret_api_key: Optional[str] = None,
-                 api_endpoint: str = API_ENDPOINT) -> None:
+                 api_endpoint: str = API_ENDPOINT,
+                 debug: bool = False) -> None:
         """
         Creates a new PKBClient object.
 
         :param api_key: the API key used for Porkbun API calls
         :param secret_api_key: the API secret used for Porkbun API calls
-        :param api_endpoint: the endpoint of the Porkbun API. Default is https://porkbun.com/api/json/v3/
+        :param api_endpoint: the endpoint of the Porkbun API.
+        :param debug: boolean to enable debug logging
         """
-
         self.api_key = api_key
         self.secret_api_key = secret_api_key
         self.api_endpoint = api_endpoint
+        self.debug = debug
+        if self.debug:
+            logger.setLevel(logging.DEBUG)
 
     def _get_auth_request_json(self) -> dict:
         """
@@ -333,11 +337,10 @@ class PKBClient:
 
         :return: True if everything went well
         """
-
-        logging.info("retrieve current DNS records...")
+        logger.debug("retrieve current DNS records...")
         dns_records = self.get_dns_records(domain)
 
-        logging.info("save DNS records to {} ...".format(filename))
+        logger.debug("save DNS records to {} ...".format(filename))
         # merge the single DNS records into one single dict with the record id as key
         dns_records_dict = dict()
         for record in dns_records:
@@ -345,12 +348,12 @@ class PKBClient:
 
         filepath = Path(filename)
         if filepath.exists():
-            logging.warning("file already exists, overwriting...")
+            logger.warning("file already exists, overwriting...")
 
         with open(filepath, "w") as f:
             json.dump(dns_records_dict, f, default=lambda o: o.__dict__, indent=4)
 
-        logging.info("export finished")
+        logger.info("export finished")
 
         return True
 
@@ -368,10 +371,10 @@ class PKBClient:
         :return: True if everything went well
         """
 
-        logging.info("retrieve current DNS records...")
+        logger.debug("retrieve current DNS records...")
         dns_records = self.get_dns_records(domain)
 
-        logging.info("save DNS records to {} ...".format(filename))
+        logger.debug("save DNS records to {} ...".format(filename))
         # merge the single DNS records into one single dict with the record id as key
         dns_records_dict = dict()
         for record in dns_records:
@@ -379,7 +382,7 @@ class PKBClient:
 
         filepath = Path(filename)
         if filepath.exists():
-            logging.warning("file already exists, overwriting...")
+            logger.warning("file already exists, overwriting...")
 
         # domain header
         bind_file_content = f"$ORIGIN {domain}"
@@ -405,7 +408,7 @@ class PKBClient:
         with open(filepath, "w") as f:
             f.write(bind_file_content)
 
-        logging.info("export finished")
+        logger.info("export finished")
 
         return True
 
@@ -432,7 +435,7 @@ class PKBClient:
             exported_dns_records_dict = json.load(f)
 
         if restore_mode is DNSRestoreMode.clear:
-            logging.debug("restore mode: clear")
+            logger.debug("restore mode: clear")
 
             try:
                 # delete all existing DNS records
@@ -449,12 +452,12 @@ class PKBClient:
                                            ttl=exported_record["ttl"],
                                            prio=exported_record["prio"])
             except Exception as e:
-                logging.error("something went wrong: {}".format(e.__str__()))
+                logger.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
-                logging.error("import failed")
+                logger.error("import failed")
                 return False
         elif restore_mode is DNSRestoreMode.replace:
-            logging.debug("restore mode: replace")
+            logger.debug("restore mode: replace")
 
             try:
                 for existing_record in existing_dns_records:
@@ -472,12 +475,12 @@ class PKBClient:
                                                ttl=exported_record["ttl"],
                                                prio=exported_record["prio"])
             except Exception as e:
-                print("something went wrong: {}".format(e.__str__()))
+                logger.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
-                print("import failed")
+                logger.error("import failed")
                 return False
         elif restore_mode is DNSRestoreMode.keep:
-            logging.debug("restore mode: keep")
+            logger.debug("restore mode: keep")
 
             existing_dns_records_dict = dict()
             for record in existing_dns_records:
@@ -494,14 +497,14 @@ class PKBClient:
                                                ttl=exported_record["ttl"],
                                                prio=exported_record["prio"])
             except Exception as e:
-                print("something went wrong: {}".format(e.__str__()))
+                logger.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
-                print("import failed")
+                logger.error("import failed")
                 return False
         else:
             raise Exception("restore mode not supported")
 
-        logging.info("import successfully completed")
+        logger.info("import successfully completed")
 
         return True
 
@@ -521,7 +524,7 @@ class PKBClient:
         existing_dns_records = self.get_dns_records(bind_file.origin)
 
         if restore_mode is DNSRestoreMode.clear:
-            logging.debug("restore mode: clear")
+            logger.debug("restore mode: clear")
 
             try:
                 # delete all existing DNS records
@@ -542,14 +545,14 @@ class PKBClient:
                                            prio=record.prio)
 
             except Exception as e:
-                logging.error("something went wrong: {}".format(e.__str__()))
+                logger.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
-                logging.error("import failed")
+                logger.error("import failed")
                 return False
         else:
             raise Exception(f"restore mode '{restore_mode.value}' not supported")
 
-        logging.info("import successfully completed")
+        logger.info("import successfully completed")
 
         return True
 
@@ -760,4 +763,4 @@ class PKBClient:
         with open(backup_file_path, "w") as f:
             json.dump(dns_records_dict, f)
 
-        print("a backup of your existing dns records was saved to {}".format(str(backup_file_path)))
+        logger.warning("a backup of your existing dns records was saved to {}".format(str(backup_file_path)))

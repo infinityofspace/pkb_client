@@ -173,7 +173,7 @@ def main():
 
     # call the api methods which do not require authentication
     if func == PKBClient.get_domain_pricing:
-        pkb_client = PKBClient(api_endpoint=endpoint)
+        pkb_client = PKBClient(api_endpoint=endpoint, debug=debug)
         ret = func(pkb_client, **args)
 
         print(json.dumps(ret, cls=CustomJSONEncoder, indent=4))
@@ -202,7 +202,7 @@ def main():
                 else:
                     break
 
-    pkb_client = PKBClient(api_key, api_secret, endpoint)
+    pkb_client = PKBClient(api_key=api_key, secret_api_key=api_secret, api_endpoint=endpoint, debug=debug)
 
     ret = func(pkb_client, **args)
 
