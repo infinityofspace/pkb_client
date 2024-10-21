@@ -488,7 +488,7 @@ class TestClientAuth(unittest.TestCase):
 
         self.assertEqual(expected_exported_dns_file, exported_dns_file)
 
-    @responses.activate(registry=OrderedRegistry)
+    @responses.activate(registry=OrderedRegistry, assert_all_requests_are_fired=True)
     def test_import_dns_records_clear(self):
         pkb_client = PKBClient("key", "secret")
 
@@ -581,6 +581,145 @@ class TestClientAuth(unittest.TestCase):
                 }, f)
 
             pkb_client.import_dns_records("example.com", str(filename), DNSRestoreMode.clear)
+
+    @responses.activate(registry=OrderedRegistry, assert_all_requests_are_fired=True)
+    def test_import_dns_records_replace(self):
+        pkb_client = PKBClient("key", "secret")
+
+        # first all records should be retrieved
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/retrieve/example.com"),
+            json={
+                "status": "SUCCESS",
+                "records": [
+                    {
+                        "id": "123456",
+                        "name": "example.com",
+                        "type": "A",
+                        "content": "127.0.0.1",
+                        "ttl": "600",
+                        "prio": None,
+                        "notes": ""
+                    },
+                    {
+                        "id": "1234567",
+                        "name": "sub.example.com",
+                        "type": "A",
+                        "content": "127.0.0.2",
+                        "ttl": 600,
+                        "prio": None,
+                        "notes": ""
+                    }
+                ]
+            },
+            match=[matchers.json_params_matcher(
+                {"apikey": "key", "secretapikey": "secret"})],
+        )
+
+        # same record should be updated
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/edit/example.com/1234567"),
+            json={
+                "status": "SUCCESS"
+            },
+            match=[matchers.json_params_matcher({"apikey": "key", "secretapikey": "secret",
+                                                 "type": "A", "content": "127.0.0.3", "name": "sub", "ttl": 600,
+                                                 "prio": None})]
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filename = Path(temp_dir, "records.json")
+            with open(filename, "w") as f:
+                json.dump({
+                    "123451": {
+                        "id": "123451",
+                        "name": "test.example.com",
+                        "type": "A",
+                        "content": "127.0.0.4",
+                        "ttl": 600,
+                        "prio": None
+                    },
+                    "1234562": {
+                        "id": "1234562",
+                        "name": "sub.example.com",
+                        "type": "A",
+                        "content": "127.0.0.3",
+                        "ttl": 600,
+                        "prio": None
+                    }
+                }, f)
+
+            pkb_client.import_dns_records("example.com", str(filename), DNSRestoreMode.replace)
+
+    @responses.activate(registry=OrderedRegistry, assert_all_requests_are_fired=True)
+    def test_import_dns_records_keep(self):
+        pkb_client = PKBClient("key", "secret")
+
+        # first all records should be retrieved
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/retrieve/example.com"),
+            json={
+                "status": "SUCCESS",
+                "records": [
+                    {
+                        "id": "123456",
+                        "name": "example.com",
+                        "type": "A",
+                        "content": "127.0.0.1",
+                        "ttl": "600",
+                        "prio": None,
+                        "notes": ""
+                    },
+                    {
+                        "id": "1234567",
+                        "name": "sub.example.com",
+                        "type": "A",
+                        "content": "127.0.0.2",
+                        "ttl": 600,
+                        "prio": None,
+                        "notes": ""
+                    }
+                ]
+            },
+            match=[matchers.json_params_matcher(
+                {"apikey": "key", "secretapikey": "secret"})],
+        )
+
+        # only new records should be created
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/create/example.com"),
+            json={
+                "status": "SUCCESS",
+                "id": "1234562"
+            },
+            match=[matchers.json_params_matcher(
+                {"apikey": "key", "secretapikey": "secret", "name": "test", "type": "A",
+                 "content": "127.0.0.4", "ttl": 600, "prio": None})],
+        )
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filename = Path(temp_dir, "records.json")
+            with open(filename, "w") as f:
+                json.dump({
+                    "123451": {
+                        "id": "123451",
+                        "name": "test.example.com",
+                        "type": "A",
+                        "content": "127.0.0.4",
+                        "ttl": 600,
+                        "prio": None
+                    },
+                    "1234562": {
+                        "id": "1234562",
+                        "name": "sub.example.com",
+                        "type": "A",
+                        "content": "127.0.0.3",
+                        "ttl": 600,
+                        "prio": None
+                    }
+                }, f)
+
+            pkb_client.import_dns_records("example.com", str(filename), DNSRestoreMode.keep)
 
 
 if __name__ == "__main__":
