@@ -1,5 +1,6 @@
 import json
 import logging
+from hashlib import sha256
 from pathlib import Path
 from typing import Optional, List
 from urllib.parse import urljoin
@@ -419,7 +420,7 @@ class PKBClient:
 
         :param domain: the domain for which the DNS record should be restored
         :param filename: the filename from which the DNS records are to be restored
-        :param restore_mode: The restore mode (DNS records are identified by the record id)
+        :param restore_mode: The restore mode (DNS records are identified by the record type, name and prio if supported):
             clear: remove all existing DNS records and restore all DNS records from the provided file
             replace: replace only existing DNS records with the DNS records from the provided file,
                      but do not create any new DNS records
@@ -460,20 +461,26 @@ class PKBClient:
             logger.debug("restore mode: replace")
 
             try:
-                for existing_record in existing_dns_records:
-                    record_id = existing_record.id
-                    exported_record = exported_dns_records_dict.get(record_id, None)
-                    # also check if the exported dns record is different to the existing record,
+                existing_dns_record_hashed = {
+                    sha256(f"{record.type}{record.name}{record.prio}".encode()).hexdigest(): record
+                    for record in existing_dns_records
+                }
+                for record in exported_dns_records_dict.values():
+                    record_hash = sha256(f"{record['type']}{record['name']}{record['prio']}".encode()).hexdigest()
+                    existing_record = existing_dns_record_hashed.get(record_hash, None)
+                    # check if the exported dns record is different to the existing record,
                     # so we can reduce unnecessary api calls
-                    if exported_record is not None and exported_record != existing_record:
-                        name = ".".join(exported_record["name"].split(".")[:-2])
+                    if (existing_record is not None
+                            and (record["content"] != existing_record.content
+                                 or record["ttl"] != existing_record.ttl
+                                 or record["prio"] != existing_record.prio)):
                         self.update_dns_record(domain=domain,
-                                               record_id=record_id,
-                                               record_type=exported_record["type"],
-                                               content=exported_record["content"],
-                                               name=name,
-                                               ttl=exported_record["ttl"],
-                                               prio=exported_record["prio"])
+                                               record_id=existing_record.id,
+                                               record_type=record["type"],
+                                               content=record["content"],
+                                               name=record["name"].replace(f".{domain}", ""),
+                                               ttl=record["ttl"],
+                                               prio=record["prio"])
             except Exception as e:
                 logger.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
@@ -482,20 +489,22 @@ class PKBClient:
         elif restore_mode is DNSRestoreMode.keep:
             logger.debug("restore mode: keep")
 
-            existing_dns_records_dict = dict()
-            for record in existing_dns_records:
-                existing_dns_records_dict[record.id] = record
+            existing_dns_record_hashed = {
+                sha256(f"{record.type}{record.name}{record.prio}".encode()).hexdigest(): record
+                for record in existing_dns_records
+            }
 
             try:
-                for _, exported_record in exported_dns_records_dict.items():
-                    if exported_record["id"] not in existing_dns_records_dict:
-                        name = ".".join(exported_record["name"].split(".")[:-2])
+                for record in exported_dns_records_dict.values():
+                    record_hash = sha256(f"{record['type']}{record['name']}{record['prio']}".encode()).hexdigest()
+                    existing_record = existing_dns_record_hashed.get(record_hash, None)
+                    if existing_record is None:
                         self.create_dns_record(domain=domain,
-                                               record_type=exported_record["type"],
-                                               content=exported_record["content"],
-                                               name=name,
-                                               ttl=exported_record["ttl"],
-                                               prio=exported_record["prio"])
+                                               record_type=record["type"],
+                                               content=record["content"],
+                                               name=record["name"].replace(f".{domain}", ""),
+                                               ttl=record["ttl"],
+                                               prio=record["prio"])
             except Exception as e:
                 logger.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
