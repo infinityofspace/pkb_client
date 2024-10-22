@@ -535,7 +535,7 @@ class PKBClient:
 
         bind_file = BindFile.from_file(filepath)
 
-        existing_dns_records = self.get_dns_records(bind_file.origin)
+        existing_dns_records = self.get_dns_records(bind_file.origin[:-1])
 
         if restore_mode is DNSRestoreMode.clear:
             logger.debug("restore mode: clear")
@@ -543,7 +543,7 @@ class PKBClient:
             try:
                 # delete all existing DNS records
                 for record in existing_dns_records:
-                    self.delete_dns_record(bind_file.origin, record.id)
+                    self.delete_dns_record(bind_file.origin[:-1], record.id)
 
                 # restore all records from BIND file by creating new DNS records
                 for record in bind_file.records:
@@ -551,7 +551,7 @@ class PKBClient:
                     subdomain = record.name.replace(bind_file.origin, "")
                     # replace trailing dot
                     subdomain = subdomain[:-1] if subdomain.endswith(".") else subdomain
-                    self.create_dns_record(domain=bind_file.origin,
+                    self.create_dns_record(domain=bind_file.origin[:-1],
                                            record_type=record.record_type,
                                            content=record.data,
                                            name=subdomain,
