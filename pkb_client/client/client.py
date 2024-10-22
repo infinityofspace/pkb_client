@@ -327,27 +327,29 @@ class PKBClient:
 
     def export_dns_records(self,
                            domain: str,
-                           filename: str) -> bool:
+                           filepath: Path|str) -> bool:
         """
         Export all DNS record from the given domain to a json file.
         This method does not represent a Porkbun API method.
         DNS records with all custom fields like notes are exported.
 
         :param domain: the domain for which the DNS record should be retrieved and saved
-        :param filename: the filename where to save the exported DNS records
+        :param filepath: the filepath where to save the exported DNS records
 
         :return: True if everything went well
         """
+
+        filepath = Path(filepath)
+
         logger.debug("retrieve current DNS records...")
         dns_records = self.get_dns_records(domain)
 
-        logger.debug("save DNS records to {} ...".format(filename))
+        logger.debug("save DNS records to {} ...".format(filepath))
         # merge the single DNS records into one single dict with the record id as key
         dns_records_dict = dict()
         for record in dns_records:
             dns_records_dict[record.id] = record
 
-        filepath = Path(filename)
         if filepath.exists():
             logger.warning("file already exists, overwriting...")
 
@@ -360,28 +362,29 @@ class PKBClient:
 
     def export_bind_dns_records(self,
                                 domain: str,
-                                filename: str) -> bool:
+                                filepath: Path|str) -> bool:
         """
         Export all DNS record from the given domain to a BIND file.
         This method does not represent a Porkbun API method.
         Porkbun DNS record notes are exported as comments.
 
         :param domain: the domain for which the DNS record should be retrieved and saved
-        :param filename: the filename where to save the exported DNS records
+        :param filepath: the filepath where to save the exported DNS records
 
         :return: True if everything went well
         """
 
+        filepath = Path(filepath)
+
         logger.debug("retrieve current DNS records...")
         dns_records = self.get_dns_records(domain)
 
-        logger.debug("save DNS records to {} ...".format(filename))
+        logger.debug("save DNS records to {} ...".format(filepath))
         # merge the single DNS records into one single dict with the record id as key
         dns_records_dict = dict()
         for record in dns_records:
             dns_records_dict[record.id] = record
 
-        filepath = Path(filename)
         if filepath.exists():
             logger.warning("file already exists, overwriting...")
 
@@ -413,13 +416,13 @@ class PKBClient:
 
         return True
 
-    def import_dns_records(self, domain: str, filename: str, restore_mode: DNSRestoreMode) -> bool:
+    def import_dns_records(self, domain: str, filepath: Path|str, restore_mode: DNSRestoreMode) -> bool:
         """
         Restore all DNS records from a json file to the given domain.
         This method does not represent a Porkbun API method.
 
         :param domain: the domain for which the DNS record should be restored
-        :param filename: the filename from which the DNS records are to be restored
+        :param filepath: the filepath from which the DNS records are to be restored
         :param restore_mode: The restore mode (DNS records are identified by the record type, name and prio if supported):
             clear: remove all existing DNS records and restore all DNS records from the provided file
             replace: replace only existing DNS records with the DNS records from the provided file,
@@ -430,9 +433,11 @@ class PKBClient:
         :return: True if everything went well
         """
 
+        filepath = Path(filepath)
+
         existing_dns_records = self.get_dns_records(domain)
 
-        with open(filename, "r") as f:
+        with open(filepath, "r") as f:
             exported_dns_records_dict = json.load(f)
 
         if restore_mode is DNSRestoreMode.clear:
@@ -517,18 +522,18 @@ class PKBClient:
 
         return True
 
-    def import_bind_dns_records(self, filename: str, restore_mode: DNSRestoreMode) -> bool:
+    def import_bind_dns_records(self, filepath: Path | str, restore_mode: DNSRestoreMode) -> bool:
         """
         Restore all DNS records from a BIND file.
         This method does not represent a Porkbun API method.
 
-        :param filename: the bind filename from which the DNS records are to be restored
+        :param filepath: the bind filepath from which the DNS records are to be restored
         :param restore_mode: The restore mode:
             clear: remove all existing DNS records and restore all DNS records from the provided file
         :return: True if everything went well
         """
 
-        bind_file = BindFile.from_file(filename)
+        bind_file = BindFile.from_file(filepath)
 
         existing_dns_records = self.get_dns_records(bind_file.origin)
 
