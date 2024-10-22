@@ -2,7 +2,7 @@ import json
 import logging
 from hashlib import sha256
 from pathlib import Path
-from typing import Optional, List
+from typing import Optional, List, Union
 from urllib.parse import urljoin
 
 import dns.resolver
@@ -327,7 +327,7 @@ class PKBClient:
 
     def export_dns_records(self,
                            domain: str,
-                           filepath: Path|str) -> bool:
+                           filepath: Union[Path, str]) -> bool:
         """
         Export all DNS record from the given domain to a json file.
         This method does not represent a Porkbun API method.
@@ -362,7 +362,7 @@ class PKBClient:
 
     def export_bind_dns_records(self,
                                 domain: str,
-                                filepath: Path|str) -> bool:
+                                filepath: Union[Path, str]) -> bool:
         """
         Export all DNS record from the given domain to a BIND file.
         This method does not represent a Porkbun API method.
@@ -416,7 +416,7 @@ class PKBClient:
 
         return True
 
-    def import_dns_records(self, domain: str, filepath: Path|str, restore_mode: DNSRestoreMode) -> bool:
+    def import_dns_records(self, domain: str, filepath: Union[Path, str], restore_mode: DNSRestoreMode) -> bool:
         """
         Restore all DNS records from a json file to the given domain.
         This method does not represent a Porkbun API method.
@@ -522,7 +522,7 @@ class PKBClient:
 
         return True
 
-    def import_bind_dns_records(self, filepath: Path | str, restore_mode: DNSRestoreMode) -> bool:
+    def import_bind_dns_records(self, filepath: Union[Path, str], restore_mode: DNSRestoreMode) -> bool:
         """
         Restore all DNS records from a BIND file.
         This method does not represent a Porkbun API method.
