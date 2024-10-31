@@ -25,7 +25,7 @@ Python client for the Porkbun API
 
 ### About
 
-*pkb_client* is an python client for the [Porkbun](https://porkbun.com) API. It supports the v3 of the API. You can
+*pkb_client* is a python client for the [Porkbun](https://porkbun.com) API. It supports the v3 of the API. You can
 find the official documentation of the Porkbun API [here](https://api.porkbun.com/api/json/v3/documentation).
 
 ### Installation
@@ -71,7 +71,7 @@ pkb-client -k <YOUR-API-KEY> -s <YOUR-API-SECRET> ping
 ```
 
 If you don't want to specify the key and secret in the program call, because for example the command line calls are
-logged and you don't want to log the API access, then you can also set the environment variables `PKB_API_KEY` and
+logged, and you don't want to log the API access, then you can also set the environment variables `PKB_API_KEY` and
 `PKB_API_SECRET`. If you not specify API key and secret in any way, *pkb-client* asks for a user input. The command line
 arguments of the API key and secret have the highest priority.
 
@@ -171,6 +171,14 @@ pip3 install -r requirements.txt
 ```
 
 Now you can start developing.
+
+Feel free to contribute to this project by creating a pull request.
+Before you create a pull request, make sure that you code meets the following requirements (you can use the specified
+commands to check/fulfill the requirements):
+
+- check unit tests: `python -m unittest tests/*.py`
+- format the code: `ruff format`
+- check linting errors: `ruff check`
 
 #### Tests
 
