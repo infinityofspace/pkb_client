@@ -141,13 +141,17 @@ you can do TTL smaller than `600` via the web dashboard.
 
 All modules used by this project are listed below:
 
-|                       Name                       |                                   License                                   |
-|:------------------------------------------------:|:---------------------------------------------------------------------------:|
-|   [requests](https://github.com/psf/requests)    | [Apache 2.0](https://raw.githubusercontent.com/psf/requests/master/LICENSE) |
-| [setuptools](https://github.com/pypa/setuptools) |    [MIT](https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE)    |
+|                         Name                          |                                              License                                              |
+|:-----------------------------------------------------:|:-------------------------------------------------------------------------------------------------:|
+|      [requests](https://github.com/psf/requests)      |            [Apache 2.0](https://raw.githubusercontent.com/psf/requests/master/LICENSE)            |
+| [setuptools](https://github.com/pypa/setuptools)      |               [MIT](https://raw.githubusercontent.com/pypa/setuptools/main/LICENSE)               |
+|    [sphinx](https://github.com/sphinx-doc/sphinx)     | [BSD 2 Clause](https://raw.githubusercontent.com/sphinx-doc/sphinx/refs/heads/master/LICENSE.rst) |
+|  [dnspython](https://github.com/rthalley/dnspython)   |       [ISC](https://raw.githubusercontent.com/rthalley/dnspython/refs/heads/main/LICENSEc)        |
+|  [responses](https://github.com/getsentry/responses)  |   [Apache 2.0](https://raw.githubusercontent.com/getsentry/responses/refs/heads/master/LICENSE)   |
+|       [ruff](https://github.com/astral-sh/ruff)       |          [MIT](https://raw.githubusercontent.com/astral-sh/ruff/refs/heads/main/LICENSE)          |
 
 Furthermore, this readme file contains embeddings of [Shields.io](https://github.com/badges/shields)
-and [PePy](https://github.com/psincraian/pepy). The tests use [ipify](https://github.com/rdegges/ipify-api).
+and [PePy](https://github.com/psincraian/pepy) images.
 
 _This project is not associated with Porkbun LLC._
 
