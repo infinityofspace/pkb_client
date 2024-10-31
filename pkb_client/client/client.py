@@ -9,7 +9,12 @@ import dns.resolver
 import requests
 
 from pkb_client.client import BindFile
-from pkb_client.client.dns import DNSRecord, DNSRestoreMode, DNSRecordType, DNS_RECORDS_WITH_PRIORITY
+from pkb_client.client.dns import (
+    DNSRecord,
+    DNSRestoreMode,
+    DNSRecordType,
+    DNS_RECORDS_WITH_PRIORITY,
+)
 from pkb_client.client.domain import DomainInfo
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 from pkb_client.client.ssl_cert import SSLCertBundle
@@ -32,11 +37,13 @@ class PKBClient:
 
     default_ttl: int = 300
 
-    def __init__(self,
-                 api_key: Optional[str] = None,
-                 secret_api_key: Optional[str] = None,
-                 api_endpoint: str = API_ENDPOINT,
-                 debug: bool = False) -> None:
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        secret_api_key: Optional[str] = None,
+        api_endpoint: str = API_ENDPOINT,
+        debug: bool = False,
+    ) -> None:
         """
         Creates a new PKBClient object.
 
@@ -62,10 +69,7 @@ class PKBClient:
         if self.api_key is None or self.secret_api_key is None:
             raise ValueError("api_key and secret_api_key must be set")
 
-        return {
-            "apikey": self.api_key,
-            "secretapikey": self.secret_api_key
-        }
+        return {"apikey": self.api_key, "secretapikey": self.secret_api_key}
 
     def ping(self) -> str:
         """
@@ -83,16 +87,20 @@ class PKBClient:
             return json.loads(r.text).get("yourIp", None)
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
-    def create_dns_record(self,
-                          domain: str,
-                          record_type: DNSRecordType,
-                          content: str,
-                          name: Optional[str] = None,
-                          ttl: int = default_ttl,
-                          prio: Optional[int] = None) -> str:
+    def create_dns_record(
+        self,
+        domain: str,
+        record_type: DNSRecordType,
+        content: str,
+        name: Optional[str] = None,
+        ttl: int = default_ttl,
+        prio: Optional[int] = None,
+    ) -> str:
         """
         API DNS create method: create a new DNS record for given domain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Create%20Record for more info.
@@ -111,7 +119,9 @@ class PKBClient:
             raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
         if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
-            raise ValueError(f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}")
+            raise ValueError(
+                f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}"
+            )
 
         url = urljoin(self.api_endpoint, f"dns/create/{domain}")
         req_json = {
@@ -120,7 +130,7 @@ class PKBClient:
             "type": record_type,
             "content": content,
             "ttl": ttl,
-            "prio": prio
+            "prio": prio,
         }
         r = requests.post(url=url, json=req_json)
 
@@ -128,17 +138,21 @@ class PKBClient:
             return str(json.loads(r.text).get("id", None))
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
-    def update_dns_record(self,
-                          domain: str,
-                          record_id: str,
-                          record_type: DNSRecordType,
-                          content: str,
-                          name: Optional[str] = None,
-                          ttl: int = default_ttl,
-                          prio: Optional[int] = None) -> bool:
+    def update_dns_record(
+        self,
+        domain: str,
+        record_id: str,
+        record_type: DNSRecordType,
+        content: str,
+        name: Optional[str] = None,
+        ttl: int = default_ttl,
+        prio: Optional[int] = None,
+    ) -> bool:
         """
         API DNS edit method: edit an existing DNS record specified by the id for a given domain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record for more info.
@@ -159,7 +173,9 @@ class PKBClient:
             raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
         if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
-            raise ValueError(f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}")
+            raise ValueError(
+                f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}"
+            )
 
         url = urljoin(self.api_endpoint, f"dns/edit/{domain}/{record_id}")
         req_json = {
@@ -168,7 +184,7 @@ class PKBClient:
             "type": record_type,
             "content": content,
             "ttl": ttl,
-            "prio": prio
+            "prio": prio,
         }
         r = requests.post(url=url, json=req_json)
 
@@ -176,16 +192,20 @@ class PKBClient:
             return True
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
-    def update_all_dns_records(self,
-                               domain: str,
-                               record_type: DNSRecordType,
-                               subdomain: str,
-                               content: str,
-                               ttl: int = default_ttl,
-                               prio: Optional[int] = None) -> bool:
+    def update_all_dns_records(
+        self,
+        domain: str,
+        record_type: DNSRecordType,
+        subdomain: str,
+        content: str,
+        ttl: int = default_ttl,
+        prio: Optional[int] = None,
+    ) -> bool:
         """
         API DNS edit method: edit all existing DNS record matching the domain, record type and subdomain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Edit%20Record%20by%20Domain,%20Subdomain%20and%20Type for more info.
@@ -204,15 +224,19 @@ class PKBClient:
             raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
 
         if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
-            raise ValueError(f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}")
+            raise ValueError(
+                f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}"
+            )
 
-        url = urljoin(self.api_endpoint, f"dns/editByNameType/{domain}/{record_type}/{subdomain}")
+        url = urljoin(
+            self.api_endpoint, f"dns/editByNameType/{domain}/{record_type}/{subdomain}"
+        )
         req_json = {
             **self._get_auth_request_json(),
             "type": record_type,
             "content": content,
             "ttl": ttl,
-            "prio": prio
+            "prio": prio,
         }
         r = requests.post(url=url, json=req_json)
 
@@ -220,12 +244,12 @@ class PKBClient:
             return True
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
-    def delete_dns_record(self,
-                          domain: str,
-                          record_id: str) -> bool:
+    def delete_dns_record(self, domain: str, record_id: str) -> bool:
         """
         API DNS delete method: delete an existing DNS record specified by the id for a given domain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Delete%20Record for more info.
@@ -244,13 +268,14 @@ class PKBClient:
             return True
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
-    def delete_all_dns_records(self,
-                               domain: str,
-                               record_type: DNSRecordType,
-                               subdomain: str) -> bool:
+    def delete_all_dns_records(
+        self, domain: str, record_type: DNSRecordType, subdomain: str
+    ) -> bool:
         """
         API DNS delete method: delete all existing DNS record matching the domain, record type and subdomain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Delete%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
@@ -262,7 +287,10 @@ class PKBClient:
         :return: True if the deletion was successful
         """
 
-        url = urljoin(self.api_endpoint, f"dns/deleteByNameType/{domain}/{record_type}/{subdomain}")
+        url = urljoin(
+            self.api_endpoint,
+            f"dns/deleteByNameType/{domain}/{record_type}/{subdomain}",
+        )
         req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
 
@@ -270,10 +298,14 @@ class PKBClient:
             return True
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
-    def get_dns_records(self, domain, record_id: Optional[str] = None) -> List[DNSRecord]:
+    def get_dns_records(
+        self, domain, record_id: Optional[str] = None
+    ) -> List[DNSRecord]:
         """
         API DNS retrieve method: retrieve all DNS records for given domain if no record id is specified.
         Otherwise, retrieve the DNS record of the specified domain with the given record id.
@@ -293,16 +325,20 @@ class PKBClient:
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
-            return [DNSRecord.from_dict(record) for record in json.loads(r.text).get("records", [])]
+            return [
+                DNSRecord.from_dict(record)
+                for record in json.loads(r.text).get("records", [])
+            ]
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
-    def get_all_dns_records(self,
-                            domain: str,
-                            record_type: DNSRecordType,
-                            subdomain: str) -> List[DNSRecord]:
+    def get_all_dns_records(
+        self, domain: str, record_type: DNSRecordType, subdomain: str
+    ) -> List[DNSRecord]:
         """
         API DNS retrieve method: retrieve all DNS records matching the domain, record type and subdomain.
         See https://api.porkbun.com/api/json/v3/documentation#DNS%20Retrieve%20Records%20by%20Domain,%20Subdomain%20and%20Type for more info.
@@ -314,20 +350,26 @@ class PKBClient:
         :return: list of DNSRecords objects
         """
 
-        url = urljoin(self.api_endpoint, f"dns/retrieveByNameType/{domain}/{record_type}/{subdomain}")
+        url = urljoin(
+            self.api_endpoint,
+            f"dns/retrieveByNameType/{domain}/{record_type}/{subdomain}",
+        )
         req_json = self._get_auth_request_json()
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
-            return [DNSRecord.from_dict(record) for record in json.loads(r.text).get("records", [])]
+            return [
+                DNSRecord.from_dict(record)
+                for record in json.loads(r.text).get("records", [])
+            ]
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
-    def export_dns_records(self,
-                           domain: str,
-                           filepath: Union[Path, str]) -> bool:
+    def export_dns_records(self, domain: str, filepath: Union[Path, str]) -> bool:
         """
         Export all DNS record from the given domain to a json file.
         This method does not represent a Porkbun API method.
@@ -360,9 +402,7 @@ class PKBClient:
 
         return True
 
-    def export_bind_dns_records(self,
-                                domain: str,
-                                filepath: Union[Path, str]) -> bool:
+    def export_bind_dns_records(self, domain: str, filepath: Union[Path, str]) -> bool:
         """
         Export all DNS record from the given domain to a BIND file.
         This method does not represent a Porkbun API method.
@@ -404,7 +444,9 @@ class PKBClient:
                 record_content = f"{record.prio} {record.content}"
             else:
                 record_content = record.content
-            bind_file_content += f"\n{record.name} IN {record.ttl} {record.type} {record_content}"
+            bind_file_content += (
+                f"\n{record.name} IN {record.ttl} {record.type} {record_content}"
+            )
 
             if record.notes:
                 bind_file_content += f" ; {record.notes}"
@@ -416,7 +458,9 @@ class PKBClient:
 
         return True
 
-    def import_dns_records(self, domain: str, filepath: Union[Path, str], restore_mode: DNSRestoreMode) -> bool:
+    def import_dns_records(
+        self, domain: str, filepath: Union[Path, str], restore_mode: DNSRestoreMode
+    ) -> bool:
         """
         Restore all DNS records from a json file to the given domain.
         This method does not represent a Porkbun API method.
@@ -451,12 +495,14 @@ class PKBClient:
                 # restore all exported records by creating new DNS records
                 for _, exported_record in exported_dns_records_dict.items():
                     name = ".".join(exported_record["name"].split(".")[:-2])
-                    self.create_dns_record(domain=domain,
-                                           record_type=exported_record["type"],
-                                           content=exported_record["content"],
-                                           name=name,
-                                           ttl=exported_record["ttl"],
-                                           prio=exported_record["prio"])
+                    self.create_dns_record(
+                        domain=domain,
+                        record_type=exported_record["type"],
+                        content=exported_record["content"],
+                        name=name,
+                        ttl=exported_record["ttl"],
+                        prio=exported_record["prio"],
+                    )
             except Exception as e:
                 logger.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
@@ -467,25 +513,32 @@ class PKBClient:
 
             try:
                 existing_dns_record_hashed = {
-                    sha256(f"{record.type}{record.name}{record.prio}".encode()).hexdigest(): record
+                    sha256(
+                        f"{record.type}{record.name}{record.prio}".encode()
+                    ).hexdigest(): record
                     for record in existing_dns_records
                 }
                 for record in exported_dns_records_dict.values():
-                    record_hash = sha256(f"{record['type']}{record['name']}{record['prio']}".encode()).hexdigest()
+                    record_hash = sha256(
+                        f"{record['type']}{record['name']}{record['prio']}".encode()
+                    ).hexdigest()
                     existing_record = existing_dns_record_hashed.get(record_hash, None)
                     # check if the exported dns record is different to the existing record,
                     # so we can reduce unnecessary api calls
-                    if (existing_record is not None
-                            and (record["content"] != existing_record.content
-                                 or record["ttl"] != existing_record.ttl
-                                 or record["prio"] != existing_record.prio)):
-                        self.update_dns_record(domain=domain,
-                                               record_id=existing_record.id,
-                                               record_type=record["type"],
-                                               content=record["content"],
-                                               name=record["name"].replace(f".{domain}", ""),
-                                               ttl=record["ttl"],
-                                               prio=record["prio"])
+                    if existing_record is not None and (
+                        record["content"] != existing_record.content
+                        or record["ttl"] != existing_record.ttl
+                        or record["prio"] != existing_record.prio
+                    ):
+                        self.update_dns_record(
+                            domain=domain,
+                            record_id=existing_record.id,
+                            record_type=record["type"],
+                            content=record["content"],
+                            name=record["name"].replace(f".{domain}", ""),
+                            ttl=record["ttl"],
+                            prio=record["prio"],
+                        )
             except Exception as e:
                 logger.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
@@ -495,21 +548,27 @@ class PKBClient:
             logger.debug("restore mode: keep")
 
             existing_dns_record_hashed = {
-                sha256(f"{record.type}{record.name}{record.prio}".encode()).hexdigest(): record
+                sha256(
+                    f"{record.type}{record.name}{record.prio}".encode()
+                ).hexdigest(): record
                 for record in existing_dns_records
             }
 
             try:
                 for record in exported_dns_records_dict.values():
-                    record_hash = sha256(f"{record['type']}{record['name']}{record['prio']}".encode()).hexdigest()
+                    record_hash = sha256(
+                        f"{record['type']}{record['name']}{record['prio']}".encode()
+                    ).hexdigest()
                     existing_record = existing_dns_record_hashed.get(record_hash, None)
                     if existing_record is None:
-                        self.create_dns_record(domain=domain,
-                                               record_type=record["type"],
-                                               content=record["content"],
-                                               name=record["name"].replace(f".{domain}", ""),
-                                               ttl=record["ttl"],
-                                               prio=record["prio"])
+                        self.create_dns_record(
+                            domain=domain,
+                            record_type=record["type"],
+                            content=record["content"],
+                            name=record["name"].replace(f".{domain}", ""),
+                            ttl=record["ttl"],
+                            prio=record["prio"],
+                        )
             except Exception as e:
                 logger.error("something went wrong: {}".format(e.__str__()))
                 self.__handle_error_backup__(existing_dns_records)
@@ -522,7 +581,9 @@ class PKBClient:
 
         return True
 
-    def import_bind_dns_records(self, filepath: Union[Path, str], restore_mode: DNSRestoreMode) -> bool:
+    def import_bind_dns_records(
+        self, filepath: Union[Path, str], restore_mode: DNSRestoreMode
+    ) -> bool:
         """
         Restore all DNS records from a BIND file.
         This method does not represent a Porkbun API method.
@@ -551,12 +612,14 @@ class PKBClient:
                     subdomain = record.name.replace(bind_file.origin, "")
                     # replace trailing dot
                     subdomain = subdomain[:-1] if subdomain.endswith(".") else subdomain
-                    self.create_dns_record(domain=bind_file.origin[:-1],
-                                           record_type=record.record_type,
-                                           content=record.data,
-                                           name=subdomain,
-                                           ttl=record.ttl,
-                                           prio=record.prio)
+                    self.create_dns_record(
+                        domain=bind_file.origin[:-1],
+                        record_type=record.record_type,
+                        content=record.data,
+                        name=subdomain,
+                        ttl=record.ttl,
+                        prio=record.prio,
+                    )
 
             except Exception as e:
                 logger.error("something went wrong: {}".format(e.__str__()))
@@ -579,18 +642,17 @@ class PKBClient:
         """
 
         url = urljoin(self.api_endpoint, f"domain/updateNs/{domain}")
-        req_json = {
-            **self._get_auth_request_json(),
-            "ns": name_servers
-        }
+        req_json = {**self._get_auth_request_json(), "ns": name_servers}
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200 and json.loads(r.text).get("status", None) == "SUCCESS":
             return True
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
     def get_dns_servers(self, domain: str) -> List[str]:
         """
@@ -608,8 +670,10 @@ class PKBClient:
             return json.loads(r.text).get("ns", [])
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
     def get_domains(self, start: int = 0) -> List[DomainInfo]:
         """
@@ -623,18 +687,20 @@ class PKBClient:
 
         url = urljoin(self.api_endpoint, "domain/listAll")
 
-        req_json = {
-            **self._get_auth_request_json(),
-            "start": start
-        }
+        req_json = {**self._get_auth_request_json(), "start": start}
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
-            return [DomainInfo.from_dict(domain) for domain in json.loads(r.text).get("domains", [])]
+            return [
+                DomainInfo.from_dict(domain)
+                for domain in json.loads(r.text).get("domains", [])
+            ]
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
     def get_url_forwards(self, domain: str) -> List[URLForwarding]:
         """
@@ -649,19 +715,26 @@ class PKBClient:
         r = requests.post(url=url, json=req_json)
 
         if r.status_code == 200:
-            return [URLForwarding.from_dict(forwarding) for forwarding in json.loads(r.text).get("forwards", [])]
+            return [
+                URLForwarding.from_dict(forwarding)
+                for forwarding in json.loads(r.text).get("forwards", [])
+            ]
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
-    def create_url_forward(self,
-                           domain: str,
-                           subdomain: str,
-                           location: str,
-                           type: URLForwardingType,
-                           include_path: bool,
-                           wildcard: bool) -> bool:
+    def create_url_forward(
+        self,
+        domain: str,
+        subdomain: str,
+        location: str,
+        type: URLForwardingType,
+        include_path: bool,
+        wildcard: bool,
+    ) -> bool:
         """
         Add a url forward for the given domain.
         See https://api.porkbun.com/api/json/v3/documentation#Domain%20Add%20URL%20Forward for more info.
@@ -683,7 +756,7 @@ class PKBClient:
             "location": location,
             "type": type,
             "includePath": include_path,
-            "wildcard": wildcard
+            "wildcard": wildcard,
         }
         r = requests.post(url=url, json=req_json)
 
@@ -691,8 +764,10 @@ class PKBClient:
             return True
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
     def delete_url_forward(self, domain: str, id: str) -> bool:
         """
@@ -713,8 +788,10 @@ class PKBClient:
             return True
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
     def get_domain_pricing(self) -> dict:
         """
@@ -731,8 +808,10 @@ class PKBClient:
             return json.loads(r.text)["pricing"]
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
     def get_ssl_bundle(self, domain) -> SSLCertBundle:
         """
@@ -751,13 +830,17 @@ class PKBClient:
         if r.status_code == 200:
             ssl_bundle = json.loads(r.text)
 
-            return SSLCertBundle(certificate_chain=ssl_bundle["certificatechain"],
-                                 private_key=ssl_bundle["privatekey"],
-                                 public_key=ssl_bundle["publickey"])
+            return SSLCertBundle(
+                certificate_chain=ssl_bundle["certificatechain"],
+                private_key=ssl_bundle["privatekey"],
+                public_key=ssl_bundle["publickey"],
+            )
         else:
             response_json = json.loads(r.text)
-            raise PKBClientException(response_json.get("status", "Unknown status"),
-                                     response_json.get("message", "Unknown message"))
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
 
     @staticmethod
     def __handle_error_backup__(dns_records):
@@ -777,4 +860,8 @@ class PKBClient:
         with open(backup_file_path, "w") as f:
             json.dump(dns_records_dict, f)
 
-        logger.warning("a backup of your existing dns records was saved to {}".format(str(backup_file_path)))
+        logger.warning(
+            "a backup of your existing dns records was saved to {}".format(
+                str(backup_file_path)
+            )
+        )

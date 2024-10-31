@@ -38,7 +38,12 @@ class BindFile:
     ttl: Optional[int] = None
     records: List[BindRecord]
 
-    def __init__(self, origin: str, ttl: Optional[int] = None, records: Optional[List[BindRecord]] = None) -> None:
+    def __init__(
+        self,
+        origin: str,
+        ttl: Optional[int] = None,
+        records: Optional[List[BindRecord]] = None,
+    ) -> None:
         self.origin = origin
         self.ttl = ttl
         self.records = records or []
@@ -132,8 +137,17 @@ class BindFile:
                 # replace @ in record name with origin
                 record_name = record_name.replace("@", origin)
 
-                records.append(BindRecord(record_name, record_ttl, record_class, record_type, record_data, prio=prio,
-                                          comment=comment))
+                records.append(
+                    BindRecord(
+                        record_name,
+                        record_ttl,
+                        record_class,
+                        record_type,
+                        record_data,
+                        prio=prio,
+                        comment=comment,
+                    )
+                )
 
         if origin is None:
             raise ValueError("No origin found in file")
