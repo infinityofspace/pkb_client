@@ -17,7 +17,7 @@ To use the PKB client, you need to create an instance of the :class:`PKBClient <
         api_endpoint="https://api.porkbun.com/api/json/v3",
     )
 
-Whereby the api_key and secret_api_key are optional and only required if you want to use the PKB API with API endpoints
+Whereby the `api_key` and `secret_api_key` are optional and only required if you want to use the PKB API with API endpoints
 that require authentication (e.g. to manage dns records of your domains). Moreover the api_endpoint is also optional and
 defaults to the latest version of the official PKB API endpoint.
 
@@ -51,34 +51,34 @@ All available commands can be listed with the `--help` option:
 
 .. code-block:: bash
 
-    usage: cli.py [-h] [-k KEY] [-s SECRET] [--debug] [--endpoint ENDPOINT]
-              {ping,dns-create,dns-edit,dns-delete,dns-retrieve,dns-export,dns-export-bind,dns-import,dns-import-bind,domain-pricing,ssl-retrieve,dns-servers-update,dns-servers-receive,domains-list,url-forward-retrieve,url-forward-create,url-forward-delete}
-              ...
+    usage: pkb-client [-h] [-k KEY] [-s SECRET] [--debug] [--endpoint ENDPOINT]
+                  {ping,create-dns-record,update-dns-record,delete-dns-records,get-dns-records,export-dns-records,export-bind-dns-records,import-dns-records,import-bind-dns-records,get-domain-pricing,get-ssl-bundle,update-dns-servers,get-dns-servers,get-domains,get-url-forwards,create-url-forward,delete-url-forward}
+                  ...
 
     Python client for the Porkbun API
 
     positional arguments:
-      {ping,dns-create,dns-edit,dns-delete,dns-retrieve,dns-export,dns-export-bind,dns-import,dns-import-bind,domain-pricing,ssl-retrieve,dns-servers-update,dns-servers-receive,domains-list,url-forward-retrieve,url-forward-create,url-forward-delete}
+      {ping,create-dns-record,update-dns-record,delete-dns-records,get-dns-records,export-dns-records,export-bind-dns-records,import-dns-records,import-bind-dns-records,get-domain-pricing,get-ssl-bundle,update-dns-servers,get-dns-servers,get-domains,get-url-forwards,create-url-forward,delete-url-forward}
                             Supported API methods
         ping                Ping the API Endpoint
-        dns-create          Create a new DNS record.
-        dns-edit            Edit an existing DNS record.
-        dns-delete          Delete an existing DNS record.
-        dns-retrieve        Get all DNS records.
-        dns-export          Save all DNS records to a local json file.
-        dns-export-bind     Save all DNS records to a local BIND file.
-        dns-import          Restore all DNS records from a local json file.
-        dns-import-bind     Restore all DNS records from a local BIND file.
-        domain-pricing      Get the pricing for Porkbun domains.
-        ssl-retrieve        Retrieve an SSL bundle for given domain.
-        dns-servers-update  Update the DNS servers for a domain.
-        dns-servers-receive
-                            Retrieve the DNS servers for a domain.
-        domains-list        List all domains in this account in chunks of 1000.
-        url-forward-retrieve
-                            Retrieve all URL forwards.
-        url-forward-create  Create a new URL forward.
-        url-forward-delete  Delete an existing URL forward.
+        create-dns-record   Create a new DNS record.
+        update-dns-record   Edit an existing DNS record.
+        delete-dns-records  Delete an existing DNS record.
+        get-dns-records     Get all DNS records.
+        export-dns-records  Save all DNS records to a local json file.
+        export-bind-dns-records
+                            Save all DNS records to a local BIND file.
+        import-dns-records  Restore all DNS records from a local json file.
+        import-bind-dns-records
+                            Restore all DNS records from a local BIND file.
+        get-domain-pricing  Get the pricing for Porkbun domains.
+        get-ssl-bundle      Retrieve an SSL bundle for given domain.
+        update-dns-servers  Update the DNS servers for a domain.
+        get-dns-servers     Retrieve the DNS servers for a domain.
+        get-domains         List all domains in this account in chunks of 1000.
+        get-url-forwards    Retrieve all URL forwards.
+        create-url-forward  Create a new URL forward.
+        delete-url-forward  Delete an existing URL forward.
 
     options:
       -h, --help            show this help message and exit
