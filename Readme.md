@@ -172,6 +172,14 @@ pip3 install -r requirements.txt
 
 Now you can start developing.
 
+Feel free to contribute to this project by creating a pull request.
+Before you create a pull request, make sure that you code meets the following requirements (you can use the specified
+commands to check/fulfill the requirements):
+
+- check unit tests: `python -m unittest tests/*.py`
+- format the code: `ruff format`
+- check linting errors: `ruff check`
+
 #### Tests
 
 You can run the tests with the following command:
