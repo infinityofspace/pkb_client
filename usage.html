@@ -48,7 +48,7 @@ To use the PKB client, you need to create an instance of the <code class="xref p
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Whereby the api_key and secret_api_key are optional and only required if you want to use the PKB API with API endpoints
+<p>Whereby the <cite>api_key</cite> and <cite>secret_api_key</cite> are optional and only required if you want to use the PKB API with API endpoints
 that require authentication (e.g. to manage dns records of your domains). Moreover the api_endpoint is also optional and
 defaults to the latest version of the official PKB API endpoint.</p>
 <p>For example to get the domain pricing, which does not require authentication, you can use the
@@ -72,34 +72,34 @@ defaults to the latest version of the official PKB API endpoint.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pkb-client<span class="w"> </span>--help
 </pre></div>
 </div>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>cli.py<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">[</span>-k<span class="w"> </span>KEY<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>SECRET<span class="o">]</span><span class="w"> </span><span class="o">[</span>--debug<span class="o">]</span><span class="w"> </span><span class="o">[</span>--endpoint<span class="w"> </span>ENDPOINT<span class="o">]</span>
-<span class="w">          </span><span class="o">{</span>ping,dns-create,dns-edit,dns-delete,dns-retrieve,dns-export,dns-export-bind,dns-import,dns-import-bind,domain-pricing,ssl-retrieve,dns-servers-update,dns-servers-receive,domains-list,url-forward-retrieve,url-forward-create,url-forward-delete<span class="o">}</span>
-<span class="w">          </span>...
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>usage:<span class="w"> </span>pkb-client<span class="w"> </span><span class="o">[</span>-h<span class="o">]</span><span class="w"> </span><span class="o">[</span>-k<span class="w"> </span>KEY<span class="o">]</span><span class="w"> </span><span class="o">[</span>-s<span class="w"> </span>SECRET<span class="o">]</span><span class="w"> </span><span class="o">[</span>--debug<span class="o">]</span><span class="w"> </span><span class="o">[</span>--endpoint<span class="w"> </span>ENDPOINT<span class="o">]</span>
+<span class="w">              </span><span class="o">{</span>ping,create-dns-record,update-dns-record,delete-dns-records,get-dns-records,export-dns-records,export-bind-dns-records,import-dns-records,import-bind-dns-records,get-domain-pricing,get-ssl-bundle,update-dns-servers,get-dns-servers,get-domains,get-url-forwards,create-url-forward,delete-url-forward<span class="o">}</span>
+<span class="w">              </span>...
 
 Python<span class="w"> </span>client<span class="w"> </span><span class="k">for</span><span class="w"> </span>the<span class="w"> </span>Porkbun<span class="w"> </span>API
 
 positional<span class="w"> </span>arguments:
-<span class="w">  </span><span class="o">{</span>ping,dns-create,dns-edit,dns-delete,dns-retrieve,dns-export,dns-export-bind,dns-import,dns-import-bind,domain-pricing,ssl-retrieve,dns-servers-update,dns-servers-receive,domains-list,url-forward-retrieve,url-forward-create,url-forward-delete<span class="o">}</span>
+<span class="w">  </span><span class="o">{</span>ping,create-dns-record,update-dns-record,delete-dns-records,get-dns-records,export-dns-records,export-bind-dns-records,import-dns-records,import-bind-dns-records,get-domain-pricing,get-ssl-bundle,update-dns-servers,get-dns-servers,get-domains,get-url-forwards,create-url-forward,delete-url-forward<span class="o">}</span>
 <span class="w">                        </span>Supported<span class="w"> </span>API<span class="w"> </span>methods
 <span class="w">    </span>ping<span class="w">                </span>Ping<span class="w"> </span>the<span class="w"> </span>API<span class="w"> </span>Endpoint
-<span class="w">    </span>dns-create<span class="w">          </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>DNS<span class="w"> </span>record.
-<span class="w">    </span>dns-edit<span class="w">            </span>Edit<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>DNS<span class="w"> </span>record.
-<span class="w">    </span>dns-delete<span class="w">          </span>Delete<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>DNS<span class="w"> </span>record.
-<span class="w">    </span>dns-retrieve<span class="w">        </span>Get<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records.
-<span class="w">    </span>dns-export<span class="w">          </span>Save<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>json<span class="w"> </span>file.
-<span class="w">    </span>dns-export-bind<span class="w">     </span>Save<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>BIND<span class="w"> </span>file.
-<span class="w">    </span>dns-import<span class="w">          </span>Restore<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>from<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>json<span class="w"> </span>file.
-<span class="w">    </span>dns-import-bind<span class="w">     </span>Restore<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>from<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>BIND<span class="w"> </span>file.
-<span class="w">    </span>domain-pricing<span class="w">      </span>Get<span class="w"> </span>the<span class="w"> </span>pricing<span class="w"> </span><span class="k">for</span><span class="w"> </span>Porkbun<span class="w"> </span>domains.
-<span class="w">    </span>ssl-retrieve<span class="w">        </span>Retrieve<span class="w"> </span>an<span class="w"> </span>SSL<span class="w"> </span>bundle<span class="w"> </span><span class="k">for</span><span class="w"> </span>given<span class="w"> </span>domain.
-<span class="w">    </span>dns-servers-update<span class="w">  </span>Update<span class="w"> </span>the<span class="w"> </span>DNS<span class="w"> </span>servers<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>domain.
-<span class="w">    </span>dns-servers-receive
-<span class="w">                        </span>Retrieve<span class="w"> </span>the<span class="w"> </span>DNS<span class="w"> </span>servers<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>domain.
-<span class="w">    </span>domains-list<span class="w">        </span>List<span class="w"> </span>all<span class="w"> </span>domains<span class="w"> </span><span class="k">in</span><span class="w"> </span>this<span class="w"> </span>account<span class="w"> </span><span class="k">in</span><span class="w"> </span>chunks<span class="w"> </span>of<span class="w"> </span><span class="m">1000</span>.
-<span class="w">    </span>url-forward-retrieve
-<span class="w">                        </span>Retrieve<span class="w"> </span>all<span class="w"> </span>URL<span class="w"> </span>forwards.
-<span class="w">    </span>url-forward-create<span class="w">  </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>URL<span class="w"> </span>forward.
-<span class="w">    </span>url-forward-delete<span class="w">  </span>Delete<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>URL<span class="w"> </span>forward.
+<span class="w">    </span>create-dns-record<span class="w">   </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>DNS<span class="w"> </span>record.
+<span class="w">    </span>update-dns-record<span class="w">   </span>Edit<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>DNS<span class="w"> </span>record.
+<span class="w">    </span>delete-dns-records<span class="w">  </span>Delete<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>DNS<span class="w"> </span>record.
+<span class="w">    </span>get-dns-records<span class="w">     </span>Get<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records.
+<span class="w">    </span>export-dns-records<span class="w">  </span>Save<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>json<span class="w"> </span>file.
+<span class="w">    </span>export-bind-dns-records
+<span class="w">                        </span>Save<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>to<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>BIND<span class="w"> </span>file.
+<span class="w">    </span>import-dns-records<span class="w">  </span>Restore<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>from<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>json<span class="w"> </span>file.
+<span class="w">    </span>import-bind-dns-records
+<span class="w">                        </span>Restore<span class="w"> </span>all<span class="w"> </span>DNS<span class="w"> </span>records<span class="w"> </span>from<span class="w"> </span>a<span class="w"> </span><span class="nb">local</span><span class="w"> </span>BIND<span class="w"> </span>file.
+<span class="w">    </span>get-domain-pricing<span class="w">  </span>Get<span class="w"> </span>the<span class="w"> </span>pricing<span class="w"> </span><span class="k">for</span><span class="w"> </span>Porkbun<span class="w"> </span>domains.
+<span class="w">    </span>get-ssl-bundle<span class="w">      </span>Retrieve<span class="w"> </span>an<span class="w"> </span>SSL<span class="w"> </span>bundle<span class="w"> </span><span class="k">for</span><span class="w"> </span>given<span class="w"> </span>domain.
+<span class="w">    </span>update-dns-servers<span class="w">  </span>Update<span class="w"> </span>the<span class="w"> </span>DNS<span class="w"> </span>servers<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>domain.
+<span class="w">    </span>get-dns-servers<span class="w">     </span>Retrieve<span class="w"> </span>the<span class="w"> </span>DNS<span class="w"> </span>servers<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>domain.
+<span class="w">    </span>get-domains<span class="w">         </span>List<span class="w"> </span>all<span class="w"> </span>domains<span class="w"> </span><span class="k">in</span><span class="w"> </span>this<span class="w"> </span>account<span class="w"> </span><span class="k">in</span><span class="w"> </span>chunks<span class="w"> </span>of<span class="w"> </span><span class="m">1000</span>.
+<span class="w">    </span>get-url-forwards<span class="w">    </span>Retrieve<span class="w"> </span>all<span class="w"> </span>URL<span class="w"> </span>forwards.
+<span class="w">    </span>create-url-forward<span class="w">  </span>Create<span class="w"> </span>a<span class="w"> </span>new<span class="w"> </span>URL<span class="w"> </span>forward.
+<span class="w">    </span>delete-url-forward<span class="w">  </span>Delete<span class="w"> </span>an<span class="w"> </span>existing<span class="w"> </span>URL<span class="w"> </span>forward.
 
 options:
 <span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">            </span>show<span class="w"> </span>this<span class="w"> </span><span class="nb">help</span><span class="w"> </span>message<span class="w"> </span>and<span class="w"> </span><span class="nb">exit</span>
