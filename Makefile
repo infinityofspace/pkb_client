@@ -1,4 +1,4 @@
-VERSION       = 1.2
+VERSION       = 2.0.0
 RELEASE       = 1
 
 # system paths
@@ -39,7 +39,7 @@ python3-pkb-client.spec:
 	@printf 'Version:        '${VERSION}'\n'                                   >> python3-pkb-client.spec
 	@printf 'Release:        '${RELEASE}'\n'                                   >> python3-pkb-client.spec
 	@printf 'Obsoletes:      %%{name} <= %%{version}\n'                        >> python3-pkb-client.spec
-	@printf 'Summary:        Unofficial client for the Porkbun API\n\n'        >> python3-pkb-client.spec
+	@printf 'Summary:        Python client for the Porkbun API\n\n'            >> python3-pkb-client.spec
 	@printf 'License:        MIT License\n'                                    >> python3-pkb-client.spec
 	@printf 'URL:            https://github.com/infinityofspace/pkb_client/\n' >> python3-pkb-client.spec
 	@printf 'Source0:        %%{name}-%%{version}.tar.xz\n\n'                  >> python3-pkb-client.spec
@@ -49,7 +49,7 @@ python3-pkb-client.spec:
 	@printf 'BuildRequires:  python3-py\n\n'                                   >> python3-pkb-client.spec
 	@printf '%%?python_enable_dependency_generator\n\n'                        >> python3-pkb-client.spec
 	@printf '%%description\n'                                                  >> python3-pkb-client.spec
-	@printf 'Unofficial client for the Porkbun API\n\n'                        >> python3-pkb-client.spec
+	@printf 'Python client for the Porkbun API\n\n'                            >> python3-pkb-client.spec
 	@printf '%%prep\n'                                                         >> python3-pkb-client.spec
 	@printf '%%autosetup -n %%{modname}_v%%{version}\n\n'                      >> python3-pkb-client.spec
 	@printf '%%build\n'                                                        >> python3-pkb-client.spec
