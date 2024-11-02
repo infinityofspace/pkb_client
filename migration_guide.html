@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Migration Guide &#8212; pkb_client v2.0.0 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="_static/basic.css?v=686e5160" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=27fed22d" />
+    <script src="_static/documentation_options.js?v=aa039f9c"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="pkb_client.client package" href="pkb_client.client.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="migration-guide">
+<h1>Migration Guide<a class="headerlink" href="#migration-guide" title="Link to this heading">¶</a></h1>
+<section id="from-v1-to-v2">
+<h2>From v1 to v2<a class="headerlink" href="#from-v1-to-v2" title="Link to this heading">¶</a></h2>
+<p>The version 2 of the package is a major release that introduces a lot of changes. The main changes are:</p>
+<ul class="simple">
+<li><p>support for new API methods</p></li>
+<li><dl class="simple">
+<dt>package is now a proper Python package with focus on usage as a library (in general more object oriented):</dt><dd><ul>
+<li><p>return types are now objects instead of tuples or dictionaries (except domain pricing method)</p></li>
+<li><p>improved and more consistent error handling</p></li>
+<li><p>fixed method signatures/no more additional keyworded arguments</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>These changes are not backward compatible with the version 1 of the package. If you are using the version 1 of the
+package, you will need to update your code to work with the version 2.</p>
+<p>To migrate your code from the version 1 to the version 2, follow these steps:</p>
+<ol class="arabic">
+<li><dl>
+<dt>Update the package to the version 2 or higher:</dt><dd><ul>
+<li><dl>
+<dt>if you are using the package from PyPI, run the following command:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip3<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pkb_client
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>if you are using the package from the source code, run the following commands:</dt><dd><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>fetch
+git<span class="w"> </span>checkout<span class="w"> </span>v2.0.0<span class="w"> </span><span class="c1"># or any later tag</span>
+pip3<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Remove any additional keyworded arguments from all <cite>PKBClient</cite> methods. The methods now have fixed signatures.</p></li>
+<li><dl class="simple">
+<dt>Refactor the usage of the following methods:</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt><cite>PKBClient.dns_create</cite>:</dt><dd><ul>
+<li><p>renamed to <cite>PKBClient.create_dns_record</cite></p></li>
+<li><p>the method argument <cite>record_type</cite> needs to be enum of <a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType" title="pkb_client.client.dns.DNSRecordType"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNSRecordType</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>PKBClient.dns_edit</cite>:</dt><dd><ul>
+<li><p>renamed to <cite>PKBClient.update_dns_record</cite></p></li>
+<li><p>the method argument <cite>record_type</cite> needs to be enum of <a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecordType" title="pkb_client.client.dns.DNSRecordType"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNSRecordType</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>PKBClient.dns_delete</cite>:</dt><dd><ul>
+<li><p>renamed to <cite>PKBClient.delete_dns_records</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>PKBClient.dns_retrieve</cite>:</dt><dd><ul>
+<li><p>renamed to <cite>PKBClient.get_dns_records</cite></p></li>
+<li><p>return type is now a list of <a class="reference internal" href="pkb_client.client.html#pkb_client.client.dns.DNSRecord" title="pkb_client.client.dns.DNSRecord"><code class="xref py py-class docutils literal notranslate"><span class="pre">DNSRecord</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>PKBClient.dns_export</cite>:</dt><dd><ul>
+<li><p>renamed to <cite>PKBClient.export_dns_records</cite></p></li>
+<li><p>the methods argument <cite>filename</cite> is renamed to <cite>filepath</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>PKBClient.dns_import</cite>:</dt><dd><ul>
+<li><p>renamed to <cite>PKBClient.import_dns_records</cite></p></li>
+<li><p>the methods argument <cite>filename</cite> is renamed to <cite>filepath</cite></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>PKBClient.get_domain_pricing</cite>:</dt><dd><ul>
+<li><p>method is not static anymore, you need to create an instance of <cite>PKBClient</cite> to use it</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><cite>PKBClient.ssl_retrieve</cite>:</dt><dd><ul>
+<li><p>renamed to <cite>PKBClient.get_ssl_bundle</cite></p></li>
+<li><p>return type is now <code class="xref py py-class docutils literal notranslate"><span class="pre">SSLCertificate</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ol>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">pkb_client</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">pkb_client</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Migration Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#from-v1-to-v2">From v1 to v2</a></li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="pkb_client.client.html" title="previous chapter">pkb_client.client package</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;2023-2024, infinityofspace.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 8.1.3</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="_sources/migration_guide.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
