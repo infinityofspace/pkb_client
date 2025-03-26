@@ -15,5 +15,5 @@ Module contents
 
 .. automodule:: pkb_client
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
