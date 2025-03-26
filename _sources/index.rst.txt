@@ -14,7 +14,7 @@ About
 +++++
 
 *pkb_client* is a python client for the `Porkbun <https://porkbun.com>`_ API. It supports the v3 of the API. You can
-find the official documentation of the Porkbun API `here <https://api.porkbun.com/api/json/v3/documentation>`_.
+find the official documentation of the Porkbun API `here <https://porkbun.com/api/json/v3/documentation>`_.
 
 Link to the source code: `Github <https://github.com/infinityofspace/pkb_client>`_
 
