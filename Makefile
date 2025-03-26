@@ -5,6 +5,10 @@ RELEASE       = 1
 RESULT_PATH   = target
 RPMBUILD_PATH = ~/rpmbuild
 
+#------------------------------------------------------------------------------
+# COMMANDS
+#------------------------------------------------------------------------------
+
 all: help
 
 help:
@@ -29,42 +33,66 @@ build-srpm: ${RESULT_PATH}/python3-pkb-client-${VERSION}-${RELEASE}.src.rpm
 
 build-rpm: ${RESULT_PATH}/python3-pkb-client-${VERSION}-${RELEASE}.noarch.rpm
 
-# file generators
+
+#------------------------------------------------------------------------------
+# FILE GENERATORs
+#------------------------------------------------------------------------------
+
+define _spec_generator
+cat << EOF
+%global modname pkb_client
+
+Name:           python3-pkb-client
+Version:        ${VERSION}
+Release:        ${RELEASE}
+Obsoletes:      %{name} <= %{version}
+Summary:        Python client for the Porkbun API
+
+License:        MIT License
+URL:            https://github.com/infinityofspace/pkb_client/
+Source0:        %{name}-%{version}.tar.xz
+
+Requires:       python3-requests
+Requires:       python3-dns
+Requires:       python3-responses
+
+BuildArch:      noarch
+BuildRequires:  python3-setuptools
+BuildRequires:  python3-rpm-macros
+BuildRequires:  python3-py
+
+%?python_enable_dependency_generator
+
+%description
+Python client for the Porkbun API
+
+%%prep
+%autosetup -n %{modname}_v%{version}
+
+%build
+%py3_build
+
+%install
+%py3_install
+
+%files
+%doc Readme.md
+%license License
+%{_bindir}/pkb-client
+%{python3_sitelib}/%{modname}/
+%{python3_sitelib}/%{modname}-%{version}*
+
+%changelog
+...
+
+EOF
+endef
+export spec_generator = $(value _spec_generator)
 
 python3-pkb-client.spec:
 	@mkdir -p ${RESULT_PATH}/
 	@printf '[INFO] generating python3-pkb-client.spec\n' | tee -a ${RESULT_PATH}/build.log
-	@printf '%%global modname pkb_client\n\n'                         >  python3-pkb-client.spec
-	@printf 'Name:           python3-pkb-client\n'                             >> python3-pkb-client.spec
-	@printf 'Version:        '${VERSION}'\n'                                   >> python3-pkb-client.spec
-	@printf 'Release:        '${RELEASE}'\n'                                   >> python3-pkb-client.spec
-	@printf 'Obsoletes:      %%{name} <= %%{version}\n'                        >> python3-pkb-client.spec
-	@printf 'Summary:        Python client for the Porkbun API\n\n'            >> python3-pkb-client.spec
-	@printf 'License:        MIT License\n'                                    >> python3-pkb-client.spec
-	@printf 'URL:            https://github.com/infinityofspace/pkb_client/\n' >> python3-pkb-client.spec
-	@printf 'Source0:        %%{name}-%%{version}.tar.xz\n\n'                  >> python3-pkb-client.spec
-	@printf 'BuildArch:      noarch\n'                                         >> python3-pkb-client.spec
-	@printf 'BuildRequires:  python3-setuptools\n'                             >> python3-pkb-client.spec
-	@printf 'BuildRequires:  python3-rpm-macros\n'                             >> python3-pkb-client.spec
-	@printf 'BuildRequires:  python3-py\n\n'                                   >> python3-pkb-client.spec
-	@printf '%%?python_enable_dependency_generator\n\n'                        >> python3-pkb-client.spec
-	@printf '%%description\n'                                                  >> python3-pkb-client.spec
-	@printf 'Python client for the Porkbun API\n\n'                            >> python3-pkb-client.spec
-	@printf '%%prep\n'                                                         >> python3-pkb-client.spec
-	@printf '%%autosetup -n %%{modname}_v%%{version}\n\n'                      >> python3-pkb-client.spec
-	@printf '%%build\n'                                                        >> python3-pkb-client.spec
-	@printf '%%py3_build\n\n'                                                  >> python3-pkb-client.spec
-	@printf '%%install\n'                                                      >> python3-pkb-client.spec
-	@printf '%%py3_install\n\n'                                                >> python3-pkb-client.spec
-	@printf '%%files\n'                                                        >> python3-pkb-client.spec
-	@printf '%%doc Readme.md\n'                                                >> python3-pkb-client.spec
-	@printf '%%license License\n'                                              >> python3-pkb-client.spec
-	@printf '%%{_bindir}/pkb-client\n'                                         >> python3-pkb-client.spec
-	@printf '%%{python3_sitelib}/%%{modname}/\n'                               >> python3-pkb-client.spec
-	@printf '%%{python3_sitelib}/%%{modname}-%%{version}*\n\n'                 >> python3-pkb-client.spec
-	@printf '%%changelog\n'                                                    >> python3-pkb-client.spec
-	@printf '...\n'                                                            >> python3-pkb-client.spec
-	@printf '\n'                                                               >> python3-pkb-client.spec
+	@ VERSION=${VERSION} RELEASE=${RELEASE} eval "$$spec_generator" > python3-pkb-client.spec
 
 ${RESULT_PATH}/python3-pkb-client-${VERSION}.tar.xz:
 	@mkdir -p ${RESULT_PATH}/
