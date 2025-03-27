@@ -16,6 +16,7 @@ from pkb_client.client import (
 )
 from pkb_client.client import SSLCertBundle
 from pkb_client.client.dns import DNSRecord, DNSRecordType
+from pkb_client.client.dnssec import DNSSECRecord
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 
 
@@ -1020,6 +1021,71 @@ class TestClientAuth(unittest.TestCase):
 
             pkb_client.import_bind_dns_records(filename, DNSRestoreMode.clear)
 
+    @responses.activate
+    def test_get_dnssec_records(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/getDnssecRecords/example.com"),
+            json={
+                "status": "SUCCESS",
+                "records": {
+                    "12345": {
+                        "keyTag": "12345",
+                        "alg": "8",
+                        "digestType": "1",
+                        "digest": "abc123",
+                    },
+                    "12346": {
+                        "keyTag": "12346",
+                        "alg": "8",
+                        "digestType": "1",
+                        "digest": "abc456",
+                        "maxSigLife": 3600,
+                        "keyDataFlags": 257,
+                        "keyDataProtocol": 3,
+                        "keyDataAlgo": 8,
+                        "keyDataPubKey": "abc789",
+                    },
+                },
+            },
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+        dnssec_records = pkb_client.get_dnssec_records("example.com")
+
+        self.assertEqual(2, len(dnssec_records))
+        self.assertEqual(
+            DNSSECRecord(
+                key_tag=12345,
+                alg=8,
+                digest_type=1,
+                digest="abc123",
+                max_sig_life=None,
+                key_data_flags=None,
+                key_data_protocol=None,
+                key_data_algo=None,
+                key_data_pub_key=None,
+            ),
+            dnssec_records[0],
+        )
+        self.assertEqual(
+            DNSSECRecord(
+                key_tag=12346,
+                alg=8,
+                digest_type=1,
+                digest="abc456",
+                max_sig_life=3600,
+                key_data_flags=257,
+                key_data_protocol=3,
+                key_data_algo=8,
+                key_data_pub_key="abc789",
+            ),
+            dnssec_records[1],
+        )
 
 if __name__ == "__main__":
     unittest.main()
