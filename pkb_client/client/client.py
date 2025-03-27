@@ -15,7 +15,7 @@ from pkb_client.client.dns import (
     DNSRecordType,
     DNS_RECORDS_WITH_PRIORITY,
 )
-from pkb_client.client.dnssec import DNSSEC
+from pkb_client.client.dnssec import DNSSECRecord
 from pkb_client.client.domain import DomainInfo
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 from pkb_client.client.ssl_cert import SSLCertBundle
@@ -843,13 +843,13 @@ class PKBClient:
                 response_json.get("message", "Unknown message"),
             )
 
-    def get_dnssec_records(self, domain: str) -> List[DNSSEC]:
+    def get_dnssec_records(self, domain: str) -> List[DNSSECRecord]:
         """
         API DNSSEC retrieve method: retrieve all DNSSEC records for the given domain.
         See https://porkbun.com/api/json/v3/documentation#DNSSEC%20Get%20Records for more info.
 
         :param domain: the domain for which the DNSSEC records should be retrieved
-        :return: list of DNSSEC objects
+        :return: list of :class:`DNSSECRecord` objects
         """
 
         url = urljoin(self.api_endpoint, f"dns/getDnssecRecords/{domain}")
@@ -858,7 +858,7 @@ class PKBClient:
 
         if r.status_code == 200:
             return [
-                DNSSEC.from_dict(record)
+                DNSSECRecord.from_dict(record)
                 for record in json.loads(r.text).get("records", {}).values()
             ]
         else:
