@@ -9,12 +9,12 @@ from responses import matchers
 from responses.registries import OrderedRegistry
 
 from pkb_client.client import (
-    PKBClient,
-    PKBClientException,
     API_ENDPOINT,
     DNSRestoreMode,
+    PKBClient,
+    PKBClientException,
+    SSLCertBundle,
 )
-from pkb_client.client import SSLCertBundle
 from pkb_client.client.dns import DNSRecord, DNSRecordType
 from pkb_client.client.dnssec import DNSSECRecord
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
@@ -1086,6 +1086,74 @@ class TestClientAuth(unittest.TestCase):
             ),
             dnssec_records[1],
         )
+
+    @responses.activate
+    def test_create_dnssec_record(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/createDnssecRecord/example.com"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "alg": 12345,
+                        "digestType": 8,
+                        "digest": "abc123",
+                        "maxSigLife": None,
+                        "keyDataFlags": None,
+                        "keyDataProtocol": None,
+                        "keyDataAlgo": None,
+                        "keyDataPubKey": None
+                    }
+                )
+            ]
+        )
+
+        success = pkb_client.create_dnssec_record(
+            domain="example.com",
+            alg=12345,
+            digest_type=8,
+            digest="abc123"
+        )
+        self.assertTrue(success)
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/createDnssecRecord/example2.com"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "alg": 12345,
+                        "digestType": 8,
+                        "digest": "abc123",
+                        "maxSigLife": 42,
+                        "keyDataFlags": 41,
+                        "keyDataProtocol": 40,
+                        "keyDataAlgo": 39,
+                        "keyDataPubKey": "abc42",
+                    }
+                )
+            ],
+        )
+
+        success = pkb_client.create_dnssec_record(
+            domain="example2.com",
+            alg=12345,
+            digest_type=8,
+            digest="abc123",
+            max_sig_life=42,
+            key_data_flags=41,
+            key_data_protocol=40,
+            key_data_algo=39,
+            key_data_pub_key="abc42"
+        )
+        self.assertTrue(success)
+
 
 
 if __name__ == "__main__":
