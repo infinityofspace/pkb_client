@@ -874,11 +874,11 @@ class PKBClient:
         alg: int,
         digest_type: int,
         digest: str,
-        max_sig_life: int | None = None,
-        key_data_flags: int | None = None,
-        key_data_protocol: int | None = None,
-        key_data_algo: int | None = None,
-        key_data_pub_key: str | None = None,
+        max_sig_life: Optional[int] = None,
+        key_data_flags: Optional[int] = None,
+        key_data_protocol: Optional[int] = None,
+        key_data_algo: Optional[int] = None,
+        key_data_pub_key: Optional[str] = None,
     ) -> bool:
         """
         API DNSSEC create method: create a new DNSSEC record for the given domain.
