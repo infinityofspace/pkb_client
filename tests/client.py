@@ -1106,17 +1106,14 @@ class TestClientAuth(unittest.TestCase):
                         "keyDataFlags": None,
                         "keyDataProtocol": None,
                         "keyDataAlgo": None,
-                        "keyDataPubKey": None
+                        "keyDataPubKey": None,
                     }
                 )
-            ]
+            ],
         )
 
         success = pkb_client.create_dnssec_record(
-            domain="example.com",
-            alg=12345,
-            digest_type=8,
-            digest="abc123"
+            domain="example.com", alg=12345, digest_type=8, digest="abc123"
         )
         self.assertTrue(success)
 
@@ -1150,10 +1147,9 @@ class TestClientAuth(unittest.TestCase):
             key_data_flags=41,
             key_data_protocol=40,
             key_data_algo=39,
-            key_data_pub_key="abc42"
+            key_data_pub_key="abc42",
         )
         self.assertTrue(success)
-
 
 
 if __name__ == "__main__":
