@@ -871,6 +871,7 @@ class PKBClient:
     def create_dnssec_record(
         self,
         domain: str,
+        key_tag: int,
         alg: int,
         digest_type: int,
         digest: str,
@@ -885,6 +886,7 @@ class PKBClient:
         See https://porkbun.com/api/json/v3/documentation#DNSSEC%20Create%20Record for more info.
 
         :param domain: the domain for which the DNSSEC record should be created
+        :param key_tag: the key tag of the DNSSEC record
         :param alg: algorithm of the DNSSEC record
         :param digest_type: digest type of the DNSSEC record
         :param digest: digest of the DNSSEC record
@@ -903,6 +905,7 @@ class PKBClient:
         url = urljoin(self.api_endpoint, f"dns/createDnssecRecord/{domain}")
         req_json = {
             **self._get_auth_request_json(),
+            "keyTag": key_tag,
             "alg": alg,
             "digestType": digest_type,
             "digest": digest,

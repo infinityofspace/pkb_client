@@ -1099,6 +1099,7 @@ class TestClientAuth(unittest.TestCase):
                     {
                         "apikey": "key",
                         "secretapikey": "secret",
+                        "keyTag": 4242,
                         "alg": 12345,
                         "digestType": 8,
                         "digest": "abc123",
@@ -1113,7 +1114,11 @@ class TestClientAuth(unittest.TestCase):
         )
 
         success = pkb_client.create_dnssec_record(
-            domain="example.com", alg=12345, digest_type=8, digest="abc123"
+            domain="example.com",
+            key_tag=4242,
+            alg=12345,
+            digest_type=8,
+            digest="abc123",
         )
         self.assertTrue(success)
 
@@ -1125,6 +1130,7 @@ class TestClientAuth(unittest.TestCase):
                     {
                         "apikey": "key",
                         "secretapikey": "secret",
+                        "keyTag": 4242,
                         "alg": 12345,
                         "digestType": 8,
                         "digest": "abc123",
@@ -1140,6 +1146,7 @@ class TestClientAuth(unittest.TestCase):
 
         success = pkb_client.create_dnssec_record(
             domain="example2.com",
+            key_tag=4242,
             alg=12345,
             digest_type=8,
             digest="abc123",
