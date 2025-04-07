@@ -9,13 +9,14 @@ from responses import matchers
 from responses.registries import OrderedRegistry
 
 from pkb_client.client import (
-    PKBClient,
-    PKBClientException,
     API_ENDPOINT,
     DNSRestoreMode,
+    PKBClient,
+    PKBClientException,
+    SSLCertBundle,
 )
-from pkb_client.client import SSLCertBundle
 from pkb_client.client.dns import DNSRecord, DNSRecordType
+from pkb_client.client.dnssec import DNSSECRecord
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 
 
@@ -1019,6 +1020,160 @@ class TestClientAuth(unittest.TestCase):
                 )
 
             pkb_client.import_bind_dns_records(filename, DNSRestoreMode.clear)
+
+    @responses.activate
+    def test_get_dnssec_records(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/getDnssecRecords/example.com"),
+            json={
+                "status": "SUCCESS",
+                "records": {
+                    "12345": {
+                        "keyTag": "12345",
+                        "alg": "8",
+                        "digestType": "1",
+                        "digest": "abc123",
+                    },
+                    "12346": {
+                        "keyTag": "12346",
+                        "alg": "8",
+                        "digestType": "1",
+                        "digest": "abc456",
+                        "maxSigLife": 3600,
+                        "keyDataFlags": 257,
+                        "keyDataProtocol": 3,
+                        "keyDataAlgo": 8,
+                        "keyDataPubKey": "abc789",
+                    },
+                },
+            },
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+        dnssec_records = pkb_client.get_dnssec_records("example.com")
+
+        self.assertEqual(2, len(dnssec_records))
+        self.assertEqual(
+            DNSSECRecord(
+                key_tag=12345,
+                alg=8,
+                digest_type=1,
+                digest="abc123",
+                max_sig_life=None,
+                key_data_flags=None,
+                key_data_protocol=None,
+                key_data_algo=None,
+                key_data_pub_key=None,
+            ),
+            dnssec_records[0],
+        )
+        self.assertEqual(
+            DNSSECRecord(
+                key_tag=12346,
+                alg=8,
+                digest_type=1,
+                digest="abc456",
+                max_sig_life=3600,
+                key_data_flags=257,
+                key_data_protocol=3,
+                key_data_algo=8,
+                key_data_pub_key="abc789",
+            ),
+            dnssec_records[1],
+        )
+
+    @responses.activate
+    def test_create_dnssec_record(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/createDnssecRecord/example.com"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "keyTag": 4242,
+                        "alg": 12345,
+                        "digestType": 8,
+                        "digest": "abc123",
+                        "maxSigLife": None,
+                        "keyDataFlags": None,
+                        "keyDataProtocol": None,
+                        "keyDataAlgo": None,
+                        "keyDataPubKey": None,
+                    }
+                )
+            ],
+        )
+
+        success = pkb_client.create_dnssec_record(
+            domain="example.com",
+            key_tag=4242,
+            alg=12345,
+            digest_type=8,
+            digest="abc123",
+        )
+        self.assertTrue(success)
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/createDnssecRecord/example2.com"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "keyTag": 4242,
+                        "alg": 12345,
+                        "digestType": 8,
+                        "digest": "abc123",
+                        "maxSigLife": 42,
+                        "keyDataFlags": 41,
+                        "keyDataProtocol": 40,
+                        "keyDataAlgo": 39,
+                        "keyDataPubKey": "abc42",
+                    }
+                )
+            ],
+        )
+
+        success = pkb_client.create_dnssec_record(
+            domain="example2.com",
+            key_tag=4242,
+            alg=12345,
+            digest_type=8,
+            digest="abc123",
+            max_sig_life=42,
+            key_data_flags=41,
+            key_data_protocol=40,
+            key_data_algo=39,
+            key_data_pub_key="abc42",
+        )
+        self.assertTrue(success)
+
+    @responses.activate
+    def delete_dnssec_record(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/deleteDnssecRecord/example.com/123456"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        success = pkb_client.delete_dnssec_record("example.com", 123456)
+        self.assertTrue(success)
 
 
 if __name__ == "__main__":
