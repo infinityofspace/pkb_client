@@ -28,14 +28,6 @@ pkb\_client.client.dns module
    :show-inheritance:
    :undoc-members:
 
-pkb\_client.client.dnssec module
---------------------------------
-
-.. automodule:: pkb_client.client.dnssec
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 pkb\_client.client.domain module
 --------------------------------
 
