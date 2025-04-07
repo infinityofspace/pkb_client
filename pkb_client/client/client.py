@@ -926,6 +926,29 @@ class PKBClient:
                 response_json.get("message", "Unknown message"),
             )
 
+    def delete_dnssec_record(self, domain: str, key_tag: int) -> bool:
+        """
+        API DNSSEC delete method: delete an existing DNSSEC record for the given domain.
+        See https://porkbun.com/api/json/v3/documentation#DNSSEC%20Delete%20Record for more info.
+
+        :param domain: the domain for which the DNSSEC record should be deleted
+        :param key_tag: the key tag of the DNSSEC record
+        :return: True if everything went well
+        """
+
+        url = urljoin(self.api_endpoint, f"dns/deleteDnssecRecord/{domain}/{key_tag}")
+        req_json = self._get_auth_request_json()
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return True
+        else:
+            response_json = json.loads(r.text)
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
+
     @staticmethod
     def __handle_error_backup__(dns_records):
         # merge the single DNS records into one single dict with the record id as key

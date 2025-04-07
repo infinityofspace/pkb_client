@@ -1158,6 +1158,23 @@ class TestClientAuth(unittest.TestCase):
         )
         self.assertTrue(success)
 
+    @responses.activate
+    def delete_dnssec_record(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/deleteDnssecRecord/example.com/123456"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        success = pkb_client.delete_dnssec_record("example.com", 123456)
+        self.assertTrue(success)
+
 
 if __name__ == "__main__":
     unittest.main()
