@@ -66,8 +66,13 @@ class DNSRestoreMode(Enum):
         return self.name
 
     @staticmethod
-    def from_string(a):
-        try:
-            return DNSRestoreMode[a]
-        except KeyError:
-            return a
+    def from_string(a: str) -> "DNSRestoreMode":
+        """
+        Convert a string to a DNSRestoreMode enum member.
+
+        :param a: String representation of the restore mode.
+        :return: Corresponding DNSRestoreMode enum member.
+        :raises KeyError: If the string does not match any enum member.
+        """
+
+        return DNSRestoreMode[a]
