@@ -954,7 +954,7 @@ class PKBClient:
         # merge the single DNS records into one single dict with the record id as key
         dns_records_dict = dict()
         for record in dns_records:
-            dns_records_dict[record["id"]] = record
+            dns_records_dict[record.id] = record.to_dict()
 
         # generate filename with incremental suffix
         base_backup_filename = "pkb_client_dns_records_backup"

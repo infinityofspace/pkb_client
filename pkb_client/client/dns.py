@@ -46,6 +46,16 @@ class DNSRecord:
             notes=d["notes"],
         )
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "type": str(self.type),
+            "content": self.content,
+            "ttl": self.ttl,
+            "prio": self.prio,
+            "notes": self.notes,
+        }
 
 class DNSRestoreMode(Enum):
     clear = 0
