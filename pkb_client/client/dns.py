@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
+from typing import Optional, Any
 
 
 class DNSRecordType(str, Enum):
@@ -33,7 +33,14 @@ class DNSRecord:
     notes: str
 
     @staticmethod
-    def from_dict(d):
+    def from_dict(d: dict[str, Any]) -> "DNSRecord":
+        """
+        Create a DNSRecord instance from a dictionary representation.
+
+        :param d: Dictionary containing DNS record data.
+        :return: DNSRecord instance.
+        """
+
         # only use prio for supported record types since the API returns it for all records with default value 0
         prio = int(d["prio"]) if d["type"] in DNS_RECORDS_WITH_PRIORITY else None
         return DNSRecord(
@@ -46,7 +53,13 @@ class DNSRecord:
             notes=d["notes"],
         )
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
+        """
+        Convert the DNSRecord instance to a dictionary representation.
+
+        :return: Dictionary containing DNS record data.
+        """
+
         return {
             "id": self.id,
             "name": self.name,
@@ -56,6 +69,7 @@ class DNSRecord:
             "prio": self.prio,
             "notes": self.notes,
         }
+
 
 class DNSRestoreMode(Enum):
     clear = 0

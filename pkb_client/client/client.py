@@ -950,7 +950,14 @@ class PKBClient:
             )
 
     @staticmethod
-    def __handle_error_backup__(dns_records):
+    def __handle_error_backup__(dns_records: list[DNSRecord]) -> None:
+        """
+        Handle errors when working with dns records by creating a backup of the given DNS records.
+        Crates a backup file in the current working directory with an incremental suffix.
+
+        :param dns_records: the DNS records to backup
+        """
+
         # merge the single DNS records into one single dict with the record id as key
         dns_records_dict = dict()
         for record in dns_records:
