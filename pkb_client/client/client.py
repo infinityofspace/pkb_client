@@ -128,7 +128,7 @@ class PKBClient:
         req_json = {
             **self._get_auth_request_json(),
             "name": name,
-            "type": record_type,
+            "type": record_type.value,
             "content": content,
             "ttl": ttl,
             "prio": prio,
@@ -182,7 +182,7 @@ class PKBClient:
         req_json = {
             **self._get_auth_request_json(),
             "name": name,
-            "type": record_type,
+            "type": record_type.value,
             "content": content,
             "ttl": ttl,
             "prio": prio,
@@ -234,7 +234,7 @@ class PKBClient:
         )
         req_json = {
             **self._get_auth_request_json(),
-            "type": record_type,
+            "type": record_type.value,
             "content": content,
             "ttl": ttl,
             "prio": prio,
@@ -430,7 +430,7 @@ class PKBClient:
             logger.warning("file already exists, overwriting...")
 
         # domain header
-        bind_file_content = f"$ORIGIN {domain}"
+        bind_file_content = f"$ORIGIN {domain}."
 
         # SOA record
         soa_records = dns.resolver.resolve(domain, "SOA")
@@ -441,7 +441,7 @@ class PKBClient:
         # records
         for record in dns_records:
             # name 	record class 	ttl 	record type 	record data
-            if record.prio:
+            if record.prio is not None:
                 record_content = f"{record.prio} {record.content}"
             else:
                 record_content = record.content
@@ -498,7 +498,7 @@ class PKBClient:
                     name = ".".join(exported_record["name"].split(".")[:-2])
                     self.create_dns_record(
                         domain=domain,
-                        record_type=exported_record["type"],
+                        record_type=DNSRecordType(exported_record["type"]),
                         content=exported_record["content"],
                         name=name,
                         ttl=exported_record["ttl"],
@@ -534,7 +534,7 @@ class PKBClient:
                         self.update_dns_record(
                             domain=domain,
                             record_id=existing_record.id,
-                            record_type=record["type"],
+                            record_type=DNSRecordType(record["type"]),
                             content=record["content"],
                             name=record["name"].replace(f".{domain}", ""),
                             ttl=record["ttl"],
@@ -564,7 +564,7 @@ class PKBClient:
                     if existing_record is None:
                         self.create_dns_record(
                             domain=domain,
-                            record_type=record["type"],
+                            record_type=DNSRecordType(record["type"]),
                             content=record["content"],
                             name=record["name"].replace(f".{domain}", ""),
                             ttl=record["ttl"],
@@ -610,9 +610,7 @@ class PKBClient:
                 # restore all records from BIND file by creating new DNS records
                 for record in bind_file.records:
                     # extract subdomain from record name
-                    subdomain = record.name.replace(bind_file.origin, "")
-                    # replace trailing dot
-                    subdomain = subdomain[:-1] if subdomain.endswith(".") else subdomain
+                    subdomain = record.name.replace(bind_file.origin[:-1], "")
                     self.create_dns_record(
                         domain=bind_file.origin[:-1],
                         record_type=record.record_type,
@@ -755,7 +753,7 @@ class PKBClient:
             **self._get_auth_request_json(),
             "subdomain": subdomain,
             "location": location,
-            "type": type,
+            "type": type.value,
             "includePath": include_path,
             "wildcard": wildcard,
         }
