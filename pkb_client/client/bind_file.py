@@ -27,7 +27,7 @@ class BindRecord:
         record_string = f"{self.name} {self.ttl} {self.record_class} {self.record_type}"
         if self.prio is not None:
             record_string += f" {self.prio}"
-        record_string += f" {self.data}"
+        record_string += f' "{self.data}"'
         if self.comment:
             record_string += f" ; {self.comment}"
         return record_string
@@ -68,18 +68,14 @@ class BindFile:
                 # 2: name 	record-class 	ttl 	record-type 	record-data
                 # whereby the ttl is optional
 
-                # drop any right trailing comments
-                line_parts = line.split(";", 1)
-                line = line_parts[0].strip()
-                comment = line_parts[1].strip() if len(line_parts) > 1 else None
-                prio = None
+                record_parts = line.strip().split()
 
-                # skip empty lines
-                if not line:
+                # skip comments
+                if not record_parts or record_parts[0].startswith(";"):
                     continue
 
-                # find which format the line is
-                record_parts = line.split()
+                prio = None
+
                 if record_parts[1].isdigit():
                     # scheme 1
                     if record_parts[3] not in DNSRecordType.__members__:
@@ -136,6 +132,35 @@ class BindFile:
 
                 # replace @ in record name with origin
                 record_name = record_name.replace("@", origin)
+
+                # handle comments and quoted strings as record data
+                comment = None
+                line = record_data.strip()
+                if line.startswith('"'):
+                    # find rightmost double quote
+                    rindex = line.rfind('"')
+                    if rindex != -1:
+                        # split at the last double quote
+                        line_parts = line.rsplit('"', 1)
+                        record_data = line_parts[0].strip('"')
+
+                        comment = line_parts[1].strip() if len(line_parts) > 1 else None
+                        # left strip semicolon from comment
+                        if comment and comment.startswith(";"):
+                            comment = comment[1:].strip()
+
+                        if not comment:
+                            comment = None
+                    else:
+                        record_data = line.strip('"')
+                else:
+                    # try to split at the first semicolon for comments
+                    if ";" in line:
+                        record_data, comment = line.split(";", 1)
+                        record_data = record_data.strip()
+                        comment = comment.strip()
+                    else:
+                        record_data = line
 
                 records.append(
                     BindRecord(

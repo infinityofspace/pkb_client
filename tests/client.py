@@ -1005,6 +1005,19 @@ class TestClientAuth(unittest.TestCase):
                 )
             ],
         )
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/updateNs/example.com"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "ns": ["ns1.example.com"],
+                    }
+                )
+            ],
+        )
 
         with tempfile.TemporaryDirectory() as temp_dir:
             filename = Path(temp_dir, "records.bind")
@@ -1015,7 +1028,8 @@ class TestClientAuth(unittest.TestCase):
                         "$TTL 1234\n"
                         "@ IN SOA dns.example.com. dns2.example.com. (100 300 100 6000 600)\n"
                         "example.com. IN 600 A 127.0.0.3\n"
-                        "sub.example.com. 600 IN A 127.0.0.4"
+                        "sub.example.com. 600 IN A 127.0.0.4\n"
+                        "example.com IN 86400 NS ns1.example.com."
                     )
                 )
 

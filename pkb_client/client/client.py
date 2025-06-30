@@ -128,7 +128,7 @@ class PKBClient:
         req_json = {
             **self._get_auth_request_json(),
             "name": name,
-            "type": record_type,
+            "type": record_type.value,
             "content": content,
             "ttl": ttl,
             "prio": prio,
@@ -182,7 +182,7 @@ class PKBClient:
         req_json = {
             **self._get_auth_request_json(),
             "name": name,
-            "type": record_type,
+            "type": record_type.value,
             "content": content,
             "ttl": ttl,
             "prio": prio,
@@ -234,7 +234,7 @@ class PKBClient:
         )
         req_json = {
             **self._get_auth_request_json(),
-            "type": record_type,
+            "type": record_type.value,
             "content": content,
             "ttl": ttl,
             "prio": prio,
@@ -430,7 +430,7 @@ class PKBClient:
             logger.warning("file already exists, overwriting...")
 
         # domain header
-        bind_file_content = f"$ORIGIN {domain}"
+        bind_file_content = f"$ORIGIN {domain}."
 
         # SOA record
         soa_records = dns.resolver.resolve(domain, "SOA")
@@ -441,7 +441,15 @@ class PKBClient:
         # records
         for record in dns_records:
             # name 	record class 	ttl 	record type 	record data
-            if record.prio:
+            # add trailing dot to the name if it is a supported record type, to make it a fully qualified domain name
+            if record.type in [
+                DNSRecordType.MX,
+                DNSRecordType.CNAME,
+                DNSRecordType.NS,
+                DNSRecordType.SRV,
+            ]:
+                record.content += "."
+            if record.prio is not None:
                 record_content = f"{record.prio} {record.content}"
             else:
                 record_content = record.content
@@ -498,7 +506,7 @@ class PKBClient:
                     name = ".".join(exported_record["name"].split(".")[:-2])
                     self.create_dns_record(
                         domain=domain,
-                        record_type=exported_record["type"],
+                        record_type=DNSRecordType(exported_record["type"]),
                         content=exported_record["content"],
                         name=name,
                         ttl=exported_record["ttl"],
@@ -534,7 +542,7 @@ class PKBClient:
                         self.update_dns_record(
                             domain=domain,
                             record_id=existing_record.id,
-                            record_type=record["type"],
+                            record_type=DNSRecordType(record["type"]),
                             content=record["content"],
                             name=record["name"].replace(f".{domain}", ""),
                             ttl=record["ttl"],
@@ -564,7 +572,7 @@ class PKBClient:
                     if existing_record is None:
                         self.create_dns_record(
                             domain=domain,
-                            record_type=record["type"],
+                            record_type=DNSRecordType(record["type"]),
                             content=record["content"],
                             name=record["name"].replace(f".{domain}", ""),
                             ttl=record["ttl"],
@@ -607,12 +615,20 @@ class PKBClient:
                 for record in existing_dns_records:
                     self.delete_dns_record(bind_file.origin[:-1], record.id)
 
+                nameserver_records = []
                 # restore all records from BIND file by creating new DNS records
                 for record in bind_file.records:
-                    # extract subdomain from record name
-                    subdomain = record.name.replace(bind_file.origin, "")
-                    # replace trailing dot
-                    subdomain = subdomain[:-1] if subdomain.endswith(".") else subdomain
+                    if record.record_type == DNSRecordType.NS:
+                        # collect nameserver records to update them later in bulk
+                        nameserver_records.append(record)
+                        continue
+                    if record.name.endswith("."):
+                        # extract subdomain from record name, by removing the domain and TLD
+                        subdomain = record.name.removesuffix(bind_file.origin)
+                        subdomain = subdomain.removesuffix(".")
+                    else:
+                        subdomain = record.name
+
                     self.create_dns_record(
                         domain=bind_file.origin[:-1],
                         record_type=record.record_type,
@@ -621,6 +637,17 @@ class PKBClient:
                         ttl=record.ttl,
                         prio=record.prio,
                     )
+
+                # update nameservers in bulk
+                if nameserver_records:
+                    name_servers = []
+                    # remove trailing dot from nameserver records
+                    for nameserver in nameserver_records:
+                        if nameserver.data.endswith("."):
+                            name_servers.append(nameserver.data[:-1])
+                        else:
+                            name_servers.append(nameserver.data)
+                    self.update_dns_servers(bind_file.origin[:-1], name_servers)
 
             except Exception as e:
                 logger.error("something went wrong: {}".format(e.__str__()))
@@ -755,7 +782,7 @@ class PKBClient:
             **self._get_auth_request_json(),
             "subdomain": subdomain,
             "location": location,
-            "type": type,
+            "type": type.value,
             "includePath": include_path,
             "wildcard": wildcard,
         }
@@ -950,11 +977,18 @@ class PKBClient:
             )
 
     @staticmethod
-    def __handle_error_backup__(dns_records):
+    def __handle_error_backup__(dns_records: list[DNSRecord]) -> None:
+        """
+        Handle errors when working with dns records by creating a backup of the given DNS records.
+        Crates a backup file in the current working directory with an incremental suffix.
+
+        :param dns_records: the DNS records to backup
+        """
+
         # merge the single DNS records into one single dict with the record id as key
         dns_records_dict = dict()
         for record in dns_records:
-            dns_records_dict[record["id"]] = record
+            dns_records_dict[record.id] = record.to_dict()
 
         # generate filename with incremental suffix
         base_backup_filename = "pkb_client_dns_records_backup"
