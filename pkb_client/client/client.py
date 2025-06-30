@@ -607,10 +607,20 @@ class PKBClient:
                 for record in existing_dns_records:
                     self.delete_dns_record(bind_file.origin[:-1], record.id)
 
+                nameserver_records = []
                 # restore all records from BIND file by creating new DNS records
                 for record in bind_file.records:
-                    # extract subdomain from record name
-                    subdomain = record.name.replace(bind_file.origin[:-1], "")
+                    if record.record_type == DNSRecordType.NS:
+                        # collect nameserver records to update them later in bulk
+                        nameserver_records.append(record)
+                        continue
+                    if record.name.endswith("."):
+                        # extract subdomain from record name, by removing the domain and TLD
+                        subdomain = record.name.removesuffix(bind_file.origin)
+                        subdomain = subdomain.removesuffix(".")
+                    else:
+                        subdomain = record.name
+
                     self.create_dns_record(
                         domain=bind_file.origin[:-1],
                         record_type=record.record_type,
@@ -619,6 +629,17 @@ class PKBClient:
                         ttl=record.ttl,
                         prio=record.prio,
                     )
+
+                # update nameservers in bulk
+                if nameserver_records:
+                    name_servers = []
+                    # remove trailing dot from nameserver records
+                    for nameserver in nameserver_records:
+                        if nameserver.data.endswith("."):
+                            name_servers.append(nameserver.data[:-1])
+                        else:
+                            name_servers.append(nameserver.data)
+                    self.update_dns_servers(bind_file.origin[:-1], name_servers)
 
             except Exception as e:
                 logger.error("something went wrong: {}".format(e.__str__()))
