@@ -33,7 +33,7 @@
   <h1>Source code for pkb_client.client.dns</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Any</span>
 
 
 <div class="viewcode-block" id="DNSRecordType">
@@ -73,7 +73,14 @@
 <div class="viewcode-block" id="DNSRecord.from_dict">
 <a class="viewcode-back" href="../../../pkb_client.client.html#pkb_client.client.dns.DNSRecord.from_dict">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_dict</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;DNSRecord&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a DNSRecord instance from a dictionary representation.</span>
+
+<span class="sd">        :param d: Dictionary containing DNS record data.</span>
+<span class="sd">        :return: DNSRecord instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
         <span class="c1"># only use prio for supported record types since the API returns it for all records with default value 0</span>
         <span class="n">prio</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;prio&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">DNS_RECORDS_WITH_PRIORITY</span> <span class="k">else</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">DNSRecord</span><span class="p">(</span>
@@ -85,6 +92,26 @@
             <span class="n">prio</span><span class="o">=</span><span class="n">prio</span><span class="p">,</span>
             <span class="n">notes</span><span class="o">=</span><span class="n">d</span><span class="p">[</span><span class="s2">&quot;notes&quot;</span><span class="p">],</span>
         <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="DNSRecord.to_dict">
+<a class="viewcode-back" href="../../../pkb_client.client.html#pkb_client.client.dns.DNSRecord.to_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the DNSRecord instance to a dictionary representation.</span>
+
+<span class="sd">        :return: Dictionary containing DNS record data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">),</span>
+            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">content</span><span class="p">,</span>
+            <span class="s2">&quot;ttl&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ttl</span><span class="p">,</span>
+            <span class="s2">&quot;prio&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">prio</span><span class="p">,</span>
+            <span class="s2">&quot;notes&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">notes</span><span class="p">,</span>
+        <span class="p">}</span></div>
 </div>
 
 
@@ -102,11 +129,16 @@
 <div class="viewcode-block" id="DNSRestoreMode.from_string">
 <a class="viewcode-back" href="../../../pkb_client.client.html#pkb_client.client.dns.DNSRestoreMode.from_string">[docs]</a>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">DNSRestoreMode</span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">a</span></div>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_string</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;DNSRestoreMode&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert a string to a DNSRestoreMode enum member.</span>
+
+<span class="sd">        :param a: String representation of the restore mode.</span>
+<span class="sd">        :return: Corresponding DNSRestoreMode enum member.</span>
+<span class="sd">        :raises KeyError: If the string does not match any enum member.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">DNSRestoreMode</span><span class="p">[</span><span class="n">a</span><span class="p">]</span></div>
 </div>
 
 </pre></div>
