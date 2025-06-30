@@ -441,6 +441,14 @@ class PKBClient:
         # records
         for record in dns_records:
             # name 	record class 	ttl 	record type 	record data
+            # add trailing dot to the name if it is a supported record type, to make it a fully qualified domain name
+            if record.type in [
+                DNSRecordType.MX,
+                DNSRecordType.CNAME,
+                DNSRecordType.NS,
+                DNSRecordType.SRV,
+            ]:
+                record.content += "."
             if record.prio is not None:
                 record_content = f"{record.prio} {record.content}"
             else:
