@@ -15,7 +15,7 @@ class TestBindFileParsing(unittest.TestCase):
 
             self.assertEqual("test.com.", bind_file.origin)
             self.assertEqual(1234, bind_file.ttl)
-            self.assertEqual(5, len(bind_file.records))
+            self.assertEqual(7, len(bind_file.records))
             self.assertEqual(
                 BindRecord(
                     "test.com.", 600, RecordClass.IN, DNSRecordType.A, "1.2.3.4"
@@ -24,9 +24,20 @@ class TestBindFileParsing(unittest.TestCase):
             )
             self.assertEqual(
                 BindRecord(
-                    "sub.test.com.", 600, RecordClass.IN, DNSRecordType.A, "4.3.2.1"
+                    "test.com.",
+                    600,
+                    RecordClass.IN,
+                    DNSRecordType.A,
+                    "1.2.3.5",
+                    comment="This is a comment",
                 ),
                 bind_file.records[1],
+            )
+            self.assertEqual(
+                BindRecord(
+                    "sub.test.com.", 600, RecordClass.IN, DNSRecordType.A, "4.3.2.1"
+                ),
+                bind_file.records[2],
             )
             self.assertEqual(
                 BindRecord(
@@ -37,13 +48,13 @@ class TestBindFileParsing(unittest.TestCase):
                     "2001:db8::1",
                     comment="This is a comment",
                 ),
-                bind_file.records[2],
+                bind_file.records[3],
             )
             self.assertEqual(
                 BindRecord(
                     "test.com.", 1234, RecordClass.IN, DNSRecordType.TXT, "pkb-client"
                 ),
-                bind_file.records[3],
+                bind_file.records[4],
             )
             self.assertEqual(
                 BindRecord(
@@ -54,7 +65,7 @@ class TestBindFileParsing(unittest.TestCase):
                     "mail.test.com.",
                     prio=10,
                 ),
-                bind_file.records[4],
+                bind_file.records[5],
             )
 
         with self.subTest("Without default TTL"):
@@ -63,7 +74,7 @@ class TestBindFileParsing(unittest.TestCase):
 
             self.assertEqual("test.com.", bind_file.origin)
             self.assertEqual(None, bind_file.ttl)
-            self.assertEqual(5, len(bind_file.records))
+            self.assertEqual(7, len(bind_file.records))
             self.assertEqual(
                 BindRecord(
                     "test.com.", 600, RecordClass.IN, DNSRecordType.A, "1.2.3.4"
@@ -72,9 +83,20 @@ class TestBindFileParsing(unittest.TestCase):
             )
             self.assertEqual(
                 BindRecord(
-                    "sub.test.com.", 600, RecordClass.IN, DNSRecordType.A, "4.3.2.1"
+                    "test.com.",
+                    600,
+                    RecordClass.IN,
+                    DNSRecordType.A,
+                    "1.2.3.5",
+                    comment="This is a comment",
                 ),
                 bind_file.records[1],
+            )
+            self.assertEqual(
+                BindRecord(
+                    "sub.test.com.", 600, RecordClass.IN, DNSRecordType.A, "4.3.2.1"
+                ),
+                bind_file.records[2],
             )
             self.assertEqual(
                 BindRecord(
@@ -85,13 +107,13 @@ class TestBindFileParsing(unittest.TestCase):
                     "2001:db8::1",
                     comment="This is a comment",
                 ),
-                bind_file.records[2],
+                bind_file.records[3],
             )
             self.assertEqual(
                 BindRecord(
                     "test.com.", 700, RecordClass.IN, DNSRecordType.TXT, "pkb-client"
                 ),
-                bind_file.records[3],
+                bind_file.records[4],
             )
             self.assertEqual(
                 BindRecord(
@@ -102,7 +124,7 @@ class TestBindFileParsing(unittest.TestCase):
                     "mail.test.com.",
                     prio=10,
                 ),
-                bind_file.records[4],
+                bind_file.records[5],
             )
 
     def test_writing_bind_file(self):
@@ -131,11 +153,11 @@ class TestBindFileParsing(unittest.TestCase):
         file_content = (
             "$ORIGIN test.com.\n"
             "$TTL 1234\n"
-            "test.com. 600 IN A 1.2.3.4\n"
-            "sub.test.com. 700 IN A 4.3.2.1\n"
-            "test.com. 600 IN AAAA 2001:db8::1\n"
-            "test.com. 600 IN TXT pkb-client\n"
-            "test.com. 600 IN MX 10 mail.test.com.\n"
+            'test.com. 600 IN A "1.2.3.4"\n'
+            'sub.test.com. 700 IN A "4.3.2.1"\n'
+            'test.com. 600 IN AAAA "2001:db8::1"\n'
+            'test.com. 600 IN TXT "pkb-client"\n'
+            'test.com. 600 IN MX 10 "mail.test.com."\n'
         )
 
         with tempfile.NamedTemporaryFile() as f:
