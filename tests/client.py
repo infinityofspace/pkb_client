@@ -1260,6 +1260,30 @@ class TestClientAuth(unittest.TestCase):
         self.assertEqual(expected_domain_availability, domain_availability)
         self.assertEqual(expected_domain_check_rate_limit, domain_check_rate_limit)
 
+    def test_get_domain_availability_rate_limited(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/checkDomain/example.com"),
+            json={
+                "message": "1 out of 1 checks within 10 seconds used.",
+                "status": "ERROR",
+            },
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        with self.assertRaises(PKBClientException) as context:
+            pkb_client.get_domain_availability("example.com")
+
+            self.assertIn(
+                "ERROR: 1 out of 1 checks within 10 seconds used.",
+                str(context.exception),
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
