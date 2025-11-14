@@ -1067,7 +1067,6 @@ class PKBClient:
                 response_json.get("message", "Unknown message"),
             )
 
-
     @staticmethod
     def __handle_error_backup__(dns_records: list[DNSRecord]) -> None:
         """
