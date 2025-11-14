@@ -16,7 +16,12 @@ from pkb_client.client.dns import (
     DNSRestoreMode,
 )
 from pkb_client.client.dnssec import DNSSECRecord
-from pkb_client.client.domain import DomainInfo
+from pkb_client.client.domain import (
+    DomainInfo,
+    DomainAvailability,
+    DomainCheckRateLimit,
+    DomainPrice,
+)
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 from pkb_client.client.ssl_cert import SSLCertBundle
 
@@ -1012,6 +1017,56 @@ class PKBClient:
                 response_json.get("status", "Unknown status"),
                 response_json.get("message", "Unknown message"),
             )
+
+    def get_domain_availability(
+        self, domain: str
+    ) -> tuple[DomainAvailability, DomainCheckRateLimit]:
+        """
+        Check if a domain is available for registration and provide additional information about the domain like price
+        and if it is a premium domain.
+
+        Implements the API endpoint https://porkbun.com/api/json/v3/documentation#Domain%20Check
+
+        :param domain: the domain to check for availability
+        :return: DomainAvailability object and DomainCheckRateLimit object
+        :raises PKBClientException: if the API call was not successful
+        """
+
+        url = urljoin(self.api_endpoint, f"domain/checkDomain/{domain}")
+        r = requests.post(url=url, json=self._get_auth_request_json())
+
+        if r.status_code == 200:
+            data = json.loads(r.text)
+            response = data["response"]
+            limits = data["limits"]
+            return DomainAvailability(
+                available=response["avail"] == "yes",
+                type=response["type"],
+                price=float(response["price"]),
+                first_year_promo=response["firstYearPromo"] == "yes",
+                regular_price=float(response["regularPrice"]),
+                premium=response["premium"] == "yes",
+                additional_prices=[
+                    DomainPrice(
+                        type=ap["type"],
+                        price=float(ap["price"]),
+                        regular_price=float(ap["regularPrice"]),
+                    )
+                    for ap in response.get("additional", {}).values()
+                ],
+            ), DomainCheckRateLimit(
+                ttl=int(limits["TTL"]),
+                limit=int(limits["limit"]),
+                used=limits["used"],
+                natural_language=limits["naturalLanguage"],
+            )
+        else:
+            response_json = json.loads(r.text)
+            raise PKBClientException(
+                response_json.get("status", "Unknown status"),
+                response_json.get("message", "Unknown message"),
+            )
+
 
     @staticmethod
     def __handle_error_backup__(dns_records: list[DNSRecord]) -> None:

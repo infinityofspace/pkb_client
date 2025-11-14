@@ -17,6 +17,11 @@ from pkb_client.client import (
 )
 from pkb_client.client.dns import DNSRecord, DNSRecordType
 from pkb_client.client.dnssec import DNSSECRecord
+from pkb_client.client.domain import (
+    DomainCheckRateLimit,
+    DomainAvailability,
+    DomainPrice,
+)
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 
 
@@ -1173,7 +1178,7 @@ class TestClientAuth(unittest.TestCase):
         self.assertTrue(success)
 
     @responses.activate
-    def delete_dnssec_record(self):
+    def test_delete_dnssec_record(self):
         pkb_client = PKBClient("key", "secret")
 
         responses.post(
@@ -1188,6 +1193,72 @@ class TestClientAuth(unittest.TestCase):
 
         success = pkb_client.delete_dnssec_record("example.com", 123456)
         self.assertTrue(success)
+
+    @responses.activate
+    def test_get_domain_availability(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/checkDomain/example.com"),
+            json={
+                "status": "SUCCESS",
+                "response": {
+                    "avail": "no",
+                    "type": "registration",
+                    "price": "1.01",
+                    "firstYearPromo": "yes",
+                    "regularPrice": "11.82",
+                    "premium": "no",
+                    "additional": {
+                        "renewal": {
+                            "type": "renewal",
+                            "price": "11.82",
+                            "regularPrice": "11.82",
+                        },
+                        "transfer": {
+                            "type": "transfer",
+                            "price": "11.82",
+                            "regularPrice": "11.82",
+                        },
+                    },
+                },
+                "limits": {
+                    "TTL": "10",
+                    "limit": "1",
+                    "used": 1,
+                    "naturalLanguage": "1 out of 1 checks within 10 seconds used.",
+                },
+            },
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        domain_availability, domain_check_rate_limit = (
+            pkb_client.get_domain_availability("example.com")
+        )
+        expected_domain_availability = DomainAvailability(
+            available=False,
+            type="registration",
+            price=1.01,
+            first_year_promo=True,
+            regular_price=11.82,
+            premium=False,
+            additional_prices=[
+                DomainPrice(type="renewal", price=11.82, regular_price=11.82),
+                DomainPrice(type="transfer", price=11.82, regular_price=11.82),
+            ],
+        )
+        expected_domain_check_rate_limit = DomainCheckRateLimit(
+            ttl=10,
+            limit=1,
+            used=1,
+            natural_language="1 out of 1 checks within 10 seconds used.",
+        )
+        self.assertEqual(expected_domain_availability, domain_availability)
+        self.assertEqual(expected_domain_check_rate_limit, domain_check_rate_limit)
 
 
 if __name__ == "__main__":
