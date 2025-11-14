@@ -34,7 +34,7 @@ jobs:
           .
 
       - name: Upload distribution artifact for other jobs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: pkb_client_dist
           path: dist/
@@ -45,7 +45,7 @@ jobs:
     needs: build
     steps:
       - name: Download distribution from build job
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: pkb_client_dist
           path: dist/

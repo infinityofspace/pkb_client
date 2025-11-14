@@ -2,5 +2,5 @@ setuptools>=39.0.1
 requests>=2.20.0
 sphinx~=7.4
 dnspython~=2.7
-responses~=0.25.7
+responses~=0.25.8
 ruff~=0.14
