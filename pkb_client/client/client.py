@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import List, Optional, Union
 from urllib.parse import urljoin
 
-import dns.resolver
+import dns
 import requests
 
 from pkb_client.client import BindFile
@@ -720,8 +720,18 @@ class PKBClient:
 
         if r.status_code == 200:
             return [
-                DomainInfo.from_dict(domain)
-                for domain in json.loads(r.text).get("domains", [])
+                DomainInfo(
+                    domain=d["domain"],
+                    status=d["status"],
+                    tld=d["tld"],
+                    create_date=datetime.fromisoformat(d["createDate"]),
+                    expire_date=datetime.fromisoformat(d["expireDate"]),
+                    security_lock=bool(d["securityLock"]),
+                    whois_privacy=bool(d["whoisPrivacy"]),
+                    auto_renew=bool(d["autoRenew"]),
+                    not_local=bool(d["notLocal"]),
+                )
+                for d in json.loads(r.text).get("domains", [])
             ]
         else:
             response_json = json.loads(r.text)
@@ -744,8 +754,15 @@ class PKBClient:
 
         if r.status_code == 200:
             return [
-                URLForwarding.from_dict(forwarding)
-                for forwarding in json.loads(r.text).get("forwards", [])
+                URLForwarding(
+                    id=f["id"],
+                    subdomain=f["subdomain"],
+                    location=f["location"],
+                    type=URLForwardingType[f["type"]],
+                    include_path=f["includePath"] == "yes",
+                    wildcard=f["wildcard"] == "yes",
+                )
+                for f in json.loads(r.text).get("forwards", [])
             ]
         else:
             response_json = json.loads(r.text)
@@ -885,7 +902,27 @@ class PKBClient:
 
         if r.status_code == 200:
             return [
-                DNSSECRecord.from_dict(record)
+                DNSSECRecord(
+                    key_tag=int(record["keyTag"]),
+                    alg=int(record["alg"]),
+                    digest_type=int(record["digestType"]),
+                    digest=record["digest"],
+                    max_sig_life=int(record["maxSigLife"])
+                    if "maxSigLife" in record
+                    else None,
+                    key_data_flags=int(record["keyDataFlags"])
+                    if "keyDataFlags" in record
+                    else None,
+                    key_data_protocol=int(record["keyDataProtocol"])
+                    if "keyDataProtocol" in record
+                    else None,
+                    key_data_algo=int(record["keyDataAlgo"])
+                    if "keyDataAlgo" in record
+                    else None,
+                    key_data_pub_key=record["keyDataPubKey"]
+                    if "keyDataPubKey" in record
+                    else None,
+                )
                 for record in json.loads(r.text).get("records", {}).values()
             ]
         else:

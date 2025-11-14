@@ -17,19 +17,3 @@ class DNSSECRecord:
     key_data_protocol: Optional[int]  # Indicates the protocol used for the key
     key_data_algo: Optional[int]  # Indicates the algorithm used for the key
     key_data_pub_key: Optional[str]  # The public key in base64 format
-
-    @staticmethod
-    def from_dict(d):
-        return DNSSECRecord(
-            key_tag=int(d["keyTag"]),
-            alg=int(d["alg"]),
-            digest_type=int(d["digestType"]),
-            digest=d["digest"],
-            max_sig_life=int(d["maxSigLife"]) if "maxSigLife" in d else None,
-            key_data_flags=int(d["keyDataFlags"]) if "keyDataFlags" in d else None,
-            key_data_protocol=int(d["keyDataProtocol"])
-            if "keyDataProtocol" in d
-            else None,
-            key_data_algo=int(d["keyDataAlgo"]) if "keyDataAlgo" in d else None,
-            key_data_pub_key=d["keyDataPubKey"] if "keyDataPubKey" in d else None,
-        )
