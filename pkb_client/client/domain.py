@@ -14,16 +14,25 @@ class DomainInfo:
     auto_renew: bool
     not_local: bool
 
-    @staticmethod
-    def from_dict(d):
-        return DomainInfo(
-            domain=d["domain"],
-            status=d["status"],
-            tld=d["tld"],
-            create_date=datetime.fromisoformat(d["createDate"]),
-            expire_date=datetime.fromisoformat(d["expireDate"]),
-            security_lock=bool(d["securityLock"]),
-            whois_privacy=bool(d["whoisPrivacy"]),
-            auto_renew=bool(d["autoRenew"]),
-            not_local=bool(d["notLocal"]),
-        )
+
+@dataclass
+class DomainPrice:
+    type: str
+    price: float
+    regular_price: float
+
+
+@dataclass
+class DomainAvailability(DomainPrice):
+    available: bool
+    first_year_promo: bool
+    premium: bool
+    additional_prices: list[DomainPrice]
+
+
+@dataclass
+class DomainCheckRateLimit:
+    ttl: int
+    limit: int
+    used: int
+    natural_language: str

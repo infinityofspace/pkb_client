@@ -15,14 +15,3 @@ class URLForwarding:
     type: URLForwardingType
     include_path: bool
     wildcard: bool
-
-    @staticmethod
-    def from_dict(d):
-        return URLForwarding(
-            id=d["id"],
-            subdomain=d["subdomain"],
-            location=d["location"],
-            type=URLForwardingType[d["type"]],
-            include_path=d["includePath"] == "yes",
-            wildcard=d["wildcard"] == "yes",
-        )
