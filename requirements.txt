@@ -3,4 +3,4 @@ requests>=2.20.0
 sphinx~=7.4
 dnspython~=2.7
 responses~=0.25.8
-ruff~=0.13
+ruff~=0.14
