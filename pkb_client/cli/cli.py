@@ -5,7 +5,7 @@ import os
 import textwrap
 from datetime import datetime
 
-from pkb_client.client import PKBClient, API_ENDPOINT
+from pkb_client.client import API_ENDPOINT, PKBClient
 from pkb_client.client.dns import DNSRecordType, DNSRestoreMode
 from pkb_client.client.forwarding import URLForwardingType
 
@@ -41,7 +41,7 @@ def main():
     )
     parser.add_argument("--debug", help="Enable debug mode.", action="store_true")
     parser.add_argument(
-        "--endpoint", help="The API endpoint to use.", default=API_ENDPOINT
+        "--endpoint", help="The API endpoint to use.", default=API_ENDPOINT,
     )
 
     subparsers = parser.add_subparsers(help="Supported API methods")
@@ -50,11 +50,11 @@ def main():
     parser_ping.set_defaults(func=PKBClient.ping)
 
     parser_dns_create = subparsers.add_parser(
-        "create-dns-record", help="Create a new DNS record."
+        "create-dns-record", help="Create a new DNS record.",
     )
     parser_dns_create.set_defaults(func=PKBClient.create_dns_record)
     parser_dns_create.add_argument(
-        "domain", help="The domain for which the new DNS record should be created."
+        "domain", help="The domain for which the new DNS record should be created.",
     )
     parser_dns_create.add_argument(
         "record_type",
@@ -70,21 +70,21 @@ def main():
         required=False,
     )
     parser_dns_create.add_argument(
-        "--ttl", type=int, help="The ttl of the new DNS record.", required=False
+        "--ttl", type=int, help="The ttl of the new DNS record.", required=False,
     )
     parser_dns_create.add_argument(
-        "--prio", type=int, help="The priority of the new DNS record.", required=False
+        "--prio", type=int, help="The priority of the new DNS record.", required=False,
     )
 
     parser_dns_edit = subparsers.add_parser(
-        "update-dns-record", help="Edit an existing DNS record."
+        "update-dns-record", help="Edit an existing DNS record.",
     )
     parser_dns_edit.set_defaults(func=PKBClient.update_dns_record)
     parser_dns_edit.add_argument(
-        "domain", help="The domain for which the DNS record should be edited."
+        "domain", help="The domain for which the DNS record should be edited.",
     )
     parser_dns_edit.add_argument(
-        "record_id", help="The id of the DNS record which should be edited."
+        "record_id", help="The id of the DNS record which should be edited.",
     )
     parser_dns_edit.add_argument(
         "record_type",
@@ -100,33 +100,33 @@ def main():
         required=False,
     )
     parser_dns_edit.add_argument(
-        "--ttl", type=int, help="The new ttl of the DNS record.", required=False
+        "--ttl", type=int, help="The new ttl of the DNS record.", required=False,
     )
     parser_dns_edit.add_argument(
-        "--prio", type=int, help="The new priority of the DNS record.", required=False
+        "--prio", type=int, help="The new priority of the DNS record.", required=False,
     )
 
     parser_dns_delete = subparsers.add_parser(
-        "delete-dns-records", help="Delete an existing DNS record."
+        "delete-dns-records", help="Delete an existing DNS record.",
     )
     parser_dns_delete.set_defaults(func=PKBClient.delete_dns_record)
     parser_dns_delete.add_argument(
-        "domain", help="The domain for which the DNS record should be deleted."
+        "domain", help="The domain for which the DNS record should be deleted.",
     )
     parser_dns_delete.add_argument(
-        "record_id", help="The id of the DNS record which should be deleted."
+        "record_id", help="The id of the DNS record which should be deleted.",
     )
 
     parser_dns_receive = subparsers.add_parser(
-        "get-dns-records", help="Get all DNS records."
+        "get-dns-records", help="Get all DNS records.",
     )
     parser_dns_receive.set_defaults(func=PKBClient.get_dns_records)
     parser_dns_receive.add_argument(
-        "domain", help="The domain for which the DNS record should be retrieved."
+        "domain", help="The domain for which the DNS record should be retrieved.",
     )
 
     parser_dns_export = subparsers.add_parser(
-        "export-dns-records", help="Save all DNS records to a local json file."
+        "export-dns-records", help="Save all DNS records to a local json file.",
     )
     parser_dns_export.set_defaults(func=PKBClient.export_dns_records)
     parser_dns_export.add_argument(
@@ -134,11 +134,11 @@ def main():
         help="The domain for which the DNS record should be retrieved and saved.",
     )
     parser_dns_export.add_argument(
-        "filepath", help="The filepath where to save the exported DNS records."
+        "filepath", help="The filepath where to save the exported DNS records.",
     )
 
     parser_dns_export_bind = subparsers.add_parser(
-        "export-bind-dns-records", help="Save all DNS records to a local BIND file."
+        "export-bind-dns-records", help="Save all DNS records to a local BIND file.",
     )
     parser_dns_export_bind.set_defaults(func=PKBClient.export_bind_dns_records)
     parser_dns_export_bind.add_argument(
@@ -146,7 +146,7 @@ def main():
         help="The domain for which the DNS record should be retrieved and saved.",
     )
     parser_dns_export_bind.add_argument(
-        "filepath", help="The filepath where to save the exported DNS records."
+        "filepath", help="The filepath where to save the exported DNS records.",
     )
 
     parser_dns_import = subparsers.add_parser(
@@ -156,10 +156,10 @@ def main():
     )
     parser_dns_import.set_defaults(func=PKBClient.import_dns_records)
     parser_dns_import.add_argument(
-        "domain", help="The domain for which the DNS record should be restored."
+        "domain", help="The domain for which the DNS record should be restored.",
     )
     parser_dns_import.add_argument(
-        "filepath", help="The filepath from which the DNS records are to be restored."
+        "filepath", help="The filepath from which the DNS records are to be restored.",
     )
     parser_dns_import.add_argument(
         "restore_mode",
@@ -179,7 +179,7 @@ def main():
     )
     parser_dns_import_bind.set_defaults(func=PKBClient.import_bind_dns_records)
     parser_dns_import_bind.add_argument(
-        "filepath", help="The filepath from which the DNS records are to be restored."
+        "filepath", help="The filepath from which the DNS records are to be restored.",
     )
     parser_dns_import_bind.add_argument(
         "restore_mode",
@@ -191,39 +191,39 @@ def main():
     )
 
     parser_domain_pricing = subparsers.add_parser(
-        "get-domain-pricing", help="Get the pricing for Porkbun domains."
+        "get-domain-pricing", help="Get the pricing for Porkbun domains.",
     )
     parser_domain_pricing.set_defaults(func=PKBClient.get_domain_pricing)
 
     parser_ssl_retrieve = subparsers.add_parser(
-        "get-ssl-bundle", help="Retrieve an SSL bundle for given domain."
+        "get-ssl-bundle", help="Retrieve an SSL bundle for given domain.",
     )
     parser_ssl_retrieve.set_defaults(func=PKBClient.get_ssl_bundle)
     parser_ssl_retrieve.add_argument(
-        "domain", help="The domain for which the SSL bundle should be retrieve."
+        "domain", help="The domain for which the SSL bundle should be retrieve.",
     )
 
     parser_update_dns_server = subparsers.add_parser(
-        "update-dns-servers", help="Update the DNS servers for a domain."
+        "update-dns-servers", help="Update the DNS servers for a domain.",
     )
     parser_update_dns_server.set_defaults(func=PKBClient.update_dns_servers)
     parser_update_dns_server.add_argument(
-        "domain", help="The domain for which the DNS servers should be set."
+        "domain", help="The domain for which the DNS servers should be set.",
     )
     parser_update_dns_server.add_argument(
-        "dns_servers", nargs="+", help="The DNS servers to be set."
+        "dns_servers", nargs="+", help="The DNS servers to be set.",
     )
 
     parser_get_dns_server = subparsers.add_parser(
-        "get-dns-servers", help="Retrieve the DNS servers for a domain."
+        "get-dns-servers", help="Retrieve the DNS servers for a domain.",
     )
     parser_get_dns_server.set_defaults(func=PKBClient.get_dns_servers)
     parser_get_dns_server.add_argument(
-        "domain", help="The domain for which the DNS servers should be retrieved."
+        "domain", help="The domain for which the DNS servers should be retrieved.",
     )
 
     parser_list_domains = subparsers.add_parser(
-        "get-domains", help="List all domains in this account in chunks of 1000."
+        "get-domains", help="List all domains in this account in chunks of 1000.",
     )
     parser_list_domains.set_defaults(func=PKBClient.get_domains)
     parser_list_domains.add_argument(
@@ -235,26 +235,26 @@ def main():
     )
 
     parser_get_url_forward = subparsers.add_parser(
-        "get-url-forwards", help="Retrieve all URL forwards."
+        "get-url-forwards", help="Retrieve all URL forwards.",
     )
     parser_get_url_forward.set_defaults(func=PKBClient.get_url_forwards)
     parser_get_url_forward.add_argument(
-        "domain", help="The domain for which the URL forwards should be retrieved."
+        "domain", help="The domain for which the URL forwards should be retrieved.",
     )
 
     parser_add_url_forward = subparsers.add_parser(
-        "create-url-forward", help="Create a new URL forward."
+        "create-url-forward", help="Create a new URL forward.",
     )
     parser_add_url_forward.set_defaults(func=PKBClient.create_url_forward)
     parser_add_url_forward.add_argument(
-        "domain", help="The domain for which the new URL forward should be created."
+        "domain", help="The domain for which the new URL forward should be created.",
     )
     parser_add_url_forward.add_argument(
         "location",
         help="The location to which the url forwarding should redirect.",
     )
     parser_add_url_forward.add_argument(
-        "type", help="The type of the url forwarding.", choices=list(URLForwardingType)
+        "type", help="The type of the url forwarding.", choices=list(URLForwardingType),
     )
     parser_add_url_forward.add_argument(
         "--subdomain",
@@ -276,14 +276,14 @@ def main():
     )
 
     parser_delete_url_forward = subparsers.add_parser(
-        "delete-url-forward", help="Delete an existing URL forward."
+        "delete-url-forward", help="Delete an existing URL forward.",
     )
     parser_delete_url_forward.set_defaults(func=PKBClient.delete_url_forward)
     parser_delete_url_forward.add_argument(
-        "domain", help="The domain for which the URL forward should be deleted."
+        "domain", help="The domain for which the URL forward should be deleted.",
     )
     parser_delete_url_forward.add_argument(
-        "id", help="The id of the URL forward which should be deleted."
+        "id", help="The id of the URL forward which should be deleted.",
     )
 
     args = vars(parser.parse_args())
@@ -293,7 +293,7 @@ def main():
     func = args.pop("func", None)
     if not func:
         raise argparse.ArgumentError(
-            None, "No method specified. Please provide a method and try again."
+            None, "No method specified. Please provide a method and try again.",
         )
 
     endpoint = args.pop("endpoint")
@@ -314,7 +314,7 @@ def main():
         if len(api_key.strip()) == 0:
             while True:
                 api_key = input(
-                    'Please enter your API key you got from Porkbun (usually starts with "pk"): '
+                    'Please enter your API key you got from Porkbun (usually starts with "pk"): ',
                 )
                 if len(api_key.strip()) == 0:
                     print("The api key can not be empty.")
@@ -327,7 +327,7 @@ def main():
         if len(api_secret.strip()) == 0:
             while True:
                 api_secret = input(
-                    'Please enter your API key secret you got from Porkbun (usually starts with "sk"): '
+                    'Please enter your API key secret you got from Porkbun (usually starts with "sk"): ',
                 )
                 if len(api_secret.strip()) == 0:
                     print("The api key secret can not be empty.")
@@ -335,7 +335,7 @@ def main():
                     break
 
     pkb_client = PKBClient(
-        api_key=api_key, secret_api_key=api_secret, api_endpoint=endpoint, debug=debug
+        api_key=api_key, secret_api_key=api_secret, api_endpoint=endpoint, debug=debug,
     )
 
     ret = func(pkb_client, **args)

@@ -1,9 +1,8 @@
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List
 
-from pkb_client.client.dns import DNSRecordType, DNS_RECORDS_WITH_PRIORITY
+from pkb_client.client.dns import DNS_RECORDS_WITH_PRIORITY, DNSRecordType
 
 
 class RecordClass(str, Enum):
@@ -20,8 +19,8 @@ class BindRecord:
     record_class: RecordClass
     record_type: DNSRecordType
     data: str
-    prio: Optional[int] = None
-    comment: Optional[str] = None
+    prio: int | None = None
+    comment: str | None = None
 
     def __str__(self):
         record_string = f"{self.name} {self.ttl} {self.record_class} {self.record_type}"
@@ -35,14 +34,14 @@ class BindRecord:
 
 class BindFile:
     origin: str
-    ttl: Optional[int] = None
-    records: List[BindRecord]
+    ttl: int | None = None
+    records: list[BindRecord]
 
     def __init__(
         self,
         origin: str,
-        ttl: Optional[int] = None,
-        records: Optional[List[BindRecord]] = None,
+        ttl: int | None = None,
+        records: list[BindRecord] | None = None,
     ) -> None:
         self.origin = origin
         self.ttl = ttl
@@ -50,7 +49,7 @@ class BindFile:
 
     @staticmethod
     def from_file(file_path: str) -> "BindFile":
-        with open(file_path, "r") as f:
+        with open(file_path) as f:
             file_data = f.readlines()
 
         # parse the file line by line
@@ -153,14 +152,13 @@ class BindFile:
                             comment = None
                     else:
                         record_data = line.strip('"')
+                # try to split at the first semicolon for comments
+                elif ";" in line:
+                    record_data, comment = line.split(";", 1)
+                    record_data = record_data.strip()
+                    comment = comment.strip()
                 else:
-                    # try to split at the first semicolon for comments
-                    if ";" in line:
-                        record_data, comment = line.split(";", 1)
-                        record_data = record_data.strip()
-                        comment = comment.strip()
-                    else:
-                        record_data = line
+                    record_data = line
 
                 records.append(
                     BindRecord(
@@ -171,7 +169,7 @@ class BindFile:
                         record_data,
                         prio=prio,
                         comment=comment,
-                    )
+                    ),
                 )
 
         if origin is None:

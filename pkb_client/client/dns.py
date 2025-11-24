@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, Any
+from typing import Any
 
 
 class DNSRecordType(str, Enum):
@@ -29,18 +29,16 @@ class DNSRecord:
     type: DNSRecordType
     content: str
     ttl: int
-    prio: Optional[int]
+    prio: int | None
     notes: str
 
     @staticmethod
     def from_dict(d: dict[str, Any]) -> "DNSRecord":
-        """
-        Create a DNSRecord instance from a dictionary representation.
+        """Create a DNSRecord instance from a dictionary representation.
 
         :param d: Dictionary containing DNS record data.
         :return: DNSRecord instance.
         """
-
         # only use prio for supported record types since the API returns it for all records with default value 0
         prio = int(d["prio"]) if d["type"] in DNS_RECORDS_WITH_PRIORITY else None
         return DNSRecord(
@@ -54,12 +52,10 @@ class DNSRecord:
         )
 
     def to_dict(self) -> dict[str, Any]:
-        """
-        Convert the DNSRecord instance to a dictionary representation.
+        """Convert the DNSRecord instance to a dictionary representation.
 
         :return: Dictionary containing DNS record data.
         """
-
         return {
             "id": self.id,
             "name": self.name,
@@ -81,12 +77,10 @@ class DNSRestoreMode(Enum):
 
     @staticmethod
     def from_string(a: str) -> "DNSRestoreMode":
-        """
-        Convert a string to a DNSRestoreMode enum member.
+        """Convert a string to a DNSRestoreMode enum member.
 
         :param a: String representation of the restore mode.
         :return: Corresponding DNSRestoreMode enum member.
         :raises KeyError: If the string does not match any enum member.
         """
-
         return DNSRestoreMode[a]

@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 import pkb_client
 
@@ -33,6 +33,6 @@ setup(
     entry_points={
         "console_scripts": [
             "pkb-client = pkb_client.cli.cli:main",
-        ]
+        ],
     },
 )
