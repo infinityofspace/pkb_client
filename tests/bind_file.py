@@ -8,7 +8,7 @@ from tests import data
 
 
 class TestBindFileParsing(unittest.TestCase):
-    def test_reading_bind_file(self):
+    def test_reading_bind_file(self) -> None:
         with self.subTest("With default TTL"):
             with resources.open_text(data, "test.bind") as f:
                 bind_file = BindFile.from_file(f.name)
@@ -127,7 +127,7 @@ class TestBindFileParsing(unittest.TestCase):
                 bind_file.records[5],
             )
 
-    def test_writing_bind_file(self):
+    def test_writing_bind_file(self) -> None:
         records = [
             BindRecord("test.com.", 600, RecordClass.IN, DNSRecordType.A, "1.2.3.4"),
             BindRecord(
