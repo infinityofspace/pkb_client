@@ -1,3 +1,9 @@
 [build-system]
 requires = ["setuptools>=50.3.0", "wheel"]
 build-backend = "setuptools.build_meta:__legacy__"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101", "PT009", "PT027"]
+
+[tool.ruff]
+line-length = 100
