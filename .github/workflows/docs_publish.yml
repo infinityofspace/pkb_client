@@ -4,8 +4,6 @@ on:
   push:
     tags:
       - "v*"
-    branches: # for testing
-      - main
 
 jobs:
   build:
@@ -14,10 +12,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - name: Set up Python 3.12
+      - name: Set up Python 3.14
         uses: actions/setup-python@v6.0.0
         with:
-          python-version: 3.12
+          python-version: 3.14
 
       - name: Install sphinx
         run: pip install sphinx
