@@ -8,7 +8,7 @@ from pkb_client.client.dns import DNS_RECORDS_WITH_PRIORITY, DNSRecordType
 class RecordClass(str, Enum):
     IN = "IN"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
 
 
@@ -22,7 +22,7 @@ class BindRecord:
     prio: int | None = None
     comment: str | None = None
 
-    def __str__(self):
+    def __str__(self) -> str:
         record_string = f"{self.name} {self.ttl} {self.record_class} {self.record_type}"
         if self.prio is not None:
             record_string += f" {self.prio}"
@@ -119,7 +119,8 @@ class BindFile:
                         continue
                     record_name = record_parts[0]
                     if ttl is None and not records:
-                        raise ValueError("No TTL found in file")
+                        msg = "No TTL found in file"
+                        raise ValueError(msg)
                     record_ttl = ttl or records[-1].ttl
                     record_class = RecordClass[record_parts[1]]
                     record_type = DNSRecordType[record_parts[2]]
@@ -173,7 +174,8 @@ class BindFile:
                 )
 
         if origin is None:
-            raise ValueError("No origin found in file")
+            msg = "No origin found in file"
+            raise ValueError(msg)
 
         return BindFile(origin, ttl, records)
 

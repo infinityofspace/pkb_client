@@ -15,7 +15,7 @@ class DNSRecordType(str, Enum):
     TLSA = "TLSA"
     CAA = "CAA"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.value
 
 
@@ -72,7 +72,7 @@ class DNSRestoreMode(Enum):
     replace = 1
     keep = 2
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name
 
     @staticmethod

@@ -2,6 +2,7 @@ import argparse
 import dataclasses
 import json
 import os
+import sys
 import textwrap
 from datetime import datetime
 
@@ -19,7 +20,7 @@ class CustomJSONEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="Python client for the Porkbun API",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -306,7 +307,7 @@ def main():
         ret = func(pkb_client, **args)
 
         print(json.dumps(ret, cls=CustomJSONEncoder, indent=4))
-        exit(0)
+        sys.exit(0)
 
     if api_key is None:
         # try to get the api key from the environment variable or fallback to user input

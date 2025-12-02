@@ -32,13 +32,12 @@ logging.basicConfig(level=logging.INFO)
 
 
 class PKBClientException(Exception):
-    def __init__(self, status, message):
+    def __init__(self, status, message) -> None:
         super().__init__(f"{status}: {message}")
 
 
 class PKBClient:
-    """API client for Porkbun.
-    """
+    """API client for Porkbun."""
 
     default_ttl: int = 300
 
@@ -69,7 +68,8 @@ class PKBClient:
         :return: the request json for the authentication of the Porkbun API calls
         """
         if self.api_key is None or self.secret_api_key is None:
-            raise ValueError("api_key and secret_api_key must be set")
+            msg = "api_key and secret_api_key must be set"
+            raise ValueError(msg)
 
         return {"apikey": self.api_key, "secretapikey": self.secret_api_key}
 
@@ -113,11 +113,13 @@ class PKBClient:
         :return: the id of the new created DNS record
         """
         if ttl > 86400 or ttl < self.default_ttl:
-            raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
+            msg = f"ttl must be between {self.default_ttl} and 86400"
+            raise ValueError(msg)
 
         if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
+            msg = f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}"
             raise ValueError(
-                f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}",
+                msg,
             )
 
         url = urljoin(self.api_endpoint, f"dns/create/{domain}")
@@ -164,12 +166,12 @@ class PKBClient:
         :return: True if the editing was successful
         """
         if ttl > 86400 or ttl < self.default_ttl:
-            raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
+            msg = f"ttl must be between {self.default_ttl} and 86400"
+            raise ValueError(msg)
 
         if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
-            raise ValueError(
-                f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}",
-            )
+            msg = f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}"
+            raise ValueError(msg)
 
         url = urljoin(self.api_endpoint, f"dns/edit/{domain}/{record_id}")
         req_json = {
@@ -212,12 +214,12 @@ class PKBClient:
         :return: True if the editing was successful
         """
         if ttl > 86400 or ttl < self.default_ttl:
-            raise ValueError(f"ttl must be between {self.default_ttl} and 86400")
+            msg = f"ttl must be between {self.default_ttl} and 86400"
+            raise ValueError(msg)
 
         if prio is not None and record_type not in DNS_RECORDS_WITH_PRIORITY:
-            raise ValueError(
-                f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}",
-            )
+            msg = f"Priority can only be set for {DNS_RECORDS_WITH_PRIORITY}"
+            raise ValueError(msg)
 
         url = urljoin(
             self.api_endpoint, f"dns/editByNameType/{domain}/{record_type}/{subdomain}",
@@ -364,7 +366,7 @@ class PKBClient:
 
         logger.debug(f"save DNS records to {filepath} ...")
         # merge the single DNS records into one single dict with the record id as key
-        dns_records_dict = dict()
+        dns_records_dict = {}
         for record in dns_records:
             dns_records_dict[record.id] = record
 
@@ -395,7 +397,7 @@ class PKBClient:
 
         logger.debug(f"save DNS records to {filepath} ...")
         # merge the single DNS records into one single dict with the record id as key
-        dns_records_dict = dict()
+        dns_records_dict = {}
         for record in dns_records:
             dns_records_dict[record.id] = record
 
@@ -473,7 +475,7 @@ class PKBClient:
                     self.delete_dns_record(domain, record.id)
 
                 # restore all exported records by creating new DNS records
-                for _, exported_record in exported_dns_records_dict.items():
+                for exported_record in exported_dns_records_dict.values():
                     name = ".".join(exported_record["name"].split(".")[:-2])
                     self.create_dns_record(
                         domain=domain,
@@ -484,9 +486,9 @@ class PKBClient:
                         prio=exported_record["prio"],
                     )
             except Exception as e:
-                logger.error(f"something went wrong: {e.__str__()}")
+                logger.exception(f"something went wrong: {e.__str__()}")
                 self.__handle_error_backup__(existing_dns_records)
-                logger.error("import failed")
+                logger.exception("import failed")
                 return False
         elif restore_mode is DNSRestoreMode.replace:
             logger.debug("restore mode: replace")
@@ -520,9 +522,9 @@ class PKBClient:
                             prio=record["prio"],
                         )
             except Exception as e:
-                logger.error(f"something went wrong: {e.__str__()}")
+                logger.exception(f"something went wrong: {e.__str__()}")
                 self.__handle_error_backup__(existing_dns_records)
-                logger.error("import failed")
+                logger.exception("import failed")
                 return False
         elif restore_mode is DNSRestoreMode.keep:
             logger.debug("restore mode: keep")
@@ -550,12 +552,13 @@ class PKBClient:
                             prio=record["prio"],
                         )
             except Exception as e:
-                logger.error(f"something went wrong: {e.__str__()}")
+                logger.exception(f"something went wrong: {e.__str__()}")
                 self.__handle_error_backup__(existing_dns_records)
-                logger.error("import failed")
+                logger.exception("import failed")
                 return False
         else:
-            raise Exception("restore mode not supported")
+            msg = "restore mode not supported"
+            raise Exception(msg)
 
         logger.info("import successfully completed")
 
@@ -619,12 +622,13 @@ class PKBClient:
                     self.update_dns_servers(bind_file.origin[:-1], name_servers)
 
             except Exception as e:
-                logger.error(f"something went wrong: {e.__str__()}")
+                logger.exception(f"something went wrong: {e.__str__()}")
                 self.__handle_error_backup__(existing_dns_records)
-                logger.error("import failed")
+                logger.exception("import failed")
                 return False
         else:
-            raise Exception(f"restore mode '{restore_mode.value}' not supported")
+            msg = f"restore mode '{restore_mode.value}' not supported"
+            raise Exception(msg)
 
         logger.info("import successfully completed")
 
@@ -862,9 +866,7 @@ class PKBClient:
                     key_data_algo=int(record["keyDataAlgo"])
                     if "keyDataAlgo" in record
                     else None,
-                    key_data_pub_key=record["keyDataPubKey"]
-                    if "keyDataPubKey" in record
-                    else None,
+                    key_data_pub_key=record.get("keyDataPubKey", None),
                 )
                 for record in json.loads(r.text).get("records", {}).values()
             ]
@@ -904,7 +906,8 @@ class PKBClient:
         :return: True if everything went well
         """
         if max_sig_life is not None and max_sig_life < 0:
-            raise ValueError("max_sig_life must be greater than 0")
+            msg = "max_sig_life must be greater than 0"
+            raise ValueError(msg)
 
         url = urljoin(self.api_endpoint, f"dns/createDnssecRecord/{domain}")
         req_json = {
@@ -1003,7 +1006,7 @@ class PKBClient:
         :param dns_records: the DNS records to backup
         """
         # merge the single DNS records into one single dict with the record id as key
-        dns_records_dict = dict()
+        dns_records_dict = {}
         for record in dns_records:
             dns_records_dict[record.id] = record.to_dict()
 
