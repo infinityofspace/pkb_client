@@ -14,6 +14,9 @@ class DNSRecordType(str, Enum):
     SRV = "SRV"
     TLSA = "TLSA"
     CAA = "CAA"
+    HTTPS = "HTTPS"
+    SSHFP = "SSHFP"
+    SVCB = "SVCB"
 
     def __str__(self):
         return self.value
