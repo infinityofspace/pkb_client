@@ -117,6 +117,90 @@ class TestClientAuth(unittest.TestCase):
             "example.com", DNSRecordType.MX, "127.0.0.1", "sub.example.com", 3600, 2
         )
 
+    @responses.activate
+    def test_create_https_record(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/create/example.com"),
+            json={"status": "SUCCESS", "id": "345678"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "name": "example.com",
+                        "type": "HTTPS",
+                        "content": "1 . alpn=h2,h3",
+                        "ttl": 3600,
+                        "prio": None,
+                    }
+                )
+            ],
+        )
+        assert "345678" == pkb_client.create_dns_record(
+            "example.com", DNSRecordType.HTTPS, "1 . alpn=h2,h3", "example.com", 3600
+        )
+
+    @responses.activate
+    def test_create_sshfp_record(self):
+        pkb_client = PKBClient("key", "secret")
+
+        # SSHFP format: algorithm fp_type fingerprint (Ed25519 SHA-256)
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/create/example.com"),
+            json={"status": "SUCCESS", "id": "456789"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "name": "example.com",
+                        "type": "SSHFP",
+                        "content": "4 2 abc123def456789",
+                        "ttl": 3600,
+                        "prio": None,
+                    }
+                )
+            ],
+        )
+        assert "456789" == pkb_client.create_dns_record(
+            "example.com",
+            DNSRecordType.SSHFP,
+            "4 2 abc123def456789",
+            "example.com",
+            3600,
+        )
+
+    @responses.activate
+    def test_create_svcb_record(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "dns/create/example.com"),
+            json={"status": "SUCCESS", "id": "567890"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "name": "_svc.example.com",
+                        "type": "SVCB",
+                        "content": "1 svc.example.com alpn=h2",
+                        "ttl": 3600,
+                        "prio": None,
+                    }
+                )
+            ],
+        )
+        assert "567890" == pkb_client.create_dns_record(
+            "example.com",
+            DNSRecordType.SVCB,
+            "1 svc.example.com alpn=h2",
+            "_svc.example.com",
+            3600,
+        )
+
     def test_create_dns_record_invalid_prio_record_type(self):
         pkb_client = PKBClient("key", "secret")
         with self.assertRaises(ValueError):
