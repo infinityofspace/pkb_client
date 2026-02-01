@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 
 
 @dataclass
@@ -41,5 +42,5 @@ class DomainCheckRateLimit:
 @dataclass
 class GlueRecord:
     host: str
-    v4: str | None
-    v6: str | None
+    v4: Optional[str]
+    v6: Optional[str]
