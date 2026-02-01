@@ -1429,6 +1429,82 @@ class TestClientAuth(unittest.TestCase):
             str(context.exception),
         )
 
+    @responses.activate
+    def test_update_glue_record(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/updateGlue/example.com/ns1"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "ips": ["192.0.2.1", "2001:db8::1"],
+                    }
+                )
+            ],
+        )
+
+        success = pkb_client.update_glue_record(
+            "example.com", "ns1", ["192.0.2.1", "2001:db8::1"]
+        )
+
+        self.assertTrue(success)
+
+    @responses.activate
+    def test_update_glue_record_single_ip(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/updateGlue/example.com/ns1"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "ips": ["192.0.2.1"],
+                    }
+                )
+            ],
+        )
+
+        success = pkb_client.update_glue_record("example.com", "ns1", ["192.0.2.1"])
+
+        self.assertTrue(success)
+
+    @responses.activate
+    def test_update_glue_record_error(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/updateGlue/example.com/ns1"),
+            json={
+                "status": "ERROR",
+                "message": "Invalid IP address format",
+            },
+            status=400,
+            match=[
+                matchers.json_params_matcher(
+                    {
+                        "apikey": "key",
+                        "secretapikey": "secret",
+                        "ips": ["invalid.ip.address"],
+                    }
+                )
+            ],
+        )
+
+        with self.assertRaises(PKBClientException) as context:
+            pkb_client.update_glue_record("example.com", "ns1", ["invalid.ip.address"])
+
+        self.assertIn(
+            "ERROR: Invalid IP address format",
+            str(context.exception),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
