@@ -36,3 +36,10 @@ class DomainCheckRateLimit:
     limit: int
     used: int
     natural_language: str
+
+
+@dataclass
+class GlueRecord:
+    host: str
+    v4: str | None
+    v6: str | None

@@ -1284,6 +1284,151 @@ class TestClientAuth(unittest.TestCase):
                 str(context.exception),
             )
 
+    @responses.activate
+    def test_get_glue_records(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/getGlue/example.com"),
+            json={
+                "status": "SUCCESS",
+                "hosts": [
+                    ["ns1.example.com", {"v6": ["2001:db8::1"], "v4": ["192.168.1.1"]}],
+                    ["ns2.example.com", {"v6": ["2001:db8::2"], "v4": ["192.168.1.2"]}],
+                ],
+            },
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        glue_records = pkb_client.get_glue_records("example.com")
+
+        self.assertEqual(2, len(glue_records))
+        self.assertEqual("ns1.example.com", glue_records[0].host)
+        self.assertEqual("192.168.1.1", glue_records[0].v4)
+        self.assertEqual("2001:db8::1", glue_records[0].v6)
+        self.assertEqual("ns2.example.com", glue_records[1].host)
+        self.assertEqual("192.168.1.2", glue_records[1].v4)
+        self.assertEqual("2001:db8::2", glue_records[1].v6)
+
+    @responses.activate
+    def test_get_glue_records_empty(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/getGlue/example.com"),
+            json={
+                "status": "SUCCESS",
+                "hosts": {},
+            },
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        glue_records = pkb_client.get_glue_records("example.com")
+
+        self.assertEqual(0, len(glue_records))
+
+    @responses.activate
+    def test_get_glue_records_partial_data(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/getGlue/example.com"),
+            json={
+                "status": "SUCCESS",
+                "hosts": [["ns1.example.com", {"v6": [], "v4": ["192.168.1.1"]}]],
+            },
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        glue_records = pkb_client.get_glue_records("example.com")
+
+        self.assertEqual(1, len(glue_records))
+        self.assertEqual("ns1.example.com", glue_records[0].host)
+        self.assertEqual("192.168.1.1", glue_records[0].v4)
+        self.assertEqual(None, glue_records[0].v6)
+
+    @responses.activate
+    def test_get_glue_records_error(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/getGlue/example.com"),
+            json={
+                "status": "ERROR",
+                "message": "Domain does not exist",
+            },
+            status=400,
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        with self.assertRaises(PKBClientException) as context:
+            pkb_client.get_glue_records("example.com")
+
+        self.assertIn(
+            "ERROR: Domain does not exist",
+            str(context.exception),
+        )
+
+    @responses.activate
+    def test_delete_glue_record(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/deleteGlue/example.com/ns1"),
+            json={"status": "SUCCESS"},
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        success = pkb_client.delete_glue_record("example.com", "ns1")
+
+        self.assertTrue(success)
+
+    @responses.activate
+    def test_delete_glue_record_error(self):
+        pkb_client = PKBClient("key", "secret")
+
+        responses.post(
+            url=urljoin(API_ENDPOINT, "domain/deleteGlue/example.com/ns1"),
+            json={
+                "status": "ERROR",
+                "message": "Glue record not found",
+            },
+            status=400,
+            match=[
+                matchers.json_params_matcher(
+                    {"apikey": "key", "secretapikey": "secret"}
+                )
+            ],
+        )
+
+        with self.assertRaises(PKBClientException) as context:
+            pkb_client.delete_glue_record("example.com", "ns1")
+
+        self.assertIn(
+            "ERROR: Glue record not found",
+            str(context.exception),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
