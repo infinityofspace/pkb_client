@@ -22,6 +22,7 @@ from pkb_client.client.domain import (
     DomainAvailability,
     DomainCheckRateLimit,
     DomainPrice,
+    GlueRecord,
 )
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
 from pkb_client.client.ssl_cert import SSLCertBundle
@@ -1067,6 +1068,122 @@ class PKBClient:
                 response_json.get("status", "Unknown status"),
                 response_json.get("message", "Unknown message"),
             )
+
+    def get_glue_records(self, domain: str) -> list[GlueRecord]:
+        """Get all glue records for a specified domain.
+
+        Implements the API endpoint https://porkbun.com/api/json/v3/documentation#Domain%20Get%20Glue%20Records
+
+        :param domain: the domain for which the glue records should be retrieved
+        :return: list of GlueRecord objects
+        :raises PKBClientException: if the API call was not successful
+        """
+
+        url = urljoin(self.api_endpoint, f"domain/getGlue/{domain}")
+        req_json = self._get_auth_request_json()
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            records = []
+
+            for host in json.loads(r.text).get("hosts", []):
+                v4 = host[1].get("v4")
+                v6 = host[1].get("v6")
+                record = GlueRecord(
+                    host=host[0],
+                    v4=v4[0] if v4 else None,
+                    v6=v6[0] if v6 else None,
+                )
+                records.append(record)
+
+            return records
+        response_json = json.loads(r.text)
+        raise PKBClientException(
+            response_json.get("status", "Unknown status"),
+            response_json.get("message", "Unknown message"),
+        )
+
+    def create_glue_record(
+        self, domain: str, glue_host_subdomain: str, ips: list[str]
+    ) -> bool:
+        """
+        Create a glue record for a specified domain and host.
+        Implements the API endpoint https://porkbun.com/api/json/v3/documentation#Domain%20Create%20Glue%20Record.
+
+        :param domain: the domain for which the glue record should be created
+        :param glue_host_subdomain: the subdomain of the glue record host, e.g. "ns1" for "ns1.example.com"
+        :param ips: list of IP addresses to create the glue record with
+        :return: True if everything went well
+        :raises PKBClientException: if the API call was not successful
+        """
+
+        url = urljoin(
+            self.api_endpoint,
+            f"domain/createGlue/{domain}/{glue_host_subdomain}",
+        )
+        req_json = {**self._get_auth_request_json(), "ips": ips}
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return True
+        response_json = json.loads(r.text)
+        raise PKBClientException(
+            response_json.get("status", "Unknown status"),
+            response_json.get("message", "Unknown message"),
+        )
+
+    def delete_glue_record(self, domain: str, glue_host_subdomain: str) -> bool:
+        """Delete a glue record for a specified domain and host specified by the subdomain of the glue record host.
+        Implements the API endpoint https://porkbun.com/api/json/v3/documentation#Domain%20Delete%20Glue%20Record.
+
+        :param domain: the domain for which the glue record should be deleted
+        :param glue_host_subdomain: the subdomain of the glue record host, e.g. "ns1" for "ns1.example.com"
+        :return: True if everything went well
+        :raises PKBClientException: if the API call was not successful
+        """
+
+        url = urljoin(
+            self.api_endpoint,
+            f"domain/deleteGlue/{domain}/{glue_host_subdomain}",
+        )
+        req_json = self._get_auth_request_json()
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return True
+        response_json = json.loads(r.text)
+        raise PKBClientException(
+            response_json.get("status", "Unknown status"),
+            response_json.get("message", "Unknown message"),
+        )
+
+    def update_glue_record(
+        self, domain: str, glue_host_subdomain: str, ips: list[str]
+    ) -> bool:
+        """Update a glue record for a specified domain and host.
+        Implements the API endpoint https://porkbun.com/api/json/v3/documentation#Domain%20Update%20Glue%20Record.
+
+        :param domain: the domain for which the glue record should be updated
+        :param glue_host_subdomain: the subdomain of the glue record host, e.g. "ns1" for "ns1.example.com"
+        :param ips: list of IP addresses to update the glue record with. Current IP addresses will be removed and replaced with these ones.
+        :return: True if everything went well
+        :raises PKBClientException: if the API call was not successful
+        """
+
+        url = urljoin(
+            self.api_endpoint,
+            f"domain/updateGlue/{domain}/{glue_host_subdomain}",
+        )
+        req_json = {**self._get_auth_request_json(), "ips": ips}
+        r = requests.post(url=url, json=req_json)
+
+        if r.status_code == 200:
+            return True
+        response_json = json.loads(r.text)
+        raise PKBClientException(
+            response_json.get("status", "Unknown status"),
+            response_json.get("message", "Unknown message"),
+        )
 
     @staticmethod
     def __handle_error_backup__(dns_records: list[DNSRecord]) -> None:

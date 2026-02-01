@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
+from typing import Optional
 
 
 @dataclass
@@ -36,3 +37,10 @@ class DomainCheckRateLimit:
     limit: int
     used: int
     natural_language: str
+
+
+@dataclass
+class GlueRecord:
+    host: str
+    v4: Optional[str]
+    v6: Optional[str]
