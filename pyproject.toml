@@ -1,3 +1,31 @@
 [build-system]
 requires = ["setuptools>=50.3.0", "wheel"]
 build-backend = "setuptools.build_meta:__legacy__"
+
+[tool.ruff.lint.per-file-ignores]
+"docs/source/conf.py" = ["A001", "INP001"]
+"pkb_client/client/bind_file.py" = [
+    "C901",
+    "EM101",
+    "PLR0912",
+    "PLR0915",
+    "TRY003",
+]
+"pkb_client/client/client.py" = [
+    "A002",
+    "C901",
+    "COM812",
+    "D205",
+    "D401",
+    "EM101",
+    "EM102",
+    "FBT001",
+    "FBT002",
+    "N818",
+    "PLR0912",
+    "PLR0913",
+    "PLR0915",
+    "TRY003",
+]
+"pkb_client/cli/cli.py" = ["C901", "PLR0915", "T201"]
+"tests/*.py" = ["ANN", "D", "FBT003", "PLR2004", "PT", "S101"]

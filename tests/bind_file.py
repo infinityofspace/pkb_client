@@ -1,6 +1,7 @@
 import tempfile
 import unittest
 from importlib import resources
+from pathlib import Path
 
 from pkb_client.client.bind_file import BindFile, BindRecord, RecordClass
 from pkb_client.client.dns import DNSRecordType
@@ -18,7 +19,11 @@ class TestBindFileParsing(unittest.TestCase):
             self.assertEqual(7, len(bind_file.records))
             self.assertEqual(
                 BindRecord(
-                    "test.com.", 600, RecordClass.IN, DNSRecordType.A, "1.2.3.4"
+                    "test.com.",
+                    600,
+                    RecordClass.IN,
+                    DNSRecordType.A,
+                    "1.2.3.4",
                 ),
                 bind_file.records[0],
             )
@@ -35,7 +40,11 @@ class TestBindFileParsing(unittest.TestCase):
             )
             self.assertEqual(
                 BindRecord(
-                    "sub.test.com.", 600, RecordClass.IN, DNSRecordType.A, "4.3.2.1"
+                    "sub.test.com.",
+                    600,
+                    RecordClass.IN,
+                    DNSRecordType.A,
+                    "4.3.2.1",
                 ),
                 bind_file.records[2],
             )
@@ -52,7 +61,11 @@ class TestBindFileParsing(unittest.TestCase):
             )
             self.assertEqual(
                 BindRecord(
-                    "test.com.", 1234, RecordClass.IN, DNSRecordType.TXT, "pkb-client"
+                    "test.com.",
+                    1234,
+                    RecordClass.IN,
+                    DNSRecordType.TXT,
+                    "pkb-client",
                 ),
                 bind_file.records[4],
             )
@@ -77,7 +90,11 @@ class TestBindFileParsing(unittest.TestCase):
             self.assertEqual(7, len(bind_file.records))
             self.assertEqual(
                 BindRecord(
-                    "test.com.", 600, RecordClass.IN, DNSRecordType.A, "1.2.3.4"
+                    "test.com.",
+                    600,
+                    RecordClass.IN,
+                    DNSRecordType.A,
+                    "1.2.3.4",
                 ),
                 bind_file.records[0],
             )
@@ -94,7 +111,11 @@ class TestBindFileParsing(unittest.TestCase):
             )
             self.assertEqual(
                 BindRecord(
-                    "sub.test.com.", 600, RecordClass.IN, DNSRecordType.A, "4.3.2.1"
+                    "sub.test.com.",
+                    600,
+                    RecordClass.IN,
+                    DNSRecordType.A,
+                    "4.3.2.1",
                 ),
                 bind_file.records[2],
             )
@@ -111,7 +132,11 @@ class TestBindFileParsing(unittest.TestCase):
             )
             self.assertEqual(
                 BindRecord(
-                    "test.com.", 700, RecordClass.IN, DNSRecordType.TXT, "pkb-client"
+                    "test.com.",
+                    700,
+                    RecordClass.IN,
+                    DNSRecordType.TXT,
+                    "pkb-client",
                 ),
                 bind_file.records[4],
             )
@@ -131,13 +156,25 @@ class TestBindFileParsing(unittest.TestCase):
         records = [
             BindRecord("test.com.", 600, RecordClass.IN, DNSRecordType.A, "1.2.3.4"),
             BindRecord(
-                "sub.test.com.", 700, RecordClass.IN, DNSRecordType.A, "4.3.2.1"
+                "sub.test.com.",
+                700,
+                RecordClass.IN,
+                DNSRecordType.A,
+                "4.3.2.1",
             ),
             BindRecord(
-                "test.com.", 600, RecordClass.IN, DNSRecordType.AAAA, "2001:db8::1"
+                "test.com.",
+                600,
+                RecordClass.IN,
+                DNSRecordType.AAAA,
+                "2001:db8::1",
             ),
             BindRecord(
-                "test.com.", 600, RecordClass.IN, DNSRecordType.TXT, "pkb-client"
+                "test.com.",
+                600,
+                RecordClass.IN,
+                DNSRecordType.TXT,
+                "pkb-client",
             ),
             BindRecord(
                 "test.com.",
@@ -162,7 +199,7 @@ class TestBindFileParsing(unittest.TestCase):
 
         with tempfile.NamedTemporaryFile() as f:
             bind_file.to_file(f.name)
-            with open(f.name) as f2:
+            with Path(f.name).open() as f2:
                 self.assertEqual(file_content.strip(), f2.read().strip())
 
 

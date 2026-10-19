@@ -18,8 +18,8 @@ from pkb_client.client import (
 from pkb_client.client.dns import DNSRecord, DNSRecordType
 from pkb_client.client.dnssec import DNSSECRecord
 from pkb_client.client.domain import (
-    DomainCheckRateLimit,
     DomainAvailability,
+    DomainCheckRateLimit,
     DomainPrice,
 )
 from pkb_client.client.forwarding import URLForwarding, URLForwardingType
@@ -35,8 +35,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS", "yourIp": "127.0.0.1"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -64,8 +64,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS", "yourIp": "127.0.0.1"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         ip_address = pkb_client.ping()
@@ -88,12 +88,19 @@ class TestClientAuth(unittest.TestCase):
                         "content": "127.0.0.1",
                         "ttl": 3600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
-        assert "123456" == pkb_client.create_dns_record(
-            "example.com", DNSRecordType.A, "127.0.0.1", "sub.example.com", 3600
+        assert (
+            pkb_client.create_dns_record(
+                "example.com",
+                DNSRecordType.A,
+                "127.0.0.1",
+                "sub.example.com",
+                3600,
+            )
+            == "123456"
         )
 
         responses.post(
@@ -109,12 +116,20 @@ class TestClientAuth(unittest.TestCase):
                         "content": "127.0.0.1",
                         "ttl": 3600,
                         "prio": 2,
-                    }
-                )
+                    },
+                ),
             ],
         )
-        assert "234561" == pkb_client.create_dns_record(
-            "example.com", DNSRecordType.MX, "127.0.0.1", "sub.example.com", 3600, 2
+        assert (
+            pkb_client.create_dns_record(
+                "example.com",
+                DNSRecordType.MX,
+                "127.0.0.1",
+                "sub.example.com",
+                3600,
+                2,
+            )
+            == "234561"
         )
 
     @responses.activate
@@ -134,12 +149,19 @@ class TestClientAuth(unittest.TestCase):
                         "content": "1 . alpn=h2,h3",
                         "ttl": 3600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
-        assert "345678" == pkb_client.create_dns_record(
-            "example.com", DNSRecordType.HTTPS, "1 . alpn=h2,h3", "example.com", 3600
+        assert (
+            pkb_client.create_dns_record(
+                "example.com",
+                DNSRecordType.HTTPS,
+                "1 . alpn=h2,h3",
+                "example.com",
+                3600,
+            )
+            == "345678"
         )
 
     @responses.activate
@@ -160,16 +182,19 @@ class TestClientAuth(unittest.TestCase):
                         "content": "4 2 abc123def456789",
                         "ttl": 3600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
-        assert "456789" == pkb_client.create_dns_record(
-            "example.com",
-            DNSRecordType.SSHFP,
-            "4 2 abc123def456789",
-            "example.com",
-            3600,
+        assert (
+            pkb_client.create_dns_record(
+                "example.com",
+                DNSRecordType.SSHFP,
+                "4 2 abc123def456789",
+                "example.com",
+                3600,
+            )
+            == "456789"
         )
 
     @responses.activate
@@ -189,23 +214,31 @@ class TestClientAuth(unittest.TestCase):
                         "content": "1 svc.example.com alpn=h2",
                         "ttl": 3600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
-        assert "567890" == pkb_client.create_dns_record(
-            "example.com",
-            DNSRecordType.SVCB,
-            "1 svc.example.com alpn=h2",
-            "_svc.example.com",
-            3600,
+        assert (
+            pkb_client.create_dns_record(
+                "example.com",
+                DNSRecordType.SVCB,
+                "1 svc.example.com alpn=h2",
+                "_svc.example.com",
+                3600,
+            )
+            == "567890"
         )
 
     def test_create_dns_record_invalid_prio_record_type(self):
         pkb_client = PKBClient("key", "secret")
         with self.assertRaises(ValueError):
             pkb_client.create_dns_record(
-                "example.com", DNSRecordType.A, "127.0.0.1", "sub.example.com", 3600, 2
+                "example.com",
+                DNSRecordType.A,
+                "127.0.0.1",
+                "sub.example.com",
+                3600,
+                2,
             )
 
     @responses.activate(registry=OrderedRegistry)
@@ -225,8 +258,8 @@ class TestClientAuth(unittest.TestCase):
                         "name": "sub.example.com",
                         "ttl": 3600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
 
@@ -253,8 +286,8 @@ class TestClientAuth(unittest.TestCase):
                         "name": "sub.example.com",
                         "ttl": 3600,
                         "prio": 2,
-                    }
-                )
+                    },
+                ),
             ],
         )
 
@@ -298,13 +331,17 @@ class TestClientAuth(unittest.TestCase):
                         "content": "127.0.0.1",
                         "ttl": 1234,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
 
         success = pkb_client.update_all_dns_records(
-            "example.com", DNSRecordType.A, "sub", "127.0.0.1", 1234
+            "example.com",
+            DNSRecordType.A,
+            "sub",
+            "127.0.0.1",
+            1234,
         )
 
         self.assertTrue(success)
@@ -314,7 +351,12 @@ class TestClientAuth(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             pkb_client.update_all_dns_records(
-                "example.com", DNSRecordType.A, "sub", "127.0.0.1", 1234, 2
+                "example.com",
+                DNSRecordType.A,
+                "sub",
+                "127.0.0.1",
+                1234,
+                2,
             )
 
     @responses.activate
@@ -326,8 +368,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -344,13 +386,15 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
         success = pkb_client.delete_all_dns_records(
-            "example.com", DNSRecordType.A, "sub"
+            "example.com",
+            DNSRecordType.A,
+            "sub",
         )
 
         self.assertTrue(success)
@@ -386,15 +430,21 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         records = pkb_client.get_dns_records("example.com")
 
         expected_records = [
             DNSRecord(
-                "123456", "example.com", DNSRecordType.A, "127.0.0.1", 600, None, ""
+                "123456",
+                "example.com",
+                DNSRecordType.A,
+                "127.0.0.1",
+                600,
+                None,
+                "",
             ),
             DNSRecord(
                 "1234567",
@@ -425,13 +475,13 @@ class TestClientAuth(unittest.TestCase):
                         "ttl": 600,
                         "prio": None,
                         "notes": "",
-                    }
+                    },
                 ],
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -446,7 +496,7 @@ class TestClientAuth(unittest.TestCase):
                 600,
                 None,
                 "",
-            )
+            ),
         ]
         self.assertEqual(expected_records, records)
 
@@ -463,13 +513,14 @@ class TestClientAuth(unittest.TestCase):
                         "apikey": "key",
                         "secretapikey": "secret",
                         "ns": ["ns1.example.com", "ns2.example.com"],
-                    }
-                )
+                    },
+                ),
             ],
         )
 
         success = pkb_client.update_dns_servers(
-            "example.com", ["ns1.example.com", "ns2.example.com"]
+            "example.com",
+            ["ns1.example.com", "ns2.example.com"],
         )
 
         self.assertTrue(success)
@@ -543,8 +594,8 @@ class TestClientAuth(unittest.TestCase):
                         "type": "permanent",
                         "includePath": False,
                         "wildcard": False,
-                    }
-                )
+                    },
+                ),
             ],
         )
 
@@ -568,8 +619,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         success = pkb_client.delete_url_forward("example.com", "123456")
@@ -624,27 +675,39 @@ class TestClientAuth(unittest.TestCase):
     def test_get_ssl_bundle(self):
         pkb_client = PKBClient("key", "secret")
 
+        certificate_chain = """----BEGIN CERTIFICATE-----
+                    abc1-----END CERTIFICATE-----
+
+                    ----BEGIN CERTIFICATE-----
+                    abc2-----END CERTIFICATE-----
+
+                    ----BEGIN CERTIFICATE-----
+                    abc3-----END CERTIFICATE-----"""
+
+        private_key = "-----BEGIN PRIVATE KEY-----\nabc4-----END PRIVATE KEY-----\n"
+        public_key = "-----BEGIN PUBLIC KEY-----\nabc5-----END PUBLIC KEY-----\n"
+
         responses.post(
             url=urljoin(API_ENDPOINT, "ssl/retrieve/example.com"),
             json={
                 "status": "SUCCESS",
-                "certificatechain": "----BEGIN CERTIFICATE-----\nabc1-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc2-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc3-----END CERTIFICATE-----\n",
-                "privatekey": "-----BEGIN PRIVATE KEY-----\nabc4-----END PRIVATE KEY-----\n",
-                "publickey": "-----BEGIN PUBLIC KEY-----\nabc5-----END PUBLIC KEY-----\n",
+                "certificatechain": certificate_chain,
+                "privatekey": private_key,
+                "publickey": public_key,
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
         ssl_cert_bundle = pkb_client.get_ssl_bundle("example.com")
 
         expected_ssl_cert_bundle = SSLCertBundle(
-            certificate_chain="----BEGIN CERTIFICATE-----\nabc1-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc2-----END CERTIFICATE-----\n\n----BEGIN CERTIFICATE-----\nabc3-----END CERTIFICATE-----\n",
-            private_key="-----BEGIN PRIVATE KEY-----\nabc4-----END PRIVATE KEY-----\n",
-            public_key="-----BEGIN PUBLIC KEY-----\nabc5-----END PUBLIC KEY-----\n",
+            certificate_chain=certificate_chain,
+            private_key=private_key,
+            public_key=public_key,
         )
 
         self.assertEqual(expected_ssl_cert_bundle, ssl_cert_bundle)
@@ -680,15 +743,15 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
-        with tempfile.NamedTemporaryFile() as f:
-            pkb_client.export_dns_records("example.com", f.name)
+        with tempfile.NamedTemporaryFile() as temp_file:
+            pkb_client.export_dns_records("example.com", temp_file.name)
 
-            with open(f.name, "r") as f:
+            with Path(temp_file.name).open() as f:
                 exported_dns_file = json.load(f)
 
         expected_exported_dns_file = {
@@ -746,8 +809,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         # then all records should be deleted
@@ -756,8 +819,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         responses.post(
@@ -765,8 +828,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         # then all records should be imported / created
@@ -783,8 +846,8 @@ class TestClientAuth(unittest.TestCase):
                         "content": "127.0.0.3",
                         "ttl": 600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
         responses.post(
@@ -800,14 +863,14 @@ class TestClientAuth(unittest.TestCase):
                         "content": "127.0.0.4",
                         "ttl": 600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
 
         with tempfile.TemporaryDirectory() as temp_dir:
             filename = Path(temp_dir, "records.json")
-            with open(filename, "w") as f:
+            with Path(filename).open("w") as f:
                 json.dump(
                     {
                         "123456": {
@@ -831,7 +894,9 @@ class TestClientAuth(unittest.TestCase):
                 )
 
             pkb_client.import_dns_records(
-                "example.com", str(filename), DNSRestoreMode.clear
+                "example.com",
+                str(filename),
+                DNSRestoreMode.clear,
             )
 
     @responses.activate(registry=OrderedRegistry, assert_all_requests_are_fired=True)
@@ -866,8 +931,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -885,14 +950,14 @@ class TestClientAuth(unittest.TestCase):
                         "name": "sub",
                         "ttl": 600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
 
         with tempfile.TemporaryDirectory() as temp_dir:
             filename = Path(temp_dir, "records.json")
-            with open(filename, "w") as f:
+            with Path(filename).open("w") as f:
                 json.dump(
                     {
                         "123451": {
@@ -916,7 +981,9 @@ class TestClientAuth(unittest.TestCase):
                 )
 
             pkb_client.import_dns_records(
-                "example.com", str(filename), DNSRestoreMode.replace
+                "example.com",
+                str(filename),
+                DNSRestoreMode.replace,
             )
 
     @responses.activate(registry=OrderedRegistry, assert_all_requests_are_fired=True)
@@ -951,8 +1018,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -970,14 +1037,14 @@ class TestClientAuth(unittest.TestCase):
                         "content": "127.0.0.4",
                         "ttl": 600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
 
         with tempfile.TemporaryDirectory() as temp_dir:
             filename = Path(temp_dir, "records.json")
-            with open(filename, "w") as f:
+            with Path(filename).open("w") as f:
                 json.dump(
                     {
                         "123451": {
@@ -1001,7 +1068,9 @@ class TestClientAuth(unittest.TestCase):
                 )
 
             pkb_client.import_dns_records(
-                "example.com", str(filename), DNSRestoreMode.keep
+                "example.com",
+                str(filename),
+                DNSRestoreMode.keep,
             )
 
     @responses.activate(registry=OrderedRegistry, assert_all_requests_are_fired=True)
@@ -1036,8 +1105,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         # then all records should be deleted
@@ -1046,8 +1115,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         responses.post(
@@ -1055,8 +1124,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         # then all records should be imported / created
@@ -1073,8 +1142,8 @@ class TestClientAuth(unittest.TestCase):
                         "content": "127.0.0.3",
                         "ttl": 600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
         responses.post(
@@ -1090,8 +1159,8 @@ class TestClientAuth(unittest.TestCase):
                         "content": "127.0.0.4",
                         "ttl": 600,
                         "prio": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
         responses.post(
@@ -1103,23 +1172,21 @@ class TestClientAuth(unittest.TestCase):
                         "apikey": "key",
                         "secretapikey": "secret",
                         "ns": ["ns1.example.com"],
-                    }
-                )
+                    },
+                ),
             ],
         )
 
         with tempfile.TemporaryDirectory() as temp_dir:
             filename = Path(temp_dir, "records.bind")
-            with open(filename, "w") as f:
+            with Path(filename).open("w") as f:
                 f.write(
-                    (
-                        "$ORIGIN example.com.\n"
-                        "$TTL 1234\n"
-                        "@ IN SOA dns.example.com. dns2.example.com. (100 300 100 6000 600)\n"
-                        "example.com. IN 600 A 127.0.0.3\n"
-                        "sub.example.com. 600 IN A 127.0.0.4\n"
-                        "example.com IN 86400 NS ns1.example.com."
-                    )
+                    "$ORIGIN example.com.\n"
+                    "$TTL 1234\n"
+                    "@ IN SOA dns.example.com. dns2.example.com. (100 300 100 6000 600)\n"
+                    "example.com. IN 600 A 127.0.0.3\n"
+                    "sub.example.com. 600 IN A 127.0.0.4\n"
+                    "example.com IN 86400 NS ns1.example.com.",
                 )
 
             pkb_client.import_bind_dns_records(filename, DNSRestoreMode.clear)
@@ -1154,8 +1221,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
         dnssec_records = pkb_client.get_dnssec_records("example.com")
@@ -1211,8 +1278,8 @@ class TestClientAuth(unittest.TestCase):
                         "keyDataProtocol": None,
                         "keyDataAlgo": None,
                         "keyDataPubKey": None,
-                    }
-                )
+                    },
+                ),
             ],
         )
 
@@ -1242,8 +1309,8 @@ class TestClientAuth(unittest.TestCase):
                         "keyDataProtocol": 40,
                         "keyDataAlgo": 39,
                         "keyDataPubKey": "abc42",
-                    }
-                )
+                    },
+                ),
             ],
         )
 
@@ -1270,8 +1337,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -1315,8 +1382,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -1355,8 +1422,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -1383,8 +1450,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -1410,8 +1477,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -1431,8 +1498,8 @@ class TestClientAuth(unittest.TestCase):
             },
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -1456,8 +1523,8 @@ class TestClientAuth(unittest.TestCase):
             status=400,
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -1478,8 +1545,8 @@ class TestClientAuth(unittest.TestCase):
             json={"status": "SUCCESS"},
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -1500,8 +1567,8 @@ class TestClientAuth(unittest.TestCase):
             status=400,
             match=[
                 matchers.json_params_matcher(
-                    {"apikey": "key", "secretapikey": "secret"}
-                )
+                    {"apikey": "key", "secretapikey": "secret"},
+                ),
             ],
         )
 
@@ -1526,13 +1593,15 @@ class TestClientAuth(unittest.TestCase):
                         "apikey": "key",
                         "secretapikey": "secret",
                         "ips": ["192.0.2.1", "2001:db8::1"],
-                    }
-                )
+                    },
+                ),
             ],
         )
 
         success = pkb_client.create_glue_record(
-            "example.com", "ns1", ["192.0.2.1", "2001:db8::1"]
+            "example.com",
+            "ns1",
+            ["192.0.2.1", "2001:db8::1"],
         )
 
         self.assertTrue(success)
@@ -1550,8 +1619,8 @@ class TestClientAuth(unittest.TestCase):
                         "apikey": "key",
                         "secretapikey": "secret",
                         "ips": ["192.0.2.1"],
-                    }
-                )
+                    },
+                ),
             ],
         )
 
@@ -1576,8 +1645,8 @@ class TestClientAuth(unittest.TestCase):
                         "apikey": "key",
                         "secretapikey": "secret",
                         "ips": ["invalid.ip.address"],
-                    }
-                )
+                    },
+                ),
             ],
         )
 
@@ -1602,13 +1671,15 @@ class TestClientAuth(unittest.TestCase):
                         "apikey": "key",
                         "secretapikey": "secret",
                         "ips": ["192.0.2.1", "2001:db8::1"],
-                    }
-                )
+                    },
+                ),
             ],
         )
 
         success = pkb_client.update_glue_record(
-            "example.com", "ns1", ["192.0.2.1", "2001:db8::1"]
+            "example.com",
+            "ns1",
+            ["192.0.2.1", "2001:db8::1"],
         )
 
         self.assertTrue(success)
@@ -1626,8 +1697,8 @@ class TestClientAuth(unittest.TestCase):
                         "apikey": "key",
                         "secretapikey": "secret",
                         "ips": ["192.0.2.1"],
-                    }
-                )
+                    },
+                ),
             ],
         )
 
@@ -1652,8 +1723,8 @@ class TestClientAuth(unittest.TestCase):
                         "apikey": "key",
                         "secretapikey": "secret",
                         "ips": ["invalid.ip.address"],
-                    }
-                )
+                    },
+                ),
             ],
         )
 

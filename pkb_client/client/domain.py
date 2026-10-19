@@ -1,10 +1,13 @@
+"""Domain and glue-record models returned by the Porkbun API."""
+
 from dataclasses import dataclass
 from datetime import datetime
-from typing import Optional
 
 
 @dataclass
 class DomainInfo:
+    """Represent domain registration information."""
+
     domain: str
     status: str
     tld: str
@@ -18,6 +21,8 @@ class DomainInfo:
 
 @dataclass
 class DomainPrice:
+    """Represent a domain's current and regular prices."""
+
     type: str
     price: float
     regular_price: float
@@ -25,6 +30,8 @@ class DomainPrice:
 
 @dataclass
 class DomainAvailability(DomainPrice):
+    """Represent domain availability and associated prices."""
+
     available: bool
     first_year_promo: bool
     premium: bool
@@ -33,6 +40,8 @@ class DomainAvailability(DomainPrice):
 
 @dataclass
 class DomainCheckRateLimit:
+    """Represent the remaining rate-limit information for domain checks."""
+
     ttl: int
     limit: int
     used: int
@@ -41,6 +50,8 @@ class DomainCheckRateLimit:
 
 @dataclass
 class GlueRecord:
+    """Represent a host and its glue-record IP addresses."""
+
     host: str
-    v4: Optional[str]
-    v6: Optional[str]
+    v4: str | None
+    v6: str | None

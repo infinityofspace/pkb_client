@@ -1,3 +1,5 @@
+"""Configuration file for the Sphinx documentation builder."""
+
 # Configuration file for the Sphinx documentation builder.
 #
 # For the full list of built-in configuration values, see the documentation:
@@ -11,7 +13,7 @@ import sys
 sys.path.append("..")
 
 project = "pkb_client"
-copyright = "2023-2024, infinityofspace"
+copyright = "2023-2026, infinityofspace"
 author = "infinityofspace"
 release = "v2.0.0"
 

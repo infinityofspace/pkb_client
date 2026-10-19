@@ -1,29 +1,39 @@
+"""Parse and serialize DNS records in BIND zone-file format."""
+
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional, List
+from pathlib import Path
 
-from pkb_client.client.dns import DNSRecordType, DNS_RECORDS_WITH_PRIORITY
+from pkb_client.client.dns import DNS_RECORDS_WITH_PRIORITY, DNSRecordType
+
+logger = logging.getLogger(__name__)
 
 
 class RecordClass(str, Enum):
+    """DNS record class supported by BIND zone files."""
+
     IN = "IN"
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return the DNS class token."""
         return self.value
 
 
 @dataclass
 class BindRecord:
+    """Represent a single DNS record in a BIND zone file."""
+
     name: str
     ttl: int
     record_class: RecordClass
     record_type: DNSRecordType
     data: str
-    prio: Optional[int] = None
-    comment: Optional[str] = None
+    prio: int | None = None
+    comment: str | None = None
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Serialize this record as a BIND zone-file line."""
         record_string = f"{self.name} {self.ttl} {self.record_class} {self.record_type}"
         if self.prio is not None:
             record_string += f" {self.prio}"
@@ -34,23 +44,27 @@ class BindRecord:
 
 
 class BindFile:
+    """Represent a BIND zone file and its DNS records."""
+
     origin: str
-    ttl: Optional[int] = None
-    records: List[BindRecord]
+    ttl: int | None = None
+    records: list[BindRecord]
 
     def __init__(
         self,
         origin: str,
-        ttl: Optional[int] = None,
-        records: Optional[List[BindRecord]] = None,
+        ttl: int | None = None,
+        records: list[BindRecord] | None = None,
     ) -> None:
+        """Create a BIND file with its origin, optional TTL, and records."""
         self.origin = origin
         self.ttl = ttl
         self.records = records or []
 
     @staticmethod
     def from_file(file_path: str) -> "BindFile":
-        with open(file_path, "r") as f:
+        """Parse a BIND zone file from disk."""
+        with Path(file_path).open() as f:
             file_data = f.readlines()
 
         # parse the file line by line
@@ -79,10 +93,10 @@ class BindFile:
                 if record_parts[1].isdigit():
                     # scheme 1
                     if record_parts[3] not in DNSRecordType.__members__:
-                        logging.warning(f"Ignoring unsupported record type: {line}")
+                        logger.warning("Ignoring unsupported record type: %s", line)
                         continue
                     if record_parts[2] not in RecordClass.__members__:
-                        logging.warning(f"Ignoring unsupported record class: {line}")
+                        logger.warning("Ignoring unsupported record class: %s", line)
                         continue
                     record_name = record_parts[0]
                     record_ttl = int(record_parts[1])
@@ -96,10 +110,10 @@ class BindFile:
                 elif record_parts[2].isdigit():
                     # scheme 2
                     if record_parts[3] not in DNSRecordType.__members__:
-                        logging.warning(f"Ignoring unsupported record type: {line}")
+                        logger.warning("Ignoring unsupported record type: %s", line)
                         continue
                     if record_parts[1] not in RecordClass.__members__:
-                        logging.warning(f"Ignoring unsupported record class: {line}")
+                        logger.warning("Ignoring unsupported record class: %s", line)
                         continue
                     record_name = record_parts[0]
                     record_ttl = int(record_parts[2])
@@ -113,10 +127,10 @@ class BindFile:
                 else:
                     # no ttl, use default or previous
                     if record_parts[2] not in DNSRecordType.__members__:
-                        logging.warning(f"Ignoring unsupported record type: {line}")
+                        logger.warning("Ignoring unsupported record type: %s", line)
                         continue
                     if record_parts[1] not in RecordClass.__members__:
-                        logging.warning(f"Ignoring unsupported record class: {line}")
+                        logger.warning("Ignoring unsupported record class: %s", line)
                         continue
                     record_name = record_parts[0]
                     if ttl is None and not records:
@@ -135,13 +149,13 @@ class BindFile:
 
                 # handle comments and quoted strings as record data
                 comment = None
-                line = record_data.strip()
-                if line.startswith('"'):
+                record_line = record_data.strip()
+                if record_line.startswith('"'):
                     # find rightmost double quote
-                    rindex = line.rfind('"')
+                    rindex = record_line.rfind('"')
                     if rindex != -1:
                         # split at the last double quote
-                        line_parts = line.rsplit('"', 1)
+                        line_parts = record_line.rsplit('"', 1)
                         record_data = line_parts[0].strip('"')
 
                         comment = line_parts[1].strip() if len(line_parts) > 1 else None
@@ -152,15 +166,14 @@ class BindFile:
                         if not comment:
                             comment = None
                     else:
-                        record_data = line.strip('"')
+                        record_data = record_line.strip('"')
+                # try to split at the first semicolon for comments
+                elif ";" in record_line:
+                    record_data, comment = record_line.split(";", 1)
+                    record_data = record_data.strip()
+                    comment = comment.strip()
                 else:
-                    # try to split at the first semicolon for comments
-                    if ";" in line:
-                        record_data, comment = line.split(";", 1)
-                        record_data = record_data.strip()
-                        comment = comment.strip()
-                    else:
-                        record_data = line
+                    record_data = record_line
 
                 records.append(
                     BindRecord(
@@ -171,7 +184,7 @@ class BindFile:
                         record_data,
                         prio=prio,
                         comment=comment,
-                    )
+                    ),
                 )
 
         if origin is None:
@@ -180,10 +193,12 @@ class BindFile:
         return BindFile(origin, ttl, records)
 
     def to_file(self, file_path: str) -> None:
-        with open(file_path, "w") as f:
+        """Write the BIND zone file to disk."""
+        with Path(file_path).open("w") as f:
             f.write(str(self))
 
     def __str__(self) -> str:
+        """Serialize this BIND file into zone-file text."""
         bind = f"$ORIGIN {self.origin}\n"
 
         if self.ttl is not None:

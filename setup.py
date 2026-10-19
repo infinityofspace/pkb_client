@@ -1,8 +1,12 @@
-from setuptools import setup, find_packages
+"""Package installation configuration."""
+
+from pathlib import Path
+
+from setuptools import find_packages, setup
 
 import pkb_client
 
-with open("Readme.md") as f:
+with Path("Readme.md").open() as f:
     long_description = f.read()
 
 setup(
@@ -33,6 +37,6 @@ setup(
     entry_points={
         "console_scripts": [
             "pkb-client = pkb_client.cli.cli:main",
-        ]
+        ],
     },
 )
