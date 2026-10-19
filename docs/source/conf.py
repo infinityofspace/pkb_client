@@ -11,9 +11,9 @@ import sys
 sys.path.append("..")
 
 project = "pkb_client"
-copyright = "2023-2024, infinityofspace"
+copyright = "2023-2026, infinityofspace"
 author = "infinityofspace"
-release = "v2.0.0"
+release = "v3.0.0"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
